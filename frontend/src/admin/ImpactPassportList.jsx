@@ -135,7 +135,7 @@ const FALLBACK_PASSPORTS = [
   }
 ];
 
-export default function ImpactPassportList({ onExplainScore, onOpenTrace }) {
+export default function ImpactPassportList({ onExplainScore, onOpenTrace, selectedDistrict }) {
   const [passports, setPassports] = useState(FALLBACK_PASSPORTS);
   const [sectorFilter, setSectorFilter] = useState('ALL');
 
@@ -158,19 +158,36 @@ export default function ImpactPassportList({ onExplainScore, onOpenTrace }) {
     loadPassports();
   }, []);
 
+  const displayPassports = React.useMemo(() => {
+    if (!selectedDistrict || selectedDistrict.id === 'ranchi') return passports;
+    if (selectedDistrict.deliveryPoints && selectedDistrict.deliveryPoints.length > 0) {
+      return selectedDistrict.deliveryPoints.map((dp, idx) => {
+        const base = passports[idx % passports.length] || passports[0];
+        return {
+          ...base,
+          deliveryPointCode: dp.code,
+          name: dp.name,
+          sectorId: dp.sector,
+          category: dp.category
+        };
+      });
+    }
+    return passports;
+  }, [passports, selectedDistrict]);
+
   const filtered = sectorFilter === 'ALL'
-    ? passports
-    : passports.filter((p) => p.sectorId === sectorFilter);
+    ? displayPassports
+    : displayPassports.filter((p) => p.sectorId === sectorFilter);
 
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
           <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>
-            Delivery Point Impact Passports (Annexure A Standard)
+            Delivery Point Impact Passports — {selectedDistrict?.name || 'Ranchi Rural'} (Annexure A Standard)
           </h2>
           <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0 }}>
-            Purposive pilot sample across Education (4), Health/RBSK (3), and Anganwadi (3) sectors without punitive rankings.
+            Purposive sample for {selectedDistrict?.name || 'Ranchi Rural'} across Education (4), Health/RBSK (3), and Anganwadi (3) sectors without punitive rankings.
           </p>
         </div>
 

@@ -9,7 +9,13 @@ import {
   ShieldCheck,
   RefreshCw,
   Building2,
-  ChevronDown
+  ChevronDown,
+  MapPin,
+  ClipboardCheck,
+  FileCheck2,
+  UserCheck2,
+  ShieldAlert,
+  Clock as ClockIcon
 } from 'lucide-react';
 import DistrictOverview from './DistrictOverview';
 import ConvergenceHeatmap from './ConvergenceHeatmap';
@@ -21,25 +27,59 @@ import FactualCorrectionsView from './FactualCorrectionsView';
 import ReviewerPackView from './ReviewerPackView';
 import PrivacyIncidentsView from './PrivacyIncidentsView';
 import RetentionAndAuditView from './RetentionAndAuditView';
-import { ClipboardCheck, FileCheck2, UserCheck2, ShieldAlert, Clock as ClockIcon } from 'lucide-react';
+import { JHARKHAND_DISTRICTS, getDistrictById } from '../data/districts';
 
 export default function AdminShell() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [govDropdownOpen, setGovDropdownOpen] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [availableDistricts, setAvailableDistricts] = useState(JHARKHAND_DISTRICTS);
+  
+  // Monitored District selection state with localStorage persistence
+  const [selectedDistrictId, setSelectedDistrictId] = useState(() => {
+    return localStorage.getItem('abhisaran_monitored_district') || 'ranchi';
+  });
+
+  const selectedDistrict = getDistrictById(selectedDistrictId);
+
   const [overviewData, setOverviewData] = useState(null);
   const [explainModalOpen, setExplainModalOpen] = useState(false);
   const [explainTargetCode, setExplainTargetCode] = useState('EDU-01');
   const [traceDrawerOpen, setTraceDrawerOpen] = useState(false);
   const [traceTarget, setTraceTarget] = useState({ deliveryPointCode: 'EDU-01' });
 
-  // Load district overview
+  // Fetch available districts from API if online
+  useEffect(() => {
+    async function fetchDistricts() {
+      try {
+        const token = localStorage.getItem('abhisaran_token');
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await fetch('/api/v1/admin/districts', { headers });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            // Merge with local rich metadata
+            const merged = JHARKHAND_DISTRICTS.map((local) => {
+              const apiMatch = data.find((d) => d.id === local.id || d.name === local.name);
+              return apiMatch ? { ...local, ...apiMatch } : local;
+            });
+            setAvailableDistricts(merged);
+          }
+        }
+      } catch (err) {
+        console.warn('Districts API fetch failed, using local registry:', err);
+      }
+    }
+    fetchDistricts();
+  }, []);
+
+  // Load district overview for selected district
   useEffect(() => {
     async function fetchOverview() {
       try {
         const token = localStorage.getItem('abhisaran_token');
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        const res = await fetch('/api/v1/admin/overview', { headers });
+        const res = await fetch(`/api/v1/admin/overview?districtName=${encodeURIComponent(selectedDistrict.name)}`, { headers });
         if (res.ok) {
           const data = await res.json();
           setOverviewData(data);
@@ -49,7 +89,12 @@ export default function AdminShell() {
       }
     }
     fetchOverview();
-  }, []);
+  }, [selectedDistrict.name]);
+
+  const handleDistrictChange = (newDistrictId) => {
+    setSelectedDistrictId(newDistrictId);
+    localStorage.setItem('abhisaran_monitored_district', newDistrictId);
+  };
 
   const handleRunAnalysis = () => {
     setAnalyzing(true);
@@ -92,10 +137,47 @@ export default function AdminShell() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Pilot District</div>
-            <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#ffffff' }}>Ranchi Rural (Jharkhand)</div>
+          {/* Interactive District Monitor Option */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.55rem',
+              background: 'rgba(30, 41, 59, 0.7)',
+              border: '1px solid rgba(56, 189, 248, 0.3)',
+              borderRadius: 'var(--radius-md)',
+              padding: '0.35rem 0.75rem'
+            }}
+          >
+            <MapPin size={18} style={{ color: '#38bdf8', flexShrink: 0 }} />
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontSize: '0.68rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>
+                Monitoring District
+              </div>
+              <select
+                aria-label="Select District to Monitor"
+                value={selectedDistrictId}
+                onChange={(e) => handleDistrictChange(e.target.value)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#ffffff',
+                  fontSize: '0.875rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  outline: 'none',
+                  padding: 0
+                }}
+              >
+                {availableDistricts.map((d) => (
+                  <option key={d.id} value={d.id} style={{ background: '#0f172a', color: '#ffffff' }}>
+                    {d.name} ({d.state}) {d.status === 'PILOT_ACTIVE' ? '★ Pilot' : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
+
           <button
             type="button"
             onClick={handleRunAnalysis}
@@ -130,15 +212,15 @@ export default function AdminShell() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  padding: '0.875rem 0',
+                  padding: '0.85rem 0',
+                  background: 'none',
                   border: 'none',
-                  background: 'transparent',
-                  color: isActive ? 'var(--brand-primary)' : 'var(--text-muted)',
-                  fontWeight: isActive ? 600 : 500,
-                  fontSize: '0.875rem',
                   borderBottom: isActive ? '2px solid var(--brand-primary)' : '2px solid transparent',
+                  color: isActive ? 'var(--brand-primary)' : 'var(--text-muted)',
+                  fontSize: '0.875rem',
+                  fontWeight: isActive ? 600 : 500,
                   cursor: 'pointer',
-                  whiteSpace: 'nowrap'
+                  transition: 'all 0.15s ease'
                 }}
               >
                 <Icon size={16} />
@@ -148,95 +230,89 @@ export default function AdminShell() {
           })}
         </div>
 
-        {/* Governance & Audit Secondary Dropdown (keeps main strip clean) */}
+        {/* Governance & Compliance Dropdown */}
         <div style={{ position: 'relative' }}>
-          {(() => {
-            const govTabs = [
-              { id: 'briefings', label: 'Exit Briefings', icon: ClipboardCheck },
-              { id: 'corrections', label: 'Factual Corrections', icon: FileCheck2 },
-              { id: 'reviewer', label: 'Reviewer Pack', icon: UserCheck2 },
-              { id: 'privacy', label: 'Privacy Incidents (2h Clock)', icon: ShieldAlert },
-              { id: 'retention', label: 'Retention & Audit (30d)', icon: ClockIcon }
-            ];
-            const isGovActive = govTabs.some(t => t.id === activeTab);
-            const currentGov = govTabs.find(t => t.id === activeTab);
-            return (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setGovDropdownOpen(!govDropdownOpen)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                    padding: '0.4rem 0.75rem',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--border-color)',
-                    background: isGovActive ? 'rgba(59, 130, 246, 0.15)' : 'rgba(30, 41, 59, 0.5)',
-                    color: isGovActive ? 'var(--brand-primary)' : 'var(--text-muted)',
-                    fontSize: '0.8rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  <ShieldCheck size={14} />
-                  <span>{isGovActive ? `Governance: ${currentGov?.label}` : 'Governance & Compliance'}</span>
-                  <ChevronDown size={14} />
-                </button>
+          <button
+            type="button"
+            onClick={() => setGovDropdownOpen(!govDropdownOpen)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              padding: '0.45rem 0.85rem',
+              background: govDropdownOpen || ['briefings', 'corrections', 'reviewer', 'privacy', 'retention'].includes(activeTab) ? 'rgba(59, 130, 246, 0.15)' : 'rgba(30, 41, 59, 0.5)',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--radius-sm)',
+              color: ['briefings', 'corrections', 'reviewer', 'privacy', 'retention'].includes(activeTab) ? 'var(--brand-primary)' : 'var(--text-muted)',
+              fontSize: '0.8125rem',
+              fontWeight: 500,
+              cursor: 'pointer'
+            }}
+          >
+            <ShieldCheck size={14} style={{ color: 'var(--brand-accent)' }} />
+            <span>Governance & Compliance</span>
+            <ChevronDown size={14} style={{ transform: govDropdownOpen ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }} />
+          </button>
 
-                {govDropdownOpen && (
-                  <div
+          {govDropdownOpen && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '100%',
+                right: 0,
+                marginTop: '0.35rem',
+                width: '230px',
+                background: '#0f172a',
+                border: '1px solid var(--border-color)',
+                borderRadius: 'var(--radius-md)',
+                boxShadow: 'var(--shadow-xl)',
+                zIndex: 50,
+                overflow: 'hidden'
+              }}
+            >
+              {[
+                { id: 'briefings', label: 'Exit Briefings (§14.1)', icon: ClipboardCheck },
+                { id: 'corrections', label: 'Factual Corrections', icon: FileCheck2 },
+                { id: 'reviewer', label: 'Reviewer Pack (COI)', icon: UserCheck2 },
+                { id: 'privacy', label: 'Privacy Incidents (Zero-PII)', icon: ShieldAlert },
+                { id: 'retention', label: 'Retention & Audit (30-Day)', icon: ClockIcon }
+              ].map((sub) => {
+                const SubIcon = sub.icon;
+                const isSubActive = activeTab === sub.id;
+                return (
+                  <button
+                    key={sub.id}
+                    onClick={() => {
+                      setActiveTab(sub.id);
+                      setGovDropdownOpen(false);
+                    }}
                     style={{
-                      position: 'absolute',
-                      right: 0,
-                      top: 'calc(100% + 0.4rem)',
-                      background: 'var(--bg-card)',
-                      border: '1px solid var(--border-color)',
-                      borderRadius: 'var(--radius-md)',
-                      boxShadow: 'var(--shadow-lg)',
-                      minWidth: '230px',
-                      zIndex: 50,
-                      padding: '0.35rem 0'
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.6rem',
+                      width: '100%',
+                      padding: '0.65rem 0.9rem',
+                      background: isSubActive ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
+                      border: 'none',
+                      borderLeft: isSubActive ? '3px solid var(--brand-primary)' : '3px solid transparent',
+                      color: isSubActive ? '#ffffff' : '#cbd5e1',
+                      fontSize: '0.8125rem',
+                      textAlign: 'left',
+                      cursor: 'pointer'
                     }}
                   >
-                    {govTabs.map((sub) => {
-                      const SubIcon = sub.icon;
-                      const isSelected = activeTab === sub.id;
-                      return (
-                        <button
-                          key={sub.id}
-                          onClick={() => {
-                            setActiveTab(sub.id);
-                            setGovDropdownOpen(false);
-                          }}
-                          style={{
-                            width: '100%',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.6rem',
-                            padding: '0.55rem 1rem',
-                            background: isSelected ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
-                            color: isSelected ? 'var(--brand-primary)' : 'var(--text-main)',
-                            border: 'none',
-                            textAlign: 'left',
-                            fontSize: '0.8125rem',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          <SubIcon size={14} />
-                          {sub.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </>
-            );
-          })()}
+                    <SubIcon size={14} style={{ color: isSubActive ? 'var(--brand-primary)' : 'var(--text-dim)' }} />
+                    {sub.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
       </nav>
 
-      {/* Main Container */}
-      <main style={{ padding: '1.5rem', maxWidth: '1280px', margin: '0 auto', width: '100%', flex: 1 }}>
+      {/* Main Content Area */}
+      <main style={{ padding: '1.5rem', flex: 1 }}>
         {/* Statutory Action Brief Disclaimer Banner */}
         <div className="disclaimer-banner" style={{ marginBottom: '1.5rem' }}>
           <strong>Planning Boundary Notice (AEHT §15):</strong> Action briefs and continuity scores are decision-support planning inputs only. They do not authorize expenditure, constitute sanctions, guarantee funding, or rank individual institutions or personnel. District officials retain final prioritization authority.
@@ -248,6 +324,9 @@ export default function AdminShell() {
             overviewData={overviewData}
             onExplainScore={() => handleOpenExplainScore('EDU-01')}
             onNavigateTab={setActiveTab}
+            selectedDistrict={selectedDistrict}
+            availableDistricts={availableDistricts}
+            onSelectDistrict={handleDistrictChange}
           />
         )}
 
@@ -255,6 +334,7 @@ export default function AdminShell() {
         {activeTab === 'heatmap' && (
           <ConvergenceHeatmap
             onSelectCell={(cell) => handleOpenTraceDrawer({ deliveryPointCode: 'EDU-01', ...cell })}
+            selectedDistrict={selectedDistrict}
           />
         )}
 
@@ -263,6 +343,7 @@ export default function AdminShell() {
           <ImpactPassportList
             onExplainScore={handleOpenExplainScore}
             onOpenTrace={handleOpenTraceDrawer}
+            selectedDistrict={selectedDistrict}
           />
         )}
 
@@ -293,7 +374,7 @@ export default function AdminShell() {
 
         {/* Footer Limitations Note (AEHT §15.1) */}
         <footer style={{ borderTop: '1px solid var(--border-color)', marginTop: '2rem', paddingTop: '1rem', fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.5 }}>
-          <strong>AEHT §15.1 Limitations:</strong> Small purposive pilot; not a district-wide statistical census. ACS is an operational continuity indicator, not a causal impact claim. Evidence reflects the designated field assessment window. Individual outcomes cannot be inferred from anonymized token records.
+          <strong>AEHT §15.1 Limitations:</strong> Small purposive pilot in {selectedDistrict.name}; not a district-wide statistical census. ACS is an operational continuity indicator, not a causal impact claim. Evidence reflects the designated field assessment window. Individual outcomes cannot be inferred from anonymized token records.
         </footer>
       </main>
 

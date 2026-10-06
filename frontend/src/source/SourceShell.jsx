@@ -10,12 +10,14 @@ import {
   Send,
   RefreshCw,
   Layers,
-  Inbox
+  Inbox,
+  MapPin
 } from 'lucide-react';
 import QuestionCard from './QuestionCard';
 import SchedulingGuard from './SchedulingGuard';
 import ZeroPiiUploadModal from './ZeroPiiUploadModal';
 import { OfflineQueueService } from './OfflineQueueService';
+import { JHARKHAND_DISTRICTS, getDistrictById } from '../data/districts';
 
 // Fallback question catalogue in case backend is offline or disconnected
 const FALLBACK_QUESTIONS = [
@@ -41,19 +43,22 @@ const FALLBACK_QUESTIONS = [
   { questionNumber: 15, sectorId: 'WCD_ANGANWADI', layer: 5, convergenceQuestion: 'Q5', questionText: 'Does the Anganwadi worker participate in scheduled VHSND joint reviews with ASHA and ANM?', explanationWhy: 'Verifies village health sanitation and nutrition day coordination sustainability.', evidenceRequirement: 'PROCESS_DOCUMENT', resultingRuleId: 'RULE-SUSTAIN-005', optionsJson: '{"options": ["ROUTINE_VHSND_MINUTES", "OCCASIONAL_JOINT_REVIEW", "NO_JOINT_REVIEW"]}' }
 ];
 
-const DELIVERY_POINTS = [
-  { code: 'EDU-01', name: 'EDU-01 (Primary School, Block Central)', sector: 'EDUCATION' },
-  { code: 'EDU-02', name: 'EDU-02 (Middle School, Rural West)', sector: 'EDUCATION' },
-  { code: 'HLT-01', name: 'HLT-01 (Primary Health Centre / PHC North)', sector: 'HEALTH_RBSK' },
-  { code: 'HLT-02', name: 'HLT-02 (Community Health Centre / CHC East)', sector: 'HEALTH_RBSK' },
-  { code: 'WCD-01', name: 'WCD-01 (Anganwadi Centre 14, Tribal Belt)', sector: 'WCD_ANGANWADI' },
-  { code: 'WCD-02', name: 'WCD-02 (Anganwadi Centre 08, Semi-Urban)', sector: 'WCD_ANGANWADI' }
-];
-
 export default function SourceShell() {
   const [online, setOnline] = useState(navigator.onLine);
   const [activeLayer, setActiveLayer] = useState(1);
-  const [deliveryPointCode, setDeliveryPointCode] = useState('EDU-01');
+  
+  // Operational District selection state
+  const [districtId, setDistrictId] = useState(() => {
+    return localStorage.getItem('abhisaran_field_district') || localStorage.getItem('abhisaran_monitored_district') || 'ranchi';
+  });
+
+  const activeDistrict = getDistrictById(districtId);
+  const availableDeliveryPoints = activeDistrict.deliveryPoints || [];
+
+  const [deliveryPointCode, setDeliveryPointCode] = useState(() => {
+    return availableDeliveryPoints[0]?.code || 'EDU-01';
+  });
+
   const [questions, setQuestions] = useState(FALLBACK_QUESTIONS);
   const [recordedAnswers, setRecordedAnswers] = useState({});
   const [evidenceAttachments, setEvidenceAttachments] = useState({});
@@ -63,7 +68,7 @@ export default function SourceShell() {
   const [pendingDraftsCount, setPendingDraftsCount] = useState(OfflineQueueService.getQueueCount());
   const [syncStatusMsg, setSyncStatusMsg] = useState('');
 
-  const currentDp = DELIVERY_POINTS.find((dp) => dp.code === deliveryPointCode) || DELIVERY_POINTS[0];
+  const currentDp = availableDeliveryPoints.find((dp) => dp.code === deliveryPointCode) || availableDeliveryPoints[0] || { code: 'EDU-01', sector: 'EDUCATION', name: 'EDU-01' };
   const currentSector = currentDp.sector;
 
   const layers = [
@@ -85,6 +90,15 @@ export default function SourceShell() {
       window.removeEventListener('offline', handleOffline);
     };
   }, []);
+
+  const handleDistrictChange = (newDistrictId) => {
+    setDistrictId(newDistrictId);
+    localStorage.setItem('abhisaran_field_district', newDistrictId);
+    const newDist = getDistrictById(newDistrictId);
+    if (newDist.deliveryPoints && newDist.deliveryPoints.length > 0) {
+      setDeliveryPointCode(newDist.deliveryPoints[0].code);
+    }
+  };
 
   // Fetch questions from API if online, or fallback
   useEffect(() => {
@@ -119,15 +133,22 @@ export default function SourceShell() {
 
   const handleSaveAnswer = (answerPayload) => {
     const key = `${deliveryPointCode}_${answerPayload.questionNumber}`;
-    const updated = { ...recordedAnswers, [key]: answerPayload };
+    const existingAttachment = evidenceAttachments[key] || answerPayload.attachment;
+    const completePayload = {
+      ...answerPayload,
+      attachment: existingAttachment
+    };
+    const updated = { ...recordedAnswers, [key]: completePayload };
     setRecordedAnswers(updated);
 
     // Save/Enqueue to OfflineQueueService
     OfflineQueueService.enqueueDraft({
+      districtId: activeDistrict.id,
+      districtName: activeDistrict.name,
       deliveryPointCode,
       sector: currentSector,
       layer: activeLayer,
-      ...answerPayload
+      ...completePayload
     });
     setPendingDraftsCount(OfflineQueueService.getQueueCount());
   };
@@ -139,10 +160,31 @@ export default function SourceShell() {
 
   const handleAttachEvidence = (evidenceData) => {
     const key = `${deliveryPointCode}_${evidenceData.questionNumber}`;
-    setEvidenceAttachments({
-      ...evidenceAttachments,
+    setEvidenceAttachments((prev) => ({
+      ...prev,
       [key]: evidenceData
-    });
+    }));
+
+    // If answer is already recorded, update queue with new attachments
+    if (recordedAnswers[key]) {
+      const updatedAnswer = {
+        ...recordedAnswers[key],
+        attachment: evidenceData
+      };
+      setRecordedAnswers((prev) => ({
+        ...prev,
+        [key]: updatedAnswer
+      }));
+      OfflineQueueService.enqueueDraft({
+        districtId: activeDistrict.id,
+        districtName: activeDistrict.name,
+        deliveryPointCode,
+        sector: currentSector,
+        layer: activeLayer,
+        ...updatedAnswer
+      });
+      setPendingDraftsCount(OfflineQueueService.getQueueCount());
+    }
   };
 
   const handleSyncQueue = async () => {
@@ -225,31 +267,59 @@ export default function SourceShell() {
         </div>
       )}
 
-      {/* Delivery Point Selection */}
-      <div style={{ padding: '0.85rem 1rem', borderBottom: '1px solid var(--border-color)' }}>
-        <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-          Assigned Delivery Point
-        </label>
-        <select
-          value={deliveryPointCode}
-          onChange={(e) => setDeliveryPointCode(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            background: 'var(--bg-card)',
-            color: '#ffffff',
-            border: '1px solid var(--border-color)',
-            borderRadius: 'var(--radius-md)',
-            fontSize: '0.9rem',
-            fontWeight: 600
-          }}
-        >
-          {DELIVERY_POINTS.map((dp) => (
-            <option key={dp.code} value={dp.code}>
-              {dp.name}
-            </option>
-          ))}
-        </select>
+      {/* Operational District & Delivery Point Selection Bar */}
+      <div style={{ padding: '0.85rem 1rem', borderBottom: '1px solid var(--border-color)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+        <div>
+          <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Operational District
+          </label>
+          <select
+            value={districtId}
+            onChange={(e) => handleDistrictChange(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '0.65rem 0.75rem',
+              background: 'var(--bg-card)',
+              color: '#ffffff',
+              border: '1px solid rgba(56, 189, 248, 0.4)',
+              borderRadius: 'var(--radius-md)',
+              fontSize: '0.85rem',
+              fontWeight: 600
+            }}
+          >
+            {JHARKHAND_DISTRICTS.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name} {d.status === 'PILOT_ACTIVE' ? '★' : ''}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+            Delivery Point ({availableDeliveryPoints.length})
+          </label>
+          <select
+            value={deliveryPointCode}
+            onChange={(e) => setDeliveryPointCode(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '0.65rem 0.75rem',
+              background: 'var(--bg-card)',
+              color: '#ffffff',
+              border: '1px solid var(--border-color)',
+              borderRadius: 'var(--radius-md)',
+              fontSize: '0.85rem',
+              fontWeight: 600
+            }}
+          >
+            {availableDeliveryPoints.map((dp) => (
+              <option key={dp.code} value={dp.code}>
+                {dp.code} ({dp.name.split('(')[1]?.replace(')', '') || dp.sector})
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Scheduling Guard (AEHT §14 Protocol) */}
@@ -333,7 +403,7 @@ export default function SourceShell() {
         )}
       </main>
 
-      {/* Zero PII Upload Modal */}
+      {/* Multi-File Zero PII Upload Modal */}
       <ZeroPiiUploadModal
         isOpen={uploadModalOpen}
         onClose={() => setUploadModalOpen(false)}

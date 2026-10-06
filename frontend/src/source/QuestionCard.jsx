@@ -244,29 +244,66 @@ export default function QuestionCard({
       </div>
 
       {/* Evidence Safeguard & Attachment */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)' }}>
-        <button
-          type="button"
-          onClick={() => onOpenUploadModal(question)}
-          className="btn btn-secondary"
-          style={{
-            fontSize: '0.8125rem',
-            padding: '0.5rem 0.85rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            color: evidenceAttachment ? 'var(--band-green-text)' : 'var(--text-main)',
-            border: evidenceAttachment ? '1px solid var(--band-green-border)' : '1px solid var(--border-color)'
-          }}
-        >
-          <Paperclip size={15} />
-          {evidenceAttachment ? 'Attached: ' + (evidenceAttachment.documentKind || 'Document') : 'Attach Verified Artifact'}
-        </button>
+      <div style={{ paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: evidenceAttachment?.files?.length ? '0.5rem' : 0 }}>
+          <button
+            type="button"
+            onClick={() => onOpenUploadModal(question)}
+            className="btn btn-secondary"
+            style={{
+              fontSize: '0.8125rem',
+              padding: '0.5rem 0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              color: evidenceAttachment ? 'var(--band-green-text)' : 'var(--text-main)',
+              border: evidenceAttachment ? '1px solid var(--band-green-border)' : '1px solid var(--border-color)',
+              background: evidenceAttachment ? 'rgba(16, 185, 129, 0.1)' : undefined
+            }}
+          >
+            <Paperclip size={15} />
+            {evidenceAttachment ? (
+              evidenceAttachment.fileCount > 1
+                ? `Attached: ${evidenceAttachment.fileCount} Documents`
+                : `Attached: ${evidenceAttachment.documentKind || '1 Document'}`
+            ) : (
+              'Attach Verified Artifact(s)'
+            )}
+          </button>
 
-        {selectedOption && (
-          <span style={{ fontSize: '0.75rem', color: 'var(--band-green-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-            <CheckCircle2 size={14} /> Recorded
-          </span>
+          {selectedOption && (
+            <span style={{ fontSize: '0.75rem', color: 'var(--band-green-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+              <CheckCircle2 size={14} /> Recorded
+            </span>
+          )}
+        </div>
+
+        {/* Multi-File Artifact Chips List */}
+        {evidenceAttachment?.files && evidenceAttachment.files.length > 0 && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginTop: '0.5rem' }}>
+            {evidenceAttachment.files.map((file, fIdx) => (
+              <span
+                key={fIdx}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.3rem',
+                  fontSize: '0.72rem',
+                  padding: '0.2rem 0.5rem',
+                  borderRadius: '4px',
+                  background: 'rgba(30, 41, 59, 0.7)',
+                  border: '1px solid rgba(56, 189, 248, 0.3)',
+                  color: '#93c5fd'
+                }}
+              >
+                <FileText size={12} style={{ color: '#38bdf8' }} />
+                <span style={{ maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={file.fileName}>
+                  {file.fileName}
+                </span>
+                <span style={{ color: 'var(--text-dim)', fontSize: '0.68rem' }}>({file.fileSize})</span>
+              </span>
+            ))}
+          </div>
         )}
       </div>
     </div>

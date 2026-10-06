@@ -1,7 +1,8 @@
 import React from 'react';
 import { Info, ExternalLink } from 'lucide-react';
 
-export default function ConvergenceHeatmap({ onSelectCell }) {
+export default function ConvergenceHeatmap({ onSelectCell, selectedDistrict }) {
+  const districtName = selectedDistrict?.name || 'Ranchi Rural';
   const pathways = [
     {
       id: 'ANGANWADI_TO_SCHOOL',
@@ -81,10 +82,10 @@ export default function ConvergenceHeatmap({ onSelectCell }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
           <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>
-            Cross-Sector Convergence Heat-map
+            Cross-Sector Convergence Heat-map — {districtName}
           </h2>
           <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0 }}>
-            Systemic diagnosis across inter-departmental hand-off pathways (Click any cell to inspect verifiable evidence trace).
+            Systemic diagnosis across inter-departmental hand-off pathways in {districtName} (Click any cell to inspect verifiable evidence trace).
           </p>
         </div>
 
