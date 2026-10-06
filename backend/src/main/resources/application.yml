@@ -1,0 +1,63 @@
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /
+
+spring:
+  application:
+    name: abhisaran-backend
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/abhisaran}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      idle-timeout: 30000
+      connection-timeout: 20000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:validate}
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    open-in-view: false
+
+  flyway:
+    enabled: ${SPRING_FLYWAY_ENABLED:true}
+    baseline-on-migrate: ${SPRING_FLYWAY_BASELINE_ON_MIGRATE:true}
+    baseline-version: ${SPRING_FLYWAY_BASELINE_VERSION:0}
+    locations: classpath:db/migration
+
+# ABHISARAN Specific Application Settings
+abhisaran:
+  district:
+    default-name: "Pilot District"
+    state: "Jharkhand"
+  governance:
+    zero-pii-enforced: true
+    non-punitive-mode: true
+    incident-notification-clock-hours: 2
+    retention-working-days: 30
+  security:
+    jwt:
+      secret: ${JWT_SECRET:abhisaran_zero_pii_deterministic_continuity_scan_secret_key_2026}
+      expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  ai-service:
+    url: ${AI_SERVICE_URL:http://localhost:8000}
+    timeout-ms: 5000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
