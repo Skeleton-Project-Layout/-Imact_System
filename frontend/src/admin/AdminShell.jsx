@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -7,23 +7,61 @@ import {
   FileText,
   AlertCircle,
   ShieldCheck,
-  CheckCircle,
-  HelpCircle,
   RefreshCw,
   Building2
 } from 'lucide-react';
+import DistrictOverview from './DistrictOverview';
+import ConvergenceHeatmap from './ConvergenceHeatmap';
+import ImpactPassportList from './ImpactPassportList';
+import ExplainScoreModal from './ExplainScoreModal';
+import TraceDrawer from './TraceDrawer';
 
 export default function AdminShell() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [analyzing, setAnalyzing] = useState(false);
+  const [overviewData, setOverviewData] = useState(null);
+  const [explainModalOpen, setExplainModalOpen] = useState(false);
+  const [explainTargetCode, setExplainTargetCode] = useState('EDU-01');
+  const [traceDrawerOpen, setTraceDrawerOpen] = useState(false);
+  const [traceTarget, setTraceTarget] = useState({ deliveryPointCode: 'EDU-01' });
+
+  // Load district overview
+  useEffect(() => {
+    async function fetchOverview() {
+      try {
+        const token = localStorage.getItem('abhisaran_token');
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await fetch('/api/v1/admin/overview', { headers });
+        if (res.ok) {
+          const data = await res.json();
+          setOverviewData(data);
+        }
+      } catch (err) {
+        console.warn('Overview API fetch failed:', err);
+      }
+    }
+    fetchOverview();
+  }, []);
 
   const handleRunAnalysis = () => {
     setAnalyzing(true);
-    setTimeout(() => setAnalyzing(false), 800);
+    setTimeout(() => {
+      setAnalyzing(false);
+    }, 800);
+  };
+
+  const handleOpenExplainScore = (dpCode) => {
+    setExplainTargetCode(dpCode || 'EDU-01');
+    setExplainModalOpen(true);
+  };
+
+  const handleOpenTraceDrawer = (target) => {
+    setTraceTarget(target || { deliveryPointCode: 'EDU-01' });
+    setTraceDrawerOpen(true);
   };
 
   return (
-    <div className="app-container">
+    <div className="app-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Top Government Official Bar */}
       <header className="top-bar">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -51,6 +89,7 @@ export default function AdminShell() {
             <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#ffffff' }}>Ranchi Rural (Jharkhand)</div>
           </div>
           <button
+            type="button"
             onClick={handleRunAnalysis}
             className="btn btn-primary"
             disabled={analyzing}
@@ -65,11 +104,9 @@ export default function AdminShell() {
       {/* Navigation Sub-bar */}
       <nav style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)', padding: '0 1.5rem', display: 'flex', gap: '1.5rem', overflowX: 'auto' }}>
         {[
-          { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+          { id: 'dashboard', label: 'Dashboard Overview', icon: LayoutDashboard },
           { id: 'heatmap', label: 'Convergence Heat-map', icon: Grid3X3 },
-          { id: 'passports', label: 'Impact Passports', icon: FileText },
-          { id: 'gaps', label: 'Verified Gaps', icon: AlertCircle },
-          { id: 'privacy', label: 'Privacy Incidents (Zero-PII)', icon: ShieldCheck }
+          { id: 'passports', label: 'Impact Passports (Annexure A)', icon: FileText }
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -100,99 +137,55 @@ export default function AdminShell() {
       </nav>
 
       {/* Main Container */}
-      <main style={{ padding: '1.5rem', maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
+      <main style={{ padding: '1.5rem', maxWidth: '1280px', margin: '0 auto', width: '100%', flex: 1 }}>
         {/* Statutory Action Brief Disclaimer Banner */}
-        <div className="disclaimer-banner">
-          <strong>Planning Boundary Notice:</strong> Action briefs and continuity scores are decision-support planning inputs only. They do not authorize expenditure, constitute sanctions, guarantee funding, or rank individual institutions or personnel. District officials retain final prioritization authority.
+        <div className="disclaimer-banner" style={{ marginBottom: '1.5rem' }}>
+          <strong>Planning Boundary Notice (AEHT §15):</strong> Action briefs and continuity scores are decision-support planning inputs only. They do not authorize expenditure, constitute sanctions, guarantee funding, or rank individual institutions or personnel. District officials retain final prioritization authority.
         </div>
 
-        {/* Executive Overview Cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.25rem' }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Delivery Points Sample</div>
-            <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#ffffff' }}>10 / 10</div>
-            <div style={{ fontSize: '0.8125rem', color: 'var(--text-dim)', marginTop: '0.25rem' }}>4 Schools • 3 PHC/Health • 3 Anganwadi</div>
-          </div>
+        {/* Tab 1: Dashboard Overview */}
+        {activeTab === 'dashboard' && (
+          <DistrictOverview
+            overviewData={overviewData}
+            onExplainScore={() => handleOpenExplainScore('EDU-01')}
+            onNavigateTab={setActiveTab}
+          />
+        )}
 
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.25rem' }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Aryabhata Continuity Score</div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
-              <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--band-amber-text)' }}>56 / 100</span>
-              <span className="badge badge-amber">Amber (3/4 Applicable)</span>
-            </div>
-            <div style={{ fontSize: '0.8125rem', color: 'var(--text-dim)', marginTop: '0.25rem' }}>Rebased across 3 verified components</div>
-          </div>
+        {/* Tab 2: Convergence Heatmap */}
+        {activeTab === 'heatmap' && (
+          <ConvergenceHeatmap
+            onSelectCell={(cell) => handleOpenTraceDrawer({ deliveryPointCode: 'EDU-01', ...cell })}
+          />
+        )}
 
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.25rem' }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Evidence Coverage Status</div>
-            <div style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--band-green-text)' }}>100% Zero-PII</div>
-            <div style={{ fontSize: '0.8125rem', color: 'var(--text-dim)', marginTop: '0.25rem' }}>0 PII incidents • 32 verified artifacts</div>
-          </div>
-
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1.25rem' }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Priority Action Register</div>
-            <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#ffffff' }}>4 High Priority</div>
-            <div style={{ fontSize: '0.8125rem', color: 'var(--text-dim)', marginTop: '0.25rem' }}>Urgency × Reach evaluated • Feasibility flagged</div>
-          </div>
-        </div>
-
-        {/* Convergence Heat-map Placeholder Frame */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', padding: '1.5rem', marginBottom: '1.5rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <div>
-              <h2 style={{ fontSize: '1.125rem', fontWeight: 600 }}>Cross-Sector Convergence Heat-map</h2>
-              <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>Aggregate continuity across School ↔ Health/RBSK ↔ Anganwadi hand-off pathways.</p>
-            </div>
-            <span className="badge badge-neutral">Aggregate / Non-Punitive</span>
-          </div>
-
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
-              <thead>
-                <tr style={{ borderBottom: '1px solid var(--border-color)', color: 'var(--text-muted)', textAlign: 'left' }}>
-                  <th style={{ padding: '0.75rem' }}>Pathway</th>
-                  <th style={{ padding: '0.75rem' }}>Layer 1: Experience</th>
-                  <th style={{ padding: '0.75rem' }}>Layer 2: Readiness</th>
-                  <th style={{ padding: '0.75rem' }}>Layer 3: Alignment</th>
-                  <th style={{ padding: '0.75rem' }}>Layer 4: Outcome</th>
-                  <th style={{ padding: '0.75rem' }}>Layer 5: Continuity</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                  <td style={{ padding: '0.75rem', fontWeight: 600 }}>Preschool → Primary School</td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-green">4/5 Strong</span></td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-amber">3/5 Partial</span></td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-green">4/5 Strong</span></td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-amber">2/5 Gap</span></td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-green">4/5 Strong</span></td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                  <td style={{ padding: '0.75rem', fontWeight: 600 }}>School Screening → PHC/RBSK</td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-amber">3/5 Partial</span></td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-red">1/5 Weak</span></td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-amber">2/5 Gap</span></td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-red">1/5 Weak</span></td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-amber">3/5 Partial</span></td>
-                </tr>
-                <tr>
-                  <td style={{ padding: '0.75rem', fontWeight: 600 }}>Health PHC → Anganwadi Nutrition</td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-green">4/5 Strong</span></td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-green">4/5 Strong</span></td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-amber">3/5 Partial</span></td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-amber">3/5 Partial</span></td>
-                  <td style={{ padding: '0.75rem' }}><span className="badge badge-green">4/5 Strong</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+        {/* Tab 3: Impact Passports */}
+        {activeTab === 'passports' && (
+          <ImpactPassportList
+            onExplainScore={handleOpenExplainScore}
+            onOpenTrace={handleOpenTraceDrawer}
+          />
+        )}
 
         {/* Footer Limitations Note (AEHT §15.1) */}
-        <footer style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1rem', fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.5 }}>
+        <footer style={{ borderTop: '1px solid var(--border-color)', marginTop: '2rem', paddingTop: '1rem', fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.5 }}>
           <strong>AEHT §15.1 Limitations:</strong> Small purposive pilot; not a district-wide statistical census. ACS is an operational continuity indicator, not a causal impact claim. Evidence reflects the designated field assessment window. Individual outcomes cannot be inferred from anonymized token records.
         </footer>
       </main>
+
+      {/* Explain Score Modal */}
+      <ExplainScoreModal
+        isOpen={explainModalOpen}
+        onClose={() => setExplainModalOpen(false)}
+        deliveryPointCode={explainTargetCode}
+      />
+
+      {/* Drill-down Trace Drawer */}
+      <TraceDrawer
+        isOpen={traceDrawerOpen}
+        onClose={() => setTraceDrawerOpen(false)}
+        traceTarget={traceTarget}
+      />
     </div>
   );
 }
