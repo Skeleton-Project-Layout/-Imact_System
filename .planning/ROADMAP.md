@@ -8,7 +8,7 @@ A phased journey to construct the ABHISARAN District Programme Continuity Scan d
 
 - [x] **Phase 1: Monorepo Foundation & Container Environment** - Monorepo architecture (`frontend/`, `backend/`, `ai-service/`), Supabase PostgreSQL Flyway baseline, and Docker Compose
 - [x] **Phase 2: Domain Modeling, Auth & RBAC** - Core entities (District, Delivery Points, Sectors, Pathways) and Spring Security 5-role RBAC with denial tests
-- [ ] **Phase 3: Field Source Workflow & Evidence Safeguards** - Mobile-first Front A (`/source/*`), 5-layer question catalogue, offline queue, scheduling guards, and Zero-PII pre-check
+- [x] **Phase 3: Field Source Workflow & Evidence Safeguards** - Mobile-first Front A (`/source/*`), 5-layer question catalogue, offline queue, scheduling guards, and Zero-PII pre-check
 - [ ] **Phase 4: Deterministic Scoring & ACS Engine** - Canonical JavaScript scoring engine (`engine.js`) with shared JSON golden fixtures, ported to Java Spring Boot with provable parity
 - [ ] **Phase 5: Flag Engine, Action Catalogue & Priority Action Framework** - Deterministic gap-to-flag evaluation, predefined ActionDefinition catalogue, and human-owned Priority Action Framework (Urgency × Reach, Feasibility flag)
 - [ ] **Phase 6: Admin Decision-Support Panel & Impact Passports** - Front B (`/admin/*`) featuring district overview, convergence heat-map, delivery point Impact Passports, and drill-down trace drawer
@@ -60,9 +60,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: Seeded, versioned question catalogue carrying layer, convergence question, and "Why am I collecting this?" metadata
-- [ ] 03-02: Front A React mobile-first collection UI with offline queue and field-day scheduling guards
-- [ ] 03-03: Evidence submission API, attachment validation pre-check, and verification state machine
+- [x] 03-01: Seeded, versioned question catalogue carrying layer, convergence question, and "Why am I collecting this?" metadata
+- [x] 03-02: Front A React mobile-first collection UI with offline queue and field-day scheduling guards
+- [x] 03-03: Evidence submission API, attachment validation pre-check, and verification state machine
 
 ### Phase 4: Deterministic Scoring & ACS Engine
 **Goal**: Implement the canonical JavaScript reference scoring engine (`engine.js`) with shared JSON golden fixtures, and port it to Java Spring Boot with provable parity.  
@@ -174,7 +174,7 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Monorepo Foundation & Container Environment | 3/3 | Complete | 2026-10-06 |
 | 2. Domain Modeling, Auth & RBAC | 2/2 | Complete | 2026-10-06 |
-| 3. Field Source Workflow & Evidence Safeguards | 0/3 | Not started | - |
+| 3. Field Source Workflow & Evidence Safeguards | 3/3 | Complete | 2026-10-06 |
 | 4. Deterministic Scoring & ACS Engine | 0/3 | Not started | - |
 | 5. Flag Engine, Action Catalogue & Priority Action Framework | 0/2 | Not started | - |
 | 6. Admin Decision-Support Panel & Impact Passports | 0/3 | Not started | - |

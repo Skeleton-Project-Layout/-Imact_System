@@ -28,10 +28,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Field Evidence Collection / Front A (`SRCE`)
 
-- [ ] **SRCE-01**: Mobile-first Abhisaran Source web app (`/source/*`) with offline queue, autosave, and minimal typing
-- [ ] **SRCE-02**: Versioned question catalogue seeded across 5 layers and 5 convergence questions with "Why am I collecting this?" metadata
-- [ ] **SRCE-03**: Scheduling guard preventing field visits on exam days, immunisation days, or Anganwadi visits without female team member
-- [ ] **SRCE-04**: Finite state machine for evidence verification (`VERIFIED`, `NOT_VERIFIED`, `PENDING_REVIEW`, `REJECTED`, `CORRECTED`)
+- [x] **SRCE-01**: Mobile-first Abhisaran Source web app (`/source/*`) with offline queue, autosave, and minimal typing
+- [x] **SRCE-02**: Versioned question catalogue seeded across 5 layers and 5 convergence questions with "Why am I collecting this?" metadata
+- [x] **SRCE-03**: Scheduling guard preventing field visits on exam days, immunisation days, or Anganwadi visits without female team member
+- [x] **SRCE-04**: Finite state machine for evidence verification (`VERIFIED`, `NOT_VERIFIED`, `PENDING_REVIEW`, `REJECTED`, `CORRECTED`)
 
 ### Deterministic Scoring & Rule Engine (`SCOR`)
 
@@ -92,10 +92,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | ARCH-04 | Phase 1 | Complete |
 | RBAC-01 | Phase 2 | Complete |
 | RBAC-02 | Phase 2 | Complete |
-| SRCE-01 | Phase 3 | Pending |
-| SRCE-02 | Phase 3 | Pending |
-| SRCE-03 | Phase 3 | Pending |
-| SRCE-04 | Phase 3 | Pending |
+| SRCE-01 | Phase 3 | Complete |
+| SRCE-02 | Phase 3 | Complete |
+| SRCE-03 | Phase 3 | Complete |
+| SRCE-04 | Phase 3 | Complete |
 | SCOR-01 | Phase 4 | Pending |
 | SCOR-02 | Phase 4 | Pending |
 | SCOR-03 | Phase 4 | Pending |
