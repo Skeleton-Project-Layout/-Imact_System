@@ -15,6 +15,10 @@ import ConvergenceHeatmap from './ConvergenceHeatmap';
 import ImpactPassportList from './ImpactPassportList';
 import ExplainScoreModal from './ExplainScoreModal';
 import TraceDrawer from './TraceDrawer';
+import ExitBriefingsView from './ExitBriefingsView';
+import FactualCorrectionsView from './FactualCorrectionsView';
+import ReviewerPackView from './ReviewerPackView';
+import { ClipboardCheck, FileCheck2, UserCheck2 } from 'lucide-react';
 
 export default function AdminShell() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -106,7 +110,10 @@ export default function AdminShell() {
         {[
           { id: 'dashboard', label: 'Dashboard Overview', icon: LayoutDashboard },
           { id: 'heatmap', label: 'Convergence Heat-map', icon: Grid3X3 },
-          { id: 'passports', label: 'Impact Passports (Annexure A)', icon: FileText }
+          { id: 'passports', label: 'Impact Passports (Annexure A)', icon: FileText },
+          { id: 'briefings', label: 'Exit Briefings', icon: ClipboardCheck },
+          { id: 'corrections', label: 'Factual Corrections', icon: FileCheck2 },
+          { id: 'reviewer', label: 'Reviewer Pack', icon: UserCheck2 }
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -165,6 +172,21 @@ export default function AdminShell() {
             onExplainScore={handleOpenExplainScore}
             onOpenTrace={handleOpenTraceDrawer}
           />
+        )}
+
+        {/* Tab 4: Exit Briefings */}
+        {activeTab === 'briefings' && (
+          <ExitBriefingsView />
+        )}
+
+        {/* Tab 5: Factual Corrections */}
+        {activeTab === 'corrections' && (
+          <FactualCorrectionsView />
+        )}
+
+        {/* Tab 6: Reviewer Pack */}
+        {activeTab === 'reviewer' && (
+          <ReviewerPackView />
         )}
 
         {/* Footer Limitations Note (AEHT §15.1) */}

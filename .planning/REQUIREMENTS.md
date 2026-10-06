@@ -56,9 +56,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Governance & Corrections (`GOVN`)
 
-- [ ] **GOVN-01**: Delivery point exit briefing workflow recording factual observations, signatures, or non-adverse refusal
-- [ ] **GOVN-02**: Immutable, audited correction workflow retaining original values and verifier justification
-- [ ] **GOVN-03**: Independent reviewer declaration, conflict-of-interest check, and methodology limitation notes
+- [x] **GOVN-01**: Delivery point exit briefing workflow recording factual observations, signatures, or non-adverse refusal
+- [x] **GOVN-02**: Immutable, audited correction workflow retaining original values and verifier justification
+- [x] **GOVN-03**: Independent reviewer declaration, conflict-of-interest check, and methodology limitation notes
 
 ### Assistive AI Microservice (`AIMS`)
 
@@ -108,9 +108,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | DASH-03 | Phase 6 | Complete |
 | DASH-04 | Phase 6 | Complete |
 | DASH-05 | Phase 6 | Complete |
-| GOVN-01 | Phase 7 | Pending |
-| GOVN-02 | Phase 7 | Pending |
-| GOVN-03 | Phase 7 | Pending |
+| GOVN-01 | Phase 7 | Complete |
+| GOVN-02 | Phase 7 | Complete |
+| GOVN-03 | Phase 7 | Complete |
 | SEC-01 | Phase 8 | Pending |
 | SEC-02 | Phase 8 | Pending |
 | SEC-03 | Phase 8 | Pending |

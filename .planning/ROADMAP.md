@@ -12,7 +12,7 @@ A phased journey to construct the ABHISARAN District Programme Continuity Scan d
 - [x] **Phase 4: Deterministic Scoring & ACS Engine** - Canonical JavaScript scoring engine (`engine.js`) with shared JSON golden fixtures, ported to Java Spring Boot with provable parity
 - [x] **Phase 5: Flag Engine, Action Catalogue & Priority Action Framework** - Deterministic gap-to-flag evaluation, predefined ActionDefinition catalogue, and human-owned Priority Action Framework (Urgency × Reach, Feasibility flag)
 - [x] **Phase 6: Admin Decision-Support Panel & Impact Passports** - Front B (`/admin/*`) featuring district overview, convergence heat-map, delivery point Impact Passports, and drill-down trace drawer
-- [ ] **Phase 7: Governance, Reviewer & Exit Briefings** - Institutional exit briefing logging, factual correction windows, and independent reviewer declarations
+- [x] **Phase 7: Governance, Reviewer & Exit Briefings** - Institutional exit briefing logging, factual correction windows, and independent reviewer declarations
 - [ ] **Phase 8: Privacy Incident Management, Retention & Audit Hardening** - 2-hour PII notification countdown, 30-day retention countdown, deletion certificate generation, and append-only audit logging
 - [ ] **Phase 9: Assistive AI Microservice** - Python FastAPI microservice for OCR extraction, PII text screening, and draft action brief generation with strict read-only boundary
 - [ ] **Phase 10: End-to-End Verification, Security Audit & Docker Deployment** - Comprehensive automated integration test suite, Zero-PII audit, and production Docker Compose build
@@ -122,8 +122,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 07-01: Exit briefing record management with institutional acknowledgement and non-adverse refusal handling
-- [ ] 07-02: Factual correction submission/audit workflow and Independent Reviewer pack
+- [x] 07-01: Exit briefing record management with institutional acknowledgement and non-adverse refusal handling
+- [x] 07-02: Factual correction submission/audit workflow and Independent Reviewer pack
 
 ### Phase 8: Privacy Incident Management, Retention & Audit Hardening
 **Goal**: Implement automated PII breach containment, 2-hour notification clock, 30-day retention countdown, deletion certificate generation, and append-only audit logging.  
