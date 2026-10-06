@@ -23,8 +23,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Role-Based Access Control (`RBAC`)
 
-- [ ] **RBAC-01**: Backend-enforced role authentication covering DM, Nodal Officer, Field Team, Reviewer, and Institution Head
-- [ ] **RBAC-02**: Endpoint-level security tests verifying unauthorized data and action denial per role
+- [x] **RBAC-01**: Backend-enforced role authentication covering DM, Nodal Officer, Field Team, Reviewer, and Institution Head
+- [x] **RBAC-02**: Endpoint-level security tests verifying unauthorized data and action denial per role
 
 ### Field Evidence Collection / Front A (`SRCE`)
 
@@ -90,8 +90,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | ARCH-02 | Phase 1 | Complete |
 | ARCH-03 | Phase 1 | Complete |
 | ARCH-04 | Phase 1 | Complete |
-| RBAC-01 | Phase 2 | Pending |
-| RBAC-02 | Phase 2 | Pending |
+| RBAC-01 | Phase 2 | Complete |
+| RBAC-02 | Phase 2 | Complete |
 | SRCE-01 | Phase 3 | Pending |
 | SRCE-02 | Phase 3 | Pending |
 | SRCE-03 | Phase 3 | Pending |

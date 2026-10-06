@@ -7,7 +7,7 @@ A phased journey to construct the ABHISARAN District Programme Continuity Scan d
 ## Phases
 
 - [x] **Phase 1: Monorepo Foundation & Container Environment** - Monorepo architecture (`frontend/`, `backend/`, `ai-service/`), Supabase PostgreSQL Flyway baseline, and Docker Compose
-- [ ] **Phase 2: Domain Modeling, Auth & RBAC** - Core entities (District, Delivery Points, Sectors, Pathways) and Spring Security 5-role RBAC with denial tests
+- [x] **Phase 2: Domain Modeling, Auth & RBAC** - Core entities (District, Delivery Points, Sectors, Pathways) and Spring Security 5-role RBAC with denial tests
 - [ ] **Phase 3: Field Source Workflow & Evidence Safeguards** - Mobile-first Front A (`/source/*`), 5-layer question catalogue, offline queue, scheduling guards, and Zero-PII pre-check
 - [ ] **Phase 4: Deterministic Scoring & ACS Engine** - Canonical JavaScript scoring engine (`engine.js`) with shared JSON golden fixtures, ported to Java Spring Boot with provable parity
 - [ ] **Phase 5: Flag Engine, Action Catalogue & Priority Action Framework** - Deterministic gap-to-flag evaluation, predefined ActionDefinition catalogue, and human-owned Priority Action Framework (Urgency × Reach, Feasibility flag)
@@ -45,8 +45,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: JPA entity modeling for User, Role, District, DeliveryPoint, Sector, and Pathway
-- [ ] 02-02: Spring Security authentication filter, role definitions, and role-denial test suite
+- [x] 02-01: JPA entity modeling for User, Role, District, DeliveryPoint, Sector, and Pathway
+- [x] 02-02: Spring Security authentication filter, role definitions, and role-denial test suite
 
 ### Phase 3: Field Source Workflow & Evidence Safeguards
 **Goal**: Deliver mobile-first Front A (`/source/*`) for field workers with 5-layer question catalogue, offline tolerance, scheduling guards, and Zero-PII pre-check.  
@@ -173,7 +173,7 @@ Plans:
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Monorepo Foundation & Container Environment | 3/3 | Complete | 2026-10-06 |
-| 2. Domain Modeling, Auth & RBAC | 0/2 | Not started | - |
+| 2. Domain Modeling, Auth & RBAC | 2/2 | Complete | 2026-10-06 |
 | 3. Field Source Workflow & Evidence Safeguards | 0/3 | Not started | - |
 | 4. Deterministic Scoring & ACS Engine | 0/3 | Not started | - |
 | 5. Flag Engine, Action Catalogue & Priority Action Framework | 0/2 | Not started | - |
