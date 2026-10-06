@@ -10,4 +10,6 @@ import java.util.UUID;
 @Repository
 public interface PrivacyIncidentRepository extends JpaRepository<PrivacyIncident, UUID> {
     List<PrivacyIncident> findByStatus(String status);
+    List<PrivacyIncident> findAllByOrderByDetectedAtDesc();
+    List<PrivacyIncident> findByStatusOrderByDetectedAtDesc(String status);
 }

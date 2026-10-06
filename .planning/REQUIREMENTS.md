@@ -16,10 +16,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Security & Zero-PII Safeguards (`SEC`)
 
-- [ ] **SEC-01**: Client-side and server-side Zero-PII validation blocking names, Aadhaar, phones, addresses, and facial photos
-- [ ] **SEC-02**: Non-identifying continuity token architecture without any database table or mapping for beneficiary PII
-- [ ] **SEC-03**: Automatic PrivacyIncident creation, containment, and 2-hour notification countdown on suspected PII
-- [ ] **SEC-04**: 30-day post-handover retention countdown with auditable deletion and deletion certificate generation
+- [x] **SEC-01**: Client-side and server-side Zero-PII validation blocking names, Aadhaar, phones, addresses, and facial photos
+- [x] **SEC-02**: Non-identifying continuity token architecture without any database table or mapping for beneficiary PII
+- [x] **SEC-03**: Automatic PrivacyIncident creation, containment, and 2-hour notification countdown on suspected PII
+- [x] **SEC-04**: 30-day post-handover retention countdown with auditable deletion and deletion certificate generation
 
 ### Role-Based Access Control (`RBAC`)
 
@@ -111,10 +111,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | GOVN-01 | Phase 7 | Complete |
 | GOVN-02 | Phase 7 | Complete |
 | GOVN-03 | Phase 7 | Complete |
-| SEC-01 | Phase 8 | Pending |
-| SEC-02 | Phase 8 | Pending |
-| SEC-03 | Phase 8 | Pending |
-| SEC-04 | Phase 8 | Pending |
+| SEC-01 | Phase 8 | Complete |
+| SEC-02 | Phase 8 | Complete |
+| SEC-03 | Phase 8 | Complete |
+| SEC-04 | Phase 8 | Complete |
 | AIMS-01 | Phase 9 | Pending |
 | AIMS-02 | Phase 9 | Pending |
 

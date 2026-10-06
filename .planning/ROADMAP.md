@@ -13,7 +13,7 @@ A phased journey to construct the ABHISARAN District Programme Continuity Scan d
 - [x] **Phase 5: Flag Engine, Action Catalogue & Priority Action Framework** - Deterministic gap-to-flag evaluation, predefined ActionDefinition catalogue, and human-owned Priority Action Framework (Urgency × Reach, Feasibility flag)
 - [x] **Phase 6: Admin Decision-Support Panel & Impact Passports** - Front B (`/admin/*`) featuring district overview, convergence heat-map, delivery point Impact Passports, and drill-down trace drawer
 - [x] **Phase 7: Governance, Reviewer & Exit Briefings** - Institutional exit briefing logging, factual correction windows, and independent reviewer declarations
-- [ ] **Phase 8: Privacy Incident Management, Retention & Audit Hardening** - 2-hour PII notification countdown, 30-day retention countdown, deletion certificate generation, and append-only audit logging
+- [x] **Phase 8: Privacy Incident Management, Retention & Audit Hardening** - 2-hour PII notification countdown, 30-day retention countdown, deletion certificate generation, and append-only audit logging
 - [ ] **Phase 9: Assistive AI Microservice** - Python FastAPI microservice for OCR extraction, PII text screening, and draft action brief generation with strict read-only boundary
 - [ ] **Phase 10: End-to-End Verification, Security Audit & Docker Deployment** - Comprehensive automated integration test suite, Zero-PII audit, and production Docker Compose build
 
@@ -137,8 +137,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 08-01: Privacy incident state machine (`DETECTED` to `CLOSED`) and 2-hour notification countdown
-- [ ] 08-02: 30-day retention countdown, authorized data purging, deletion certificate generator, and append-only audit logging
+- [x] 08-01: Privacy incident state machine (`DETECTED` to `CLOSED`) and 2-hour notification countdown
+- [x] 08-02: 30-day retention countdown, authorized data purging, deletion certificate generator, and append-only audit logging
 
 ### Phase 9: Assistive AI Microservice
 **Goal**: Build the Python FastAPI assistive microservice for OCR extraction, PII text screening, and draft action brief generation, with strict read-only boundary.  

@@ -18,7 +18,9 @@ import TraceDrawer from './TraceDrawer';
 import ExitBriefingsView from './ExitBriefingsView';
 import FactualCorrectionsView from './FactualCorrectionsView';
 import ReviewerPackView from './ReviewerPackView';
-import { ClipboardCheck, FileCheck2, UserCheck2 } from 'lucide-react';
+import PrivacyIncidentsView from './PrivacyIncidentsView';
+import RetentionAndAuditView from './RetentionAndAuditView';
+import { ClipboardCheck, FileCheck2, UserCheck2, ShieldAlert, Clock as ClockIcon } from 'lucide-react';
 
 export default function AdminShell() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -113,7 +115,9 @@ export default function AdminShell() {
           { id: 'passports', label: 'Impact Passports (Annexure A)', icon: FileText },
           { id: 'briefings', label: 'Exit Briefings', icon: ClipboardCheck },
           { id: 'corrections', label: 'Factual Corrections', icon: FileCheck2 },
-          { id: 'reviewer', label: 'Reviewer Pack', icon: UserCheck2 }
+          { id: 'reviewer', label: 'Reviewer Pack', icon: UserCheck2 },
+          { id: 'privacy', label: 'Privacy Incidents (2h Clock)', icon: ShieldAlert },
+          { id: 'retention', label: 'Retention & Audit (30d)', icon: ClockIcon }
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -187,6 +191,16 @@ export default function AdminShell() {
         {/* Tab 6: Reviewer Pack */}
         {activeTab === 'reviewer' && (
           <ReviewerPackView />
+        )}
+
+        {/* Tab 7: Privacy Incidents */}
+        {activeTab === 'privacy' && (
+          <PrivacyIncidentsView />
+        )}
+
+        {/* Tab 8: Retention & Audit */}
+        {activeTab === 'retention' && (
+          <RetentionAndAuditView />
         )}
 
         {/* Footer Limitations Note (AEHT §15.1) */}
