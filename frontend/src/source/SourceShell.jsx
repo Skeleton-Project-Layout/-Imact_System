@@ -42,8 +42,8 @@ const FALLBACK_QUESTIONS = [
 ];
 
 const DELIVERY_POINTS = [
-  { code: 'EDU-01', name: 'EDU-01 (Govt Primary School, Block Central)', sector: 'EDUCATION' },
-  { code: 'EDU-02', name: 'EDU-02 (Govt Middle School, Rural West)', sector: 'EDUCATION' },
+  { code: 'EDU-01', name: 'EDU-01 (Primary School, Block Central)', sector: 'EDUCATION' },
+  { code: 'EDU-02', name: 'EDU-02 (Middle School, Rural West)', sector: 'EDUCATION' },
   { code: 'HLT-01', name: 'HLT-01 (Primary Health Centre / PHC North)', sector: 'HEALTH_RBSK' },
   { code: 'HLT-02', name: 'HLT-02 (Community Health Centre / CHC East)', sector: 'HEALTH_RBSK' },
   { code: 'WCD-01', name: 'WCD-01 (Anganwadi Centre 14, Tribal Belt)', sector: 'WCD_ANGANWADI' },

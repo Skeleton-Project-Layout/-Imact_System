@@ -5,7 +5,7 @@ import { Filter, FileSpreadsheet } from 'lucide-react';
 const FALLBACK_PASSPORTS = [
   {
     deliveryPointCode: 'EDU-01',
-    name: 'EDU-01 (Govt Primary School, Block Central)',
+    name: 'EDU-01 (Primary School, Block Central)',
     sectorId: 'EDUCATION',
     category: 'HIGH_PERFORMING',
     selectionRationale: 'High baseline enrollment; chosen to assess whether strong student headcount translates into completed health referrals.',
@@ -18,7 +18,7 @@ const FALLBACK_PASSPORTS = [
   },
   {
     deliveryPointCode: 'EDU-02',
-    name: 'EDU-02 (Govt Middle School, Rural West)',
+    name: 'EDU-02 (Middle School, Rural West)',
     sectorId: 'EDUCATION',
     category: 'DIFFICULT_ACCESS',
     selectionRationale: 'Remote tribal periphery; tests referral transit barriers to distant block CHC.',
@@ -31,7 +31,7 @@ const FALLBACK_PASSPORTS = [
   },
   {
     deliveryPointCode: 'EDU-03',
-    name: 'EDU-03 (Govt High School, Semi-Urban)',
+    name: 'EDU-03 (High School, Semi-Urban)',
     sectorId: 'EDUCATION',
     category: 'LOW_PERFORMING',
     selectionRationale: 'Historically elevated dropout rate; evaluates adolescent health and mental well-being referral linkages.',
@@ -44,7 +44,7 @@ const FALLBACK_PASSPORTS = [
   },
   {
     deliveryPointCode: 'EDU-04',
-    name: 'EDU-04 (Govt Primary School, Riverine Belt)',
+    name: 'EDU-04 (Primary School, Riverine Belt)',
     sectorId: 'EDUCATION',
     category: 'DIFFICULT_ACCESS',
     selectionRationale: 'Seasonal inundation and riverine barrier; tests seasonal disruption of referral continuity.',
