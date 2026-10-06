@@ -6,7 +6,7 @@ A phased journey to construct the ABHISARAN District Programme Continuity Scan d
 
 ## Phases
 
-- [ ] **Phase 1: Monorepo Foundation & Container Environment** - Monorepo architecture (`frontend/`, `backend/`, `ai-service/`), Supabase PostgreSQL Flyway baseline, and Docker Compose
+- [x] **Phase 1: Monorepo Foundation & Container Environment** - Monorepo architecture (`frontend/`, `backend/`, `ai-service/`), Supabase PostgreSQL Flyway baseline, and Docker Compose
 - [ ] **Phase 2: Domain Modeling, Auth & RBAC** - Core entities (District, Delivery Points, Sectors, Pathways) and Spring Security 5-role RBAC with denial tests
 - [ ] **Phase 3: Field Source Workflow & Evidence Safeguards** - Mobile-first Front A (`/source/*`), 5-layer question catalogue, offline queue, scheduling guards, and Zero-PII pre-check
 - [ ] **Phase 4: Deterministic Scoring & ACS Engine** - Canonical JavaScript scoring engine (`engine.js`) with shared JSON golden fixtures, ported to Java Spring Boot with provable parity
@@ -30,9 +30,9 @@ A phased journey to construct the ABHISARAN District Programme Continuity Scan d
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Monorepo directory structure, environment templates, and Docker Compose configuration
-- [ ] 01-02: Java 21 Spring Boot skeleton with PostgreSQL driver and initial Flyway migration
-- [ ] 01-03: React Vite frontend skeleton (dual shells `/source/*` and `/admin/*`) and Python FastAPI skeleton
+- [x] 01-01: Monorepo directory structure, environment templates, and Docker Compose configuration
+- [x] 01-02: Java 21 Spring Boot skeleton with PostgreSQL driver and initial Flyway migration
+- [x] 01-03: React Vite frontend skeleton (dual shells `/source/*` and `/admin/*`) and Python FastAPI skeleton
 
 ### Phase 2: Domain Modeling, Auth & RBAC
 **Goal**: Implement core domain models (District, Delivery Points, Sectors, Pathways) and Spring Security RBAC covering all 5 AEHT roles with denial tests.  
@@ -172,7 +172,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Monorepo Foundation & Container Environment | 0/3 | Not started | - |
+| 1. Monorepo Foundation & Container Environment | 3/3 | Complete | 2026-10-06 |
 | 2. Domain Modeling, Auth & RBAC | 0/2 | Not started | - |
 | 3. Field Source Workflow & Evidence Safeguards | 0/3 | Not started | - |
 | 4. Deterministic Scoring & ACS Engine | 0/3 | Not started | - |

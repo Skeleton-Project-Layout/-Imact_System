@@ -9,10 +9,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Architecture & Monorepo (`ARCH`)
 
-- [ ] **ARCH-01**: Root monorepo workspace containing `backend/` (Java Spring Boot), `frontend/` (React Vite), and `ai-service/` (FastAPI)
-- [ ] **ARCH-02**: Docker Compose orchestration for local multi-container development and verification
-- [ ] **ARCH-03**: Supabase PostgreSQL database integration with Flyway version-controlled migrations
-- [ ] **ARCH-04**: Supabase Storage integration with backend pre-signed URLs for sanitized document uploads
+- [x] **ARCH-01**: Root monorepo workspace containing `backend/` (Java Spring Boot), `frontend/` (React Vite), and `ai-service/` (FastAPI)
+- [x] **ARCH-02**: Docker Compose orchestration for local multi-container development and verification
+- [x] **ARCH-03**: Supabase PostgreSQL database integration with Flyway version-controlled migrations
+- [x] **ARCH-04**: Supabase Storage integration with backend pre-signed URLs for sanitized document uploads
 
 ### Security & Zero-PII Safeguards (`SEC`)
 
@@ -86,10 +86,10 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ARCH-01 | Phase 1 | Pending |
-| ARCH-02 | Phase 1 | Pending |
-| ARCH-03 | Phase 1 | Pending |
-| ARCH-04 | Phase 1 | Pending |
+| ARCH-01 | Phase 1 | Complete |
+| ARCH-02 | Phase 1 | Complete |
+| ARCH-03 | Phase 1 | Complete |
+| ARCH-04 | Phase 1 | Complete |
 | RBAC-01 | Phase 2 | Pending |
 | RBAC-02 | Phase 2 | Pending |
 | SRCE-01 | Phase 3 | Pending |
