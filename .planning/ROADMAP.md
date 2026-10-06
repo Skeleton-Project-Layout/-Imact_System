@@ -11,7 +11,7 @@ A phased journey to construct the ABHISARAN District Programme Continuity Scan d
 - [x] **Phase 3: Field Source Workflow & Evidence Safeguards** - Mobile-first Front A (`/source/*`), 5-layer question catalogue, offline queue, scheduling guards, and Zero-PII pre-check
 - [x] **Phase 4: Deterministic Scoring & ACS Engine** - Canonical JavaScript scoring engine (`engine.js`) with shared JSON golden fixtures, ported to Java Spring Boot with provable parity
 - [x] **Phase 5: Flag Engine, Action Catalogue & Priority Action Framework** - Deterministic gap-to-flag evaluation, predefined ActionDefinition catalogue, and human-owned Priority Action Framework (Urgency × Reach, Feasibility flag)
-- [ ] **Phase 6: Admin Decision-Support Panel & Impact Passports** - Front B (`/admin/*`) featuring district overview, convergence heat-map, delivery point Impact Passports, and drill-down trace drawer
+- [x] **Phase 6: Admin Decision-Support Panel & Impact Passports** - Front B (`/admin/*`) featuring district overview, convergence heat-map, delivery point Impact Passports, and drill-down trace drawer
 - [ ] **Phase 7: Governance, Reviewer & Exit Briefings** - Institutional exit briefing logging, factual correction windows, and independent reviewer declarations
 - [ ] **Phase 8: Privacy Incident Management, Retention & Audit Hardening** - 2-hour PII notification countdown, 30-day retention countdown, deletion certificate generation, and append-only audit logging
 - [ ] **Phase 9: Assistive AI Microservice** - Python FastAPI microservice for OCR extraction, PII text screening, and draft action brief generation with strict read-only boundary
@@ -107,9 +107,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 06-01: Front B government layout, navigation, and district overview metrics
-- [ ] 06-02: Aggregate convergence heat-map and Impact Passport view (Annexure A)
-- [ ] 06-03: Drill-down trace drawer and Explain Score modal connecting findings to raw evidence
+- [x] 06-01: Front B government layout, navigation, and district overview metrics
+- [x] 06-02: Aggregate convergence heat-map and Impact Passport view (Annexure A)
+- [x] 06-03: Drill-down trace drawer and Explain Score modal connecting findings to raw evidence
 
 ### Phase 7: Governance, Reviewer & Exit Briefings
 **Goal**: Implement delivery point exit briefing logging, factual correction windows, and independent reviewer conflict-of-interest declarations.  

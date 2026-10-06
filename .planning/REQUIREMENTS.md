@@ -48,11 +48,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Decision-Support Panel / Front B (`DASH`)
 
-- [ ] **DASH-01**: Professional government admin panel (`/admin/*`) answering where, why, and what action is needed
-- [ ] **DASH-02**: Aggregate convergence heat-map (pathway × layer/component) using non-punitive system language
-- [ ] **DASH-03**: Impact Passport generation for up to 10 delivery points with verified strengths and gaps
-- [ ] **DASH-04**: Drill-down trace drawer linking every score and flag back to assessment, pathway, evidence, rule ID, and verifier
-- [ ] **DASH-05**: Explain Score modal showing formula calculation string, component breakdown, and evidence trail
+- [x] **DASH-01**: Professional government admin panel (`/admin/*`) answering where, why, and what action is needed
+- [x] **DASH-02**: Aggregate convergence heat-map (pathway × layer/component) using non-punitive system language
+- [x] **DASH-03**: Impact Passport generation for up to 10 delivery points with verified strengths and gaps
+- [x] **DASH-04**: Drill-down trace drawer linking every score and flag back to assessment, pathway, evidence, rule ID, and verifier
+- [x] **DASH-05**: Explain Score modal showing formula calculation string, component breakdown, and evidence trail
 
 ### Governance & Corrections (`GOVN`)
 
@@ -103,11 +103,11 @@ Deferred to future release. Tracked but not in current roadmap.
 | PRIO-01 | Phase 5 | Complete |
 | PRIO-02 | Phase 5 | Complete |
 | PRIO-03 | Phase 5 | Complete |
-| DASH-01 | Phase 6 | Pending |
-| DASH-02 | Phase 6 | Pending |
-| DASH-03 | Phase 6 | Pending |
-| DASH-04 | Phase 6 | Pending |
-| DASH-05 | Phase 6 | Pending |
+| DASH-01 | Phase 6 | Complete |
+| DASH-02 | Phase 6 | Complete |
+| DASH-03 | Phase 6 | Complete |
+| DASH-04 | Phase 6 | Complete |
+| DASH-05 | Phase 6 | Complete |
 | GOVN-01 | Phase 7 | Pending |
 | GOVN-02 | Phase 7 | Pending |
 | GOVN-03 | Phase 7 | Pending |
