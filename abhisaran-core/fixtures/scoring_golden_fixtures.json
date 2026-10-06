@@ -1,0 +1,155 @@
+{
+  "version": "1.0",
+  "engine": "ABHISARAN_ACS_DETERMINISTIC",
+  "bands": {
+    "GREEN": { "min": 70.0, "max": 100.0, "description": "High Service Continuity" },
+    "AMBER": { "min": 40.0, "max": 69.9999, "description": "Moderate / Vulnerable Continuity" },
+    "RED": { "min": 0.0, "max": 39.9999, "description": "Critical Discontinuity" }
+  },
+  "vectors": [
+    {
+      "id": "vector_01_perfect_all_applicable",
+      "description": "All 4 components score 5.0 out of 5.0 yielding 100.0% Green band",
+      "inputs": {
+        "c1_screening_referral": 5.0,
+        "c2_institutional_readiness": 5.0,
+        "c3_departmental_alignment": 5.0,
+        "c4_outcome_continuity": 5.0
+      },
+      "expected": {
+        "applicableCount": 4,
+        "totalPossiblePoints": 20.0,
+        "achievedPoints": 20.0,
+        "acsScore": 100.0,
+        "band": "GREEN",
+        "formulaString": "((5.0 + 5.0 + 5.0 + 5.0) / (4 * 5.0)) * 100 = 100.0% [GREEN] (4/4 applicable components)"
+      }
+    },
+    {
+      "id": "vector_02_critical_gap_red",
+      "description": "Weak performance across touchpoints yielding 35.0% Red band",
+      "inputs": {
+        "c1_screening_referral": 1.5,
+        "c2_institutional_readiness": 2.0,
+        "c3_departmental_alignment": 1.0,
+        "c4_outcome_continuity": 2.5
+      },
+      "expected": {
+        "applicableCount": 4,
+        "totalPossiblePoints": 20.0,
+        "achievedPoints": 7.0,
+        "acsScore": 35.0,
+        "band": "RED",
+        "formulaString": "((1.5 + 2.0 + 1.0 + 2.5) / (4 * 5.0)) * 100 = 35.0% [RED] (4/4 applicable components)"
+      }
+    },
+    {
+      "id": "vector_03_rebased_na_single_component",
+      "description": "Component 4 is N/A (null), score rebases over 3 applicable components yielding 73.33% Green band",
+      "inputs": {
+        "c1_screening_referral": 4.0,
+        "c2_institutional_readiness": 3.5,
+        "c3_departmental_alignment": 3.5,
+        "c4_outcome_continuity": null
+      },
+      "expected": {
+        "applicableCount": 3,
+        "totalPossiblePoints": 15.0,
+        "achievedPoints": 11.0,
+        "acsScore": 73.33,
+        "band": "GREEN",
+        "formulaString": "((4.0 + 3.5 + 3.5) / (3 * 5.0)) * 100 = 73.33% [GREEN] (3/4 applicable components)"
+      }
+    },
+    {
+      "id": "vector_04_amber_moderate_continuity",
+      "description": "Moderate compliance yielding 55.0% Amber band",
+      "inputs": {
+        "c1_screening_referral": 3.0,
+        "c2_institutional_readiness": 2.5,
+        "c3_departmental_alignment": 2.5,
+        "c4_outcome_continuity": 3.0
+      },
+      "expected": {
+        "applicableCount": 4,
+        "totalPossiblePoints": 20.0,
+        "achievedPoints": 11.0,
+        "acsScore": 55.0,
+        "band": "AMBER",
+        "formulaString": "((3.0 + 2.5 + 2.5 + 3.0) / (4 * 5.0)) * 100 = 55.0% [AMBER] (4/4 applicable components)"
+      }
+    },
+    {
+      "id": "vector_05_threshold_lower_amber_boundary",
+      "description": "Exactly 40.0% evaluates to AMBER band",
+      "inputs": {
+        "c1_screening_referral": 2.0,
+        "c2_institutional_readiness": 2.0,
+        "c3_departmental_alignment": 2.0,
+        "c4_outcome_continuity": 2.0
+      },
+      "expected": {
+        "applicableCount": 4,
+        "totalPossiblePoints": 20.0,
+        "achievedPoints": 8.0,
+        "acsScore": 40.0,
+        "band": "AMBER",
+        "formulaString": "((2.0 + 2.0 + 2.0 + 2.0) / (4 * 5.0)) * 100 = 40.0% [AMBER] (4/4 applicable components)"
+      }
+    },
+    {
+      "id": "vector_06_threshold_upper_red_boundary",
+      "description": "Score of 39.5% evaluates to RED band",
+      "inputs": {
+        "c1_screening_referral": 2.0,
+        "c2_institutional_readiness": 2.0,
+        "c3_departmental_alignment": 2.0,
+        "c4_outcome_continuity": 1.9
+      },
+      "expected": {
+        "applicableCount": 4,
+        "totalPossiblePoints": 20.0,
+        "achievedPoints": 7.9,
+        "acsScore": 39.5,
+        "band": "RED",
+        "formulaString": "((2.0 + 2.0 + 2.0 + 1.9) / (4 * 5.0)) * 100 = 39.5% [RED] (4/4 applicable components)"
+      }
+    },
+    {
+      "id": "vector_07_threshold_lower_green_boundary",
+      "description": "Exactly 70.0% evaluates to GREEN band",
+      "inputs": {
+        "c1_screening_referral": 3.5,
+        "c2_institutional_readiness": 3.5,
+        "c3_departmental_alignment": 3.5,
+        "c4_outcome_continuity": 3.5
+      },
+      "expected": {
+        "applicableCount": 4,
+        "totalPossiblePoints": 20.0,
+        "achievedPoints": 14.0,
+        "acsScore": 70.0,
+        "band": "GREEN",
+        "formulaString": "((3.5 + 3.5 + 3.5 + 3.5) / (4 * 5.0)) * 100 = 70.0% [GREEN] (4/4 applicable components)"
+      }
+    },
+    {
+      "id": "vector_08_rebased_two_na_components",
+      "description": "Two components N/A (null), rebases over 2 components yielding 80.0% Green band",
+      "inputs": {
+        "c1_screening_referral": 4.0,
+        "c2_institutional_readiness": 4.0,
+        "c3_departmental_alignment": null,
+        "c4_outcome_continuity": null
+      },
+      "expected": {
+        "applicableCount": 2,
+        "totalPossiblePoints": 10.0,
+        "achievedPoints": 8.0,
+        "acsScore": 80.0,
+        "band": "GREEN",
+        "formulaString": "((4.0 + 4.0) / (2 * 5.0)) * 100 = 80.0% [GREEN] (2/4 applicable components)"
+      }
+    }
+  ]
+}
