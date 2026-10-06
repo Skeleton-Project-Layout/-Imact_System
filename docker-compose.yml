@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: abhisaran-backend
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://postgres:5432/abhisaran}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-postgres}
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=${SPRING_DATASOURCE_DRIVER_CLASS_NAME:-org.postgresql.Driver}
+      - SPRING_FLYWAY_ENABLED=true
+      - SPRING_FLYWAY_BASELINE_ON_MIGRATE=true
+      - JWT_SECRET=${JWT_SECRET:-insecure_default_secret_for_dev_mode_only_32_bytes_long}
+      - AI_SERVICE_URL=http://ai-service:8000
+    depends_on:
+      - postgres
+    networks:
+      - abhisaran-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: abhisaran-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8080/api/v1
+      - VITE_SUPABASE_URL=${SUPABASE_URL:-}
+      - VITE_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY:-}
+    depends_on:
+      - backend
+    networks:
+      - abhisaran-network
+    restart: unless-stopped
+
+  ai-service:
+    build:
+      context: ./ai-service
+      dockerfile: Dockerfile
+    container_name: abhisaran-ai-service
+    ports:
+      - "${FASTAPI_PORT:-8000}:8000"
+    environment:
+      - ENVIRONMENT=production
+      - ALLOWED_ORIGINS=http://localhost:5173,http://backend:8080
+    networks:
+      - abhisaran-network
+    restart: unless-stopped
+
+  # Local fallback PostgreSQL service (used when working offline without live Supabase)
+  postgres:
+    image: postgres:16-alpine
+    container_name: abhisaran-postgres
+    environment:
+      - POSTGRES_DB=${LOCAL_POSTGRES_DB:-abhisaran}
+      - POSTGRES_USER=${LOCAL_POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${LOCAL_POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - abhisaran-network
+    restart: unless-stopped
+
+networks:
+  abhisaran-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

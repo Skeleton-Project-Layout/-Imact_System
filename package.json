@@ -1,0 +1,26 @@
+{
+  "name": "abhisaran-monorepo",
+  "version": "1.0.0",
+  "description": "ABHISARAN – District Programme Continuity Scan decision-support platform",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "dev:backend": "cd backend && ./mvnw spring-boot:run",
+    "build:backend": "cd backend && ./mvnw clean package -DskipTests",
+    "test:backend": "cd backend && ./mvnw test",
+    "dev:ai": "cd ai-service && uvicorn main:app --reload --port 8000",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "test:all": "npm --prefix frontend test && cd backend && ./mvnw test"
+  },
+  "keywords": [
+    "abhisaran",
+    "aeht",
+    "decision-support",
+    "zero-pii",
+    "continuity-scan"
+  ],
+  "author": "Aryabhata Educational & Health Trust (AEHT)",
+  "license": "UNLICENSED"
+}
