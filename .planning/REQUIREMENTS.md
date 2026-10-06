@@ -62,8 +62,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Assistive AI Microservice (`AIMS`)
 
-- [ ] **AIMS-01**: Python FastAPI service restricted to OCR text extraction, PII pre-check, and drafting action briefs
-- [ ] **AIMS-02**: Complete write-path isolation ensuring AI cannot write to scores, flags, priorities, or verification states
+- [x] **AIMS-01**: Python FastAPI service restricted to OCR text extraction, PII pre-check, and drafting action briefs
+- [x] **AIMS-02**: Complete write-path isolation ensuring AI cannot write to scores, flags, priorities, or verification states
 
 ## v2 Requirements
 
@@ -115,8 +115,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | SEC-02 | Phase 8 | Complete |
 | SEC-03 | Phase 8 | Complete |
 | SEC-04 | Phase 8 | Complete |
-| AIMS-01 | Phase 9 | Pending |
-| AIMS-02 | Phase 9 | Pending |
+| AIMS-01 | Phase 9 | Complete |
+| AIMS-02 | Phase 9 | Complete |
 
 **Coverage:**
 - v1 requirements: 29 total
