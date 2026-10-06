@@ -9,7 +9,7 @@ A phased journey to construct the ABHISARAN District Programme Continuity Scan d
 - [x] **Phase 1: Monorepo Foundation & Container Environment** - Monorepo architecture (`frontend/`, `backend/`, `ai-service/`), Supabase PostgreSQL Flyway baseline, and Docker Compose
 - [x] **Phase 2: Domain Modeling, Auth & RBAC** - Core entities (District, Delivery Points, Sectors, Pathways) and Spring Security 5-role RBAC with denial tests
 - [x] **Phase 3: Field Source Workflow & Evidence Safeguards** - Mobile-first Front A (`/source/*`), 5-layer question catalogue, offline queue, scheduling guards, and Zero-PII pre-check
-- [ ] **Phase 4: Deterministic Scoring & ACS Engine** - Canonical JavaScript scoring engine (`engine.js`) with shared JSON golden fixtures, ported to Java Spring Boot with provable parity
+- [x] **Phase 4: Deterministic Scoring & ACS Engine** - Canonical JavaScript scoring engine (`engine.js`) with shared JSON golden fixtures, ported to Java Spring Boot with provable parity
 - [ ] **Phase 5: Flag Engine, Action Catalogue & Priority Action Framework** - Deterministic gap-to-flag evaluation, predefined ActionDefinition catalogue, and human-owned Priority Action Framework (Urgency × Reach, Feasibility flag)
 - [ ] **Phase 6: Admin Decision-Support Panel & Impact Passports** - Front B (`/admin/*`) featuring district overview, convergence heat-map, delivery point Impact Passports, and drill-down trace drawer
 - [ ] **Phase 7: Governance, Reviewer & Exit Briefings** - Institutional exit briefing logging, factual correction windows, and independent reviewer declarations
@@ -76,9 +76,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: Canonical `abhisaran-core/engine.js` scoring logic and comprehensive JSON golden fixtures
-- [ ] 04-02: Java Spring Boot scoring service port with unit tests validating golden-fixture parity
-- [ ] 04-03: Versioned scoring rule table (`RULE-SCORE-001`) and Explain Score calculation breakdown endpoint
+- [x] 04-01: Canonical `abhisaran-core/engine.js` scoring logic and comprehensive JSON golden fixtures
+- [x] 04-02: Java Spring Boot scoring service port with unit tests validating golden-fixture parity
+- [x] 04-03: Versioned scoring rule table (`RULE-SCORE-001`) and Explain Score calculation breakdown endpoint
 
 ### Phase 5: Flag Engine, Action Catalogue & Priority Action Framework
 **Goal**: Implement deterministic gap-to-flag evaluation, predefined ActionDefinition catalogue, and the human-governed Priority Action Framework (Urgency × Reach, Feasibility flag).  
@@ -175,7 +175,7 @@ Plans:
 | 1. Monorepo Foundation & Container Environment | 3/3 | Complete | 2026-10-06 |
 | 2. Domain Modeling, Auth & RBAC | 2/2 | Complete | 2026-10-06 |
 | 3. Field Source Workflow & Evidence Safeguards | 3/3 | Complete | 2026-10-06 |
-| 4. Deterministic Scoring & ACS Engine | 0/3 | Not started | - |
+| 4. Deterministic Scoring & ACS Engine | 3/3 | Complete | 2026-10-06 |
 | 5. Flag Engine, Action Catalogue & Priority Action Framework | 0/2 | Not started | - |
 | 6. Admin Decision-Support Panel & Impact Passports | 0/3 | Not started | - |
 | 7. Governance, Reviewer & Exit Briefings | 0/2 | Not started | - |

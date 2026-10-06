@@ -35,10 +35,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Deterministic Scoring & Rule Engine (`SCOR`)
 
-- [ ] **SCOR-01**: Canonical JavaScript reference implementation of scoring (`engine.js`) with shared JSON golden fixtures
-- [ ] **SCOR-02**: Java Spring Boot port of scoring engine with 100% mathematical parity against golden fixtures
-- [ ] **SCOR-03**: Four equally weighted components (25% each) rebased over applicable count with N/A exclusion handling
-- [ ] **SCOR-04**: Declarative RuleDefinition catalogue and Flag engine mapping verified gaps to deterministic flags
+- [x] **SCOR-01**: Canonical JavaScript reference implementation of scoring (`engine.js`) with shared JSON golden fixtures
+- [x] **SCOR-02**: Java Spring Boot port of scoring engine with 100% mathematical parity against golden fixtures
+- [x] **SCOR-03**: Four equally weighted components (25% each) rebased over applicable count with N/A exclusion handling
+- [x] **SCOR-04**: Declarative RuleDefinition catalogue and Flag engine mapping verified gaps to deterministic flags
 
 ### Priority Action Framework (`PRIO`)
 
@@ -96,10 +96,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | SRCE-02 | Phase 3 | Complete |
 | SRCE-03 | Phase 3 | Complete |
 | SRCE-04 | Phase 3 | Complete |
-| SCOR-01 | Phase 4 | Pending |
-| SCOR-02 | Phase 4 | Pending |
-| SCOR-03 | Phase 4 | Pending |
-| SCOR-04 | Phase 4 | Pending |
+| SCOR-01 | Phase 4 | Complete |
+| SCOR-02 | Phase 4 | Complete |
+| SCOR-03 | Phase 4 | Complete |
+| SCOR-04 | Phase 4 | Complete |
 | PRIO-01 | Phase 5 | Pending |
 | PRIO-02 | Phase 5 | Pending |
 | PRIO-03 | Phase 5 | Pending |
