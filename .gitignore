@@ -1,0 +1,32 @@
+# Temporary extraction files
+extracted_pdf_cleaned.txt
+extracted_pdf_raw.txt
+prototype-ref/
+
+# Java
+target/
+*.class
+.gradle/
+build/
+
+# Node
+node_modules/
+dist/
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+
+# IDE & OS
+.idea/
+.vscode/
+*.swp
+*.iml
+.DS_Store
+Thumbs.db
