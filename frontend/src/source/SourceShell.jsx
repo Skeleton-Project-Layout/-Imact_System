@@ -11,11 +11,13 @@ import {
   RefreshCw,
   Layers,
   Inbox,
-  MapPin
+  MapPin,
+  Sparkles
 } from 'lucide-react';
 import QuestionCard from './QuestionCard';
 import SchedulingGuard from './SchedulingGuard';
 import ZeroPiiUploadModal from './ZeroPiiUploadModal';
+import BaselineQuizModal from './BaselineQuizModal';
 import { OfflineQueueService } from './OfflineQueueService';
 import { JHARKHAND_DISTRICTS, getDistrictById } from '../data/districts';
 
@@ -52,7 +54,23 @@ export default function SourceShell() {
     return localStorage.getItem('abhisaran_field_district') || localStorage.getItem('abhisaran_monitored_district') || 'ranchi';
   });
 
-  const activeDistrict = getDistrictById(districtId);
+  const allDistricts = React.useMemo(() => {
+    try {
+      const saved = localStorage.getItem('abhisaran_custom_districts');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const customIds = new Set(parsed.map((d) => d.id));
+          return [...JHARKHAND_DISTRICTS.filter((d) => !customIds.has(d.id)), ...parsed];
+        }
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+    return JHARKHAND_DISTRICTS;
+  }, []);
+
+  const activeDistrict = allDistricts.find((d) => d.id === districtId || d.code === districtId) || getDistrictById(districtId);
   const availableDeliveryPoints = activeDistrict.deliveryPoints || [];
 
   const [deliveryPointCode, setDeliveryPointCode] = useState(() => {
@@ -63,7 +81,9 @@ export default function SourceShell() {
   const [recordedAnswers, setRecordedAnswers] = useState({});
   const [evidenceAttachments, setEvidenceAttachments] = useState({});
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
+  const [quizModalOpen, setQuizModalOpen] = useState(false);
   const [activeTargetQuestion, setActiveTargetQuestion] = useState(null);
+  const [quizTargetQuestion, setQuizTargetQuestion] = useState(null);
   const [guardStatus, setGuardStatus] = useState({ isBlocked: false, hasWarning: false, reasons: [] });
   const [pendingDraftsCount, setPendingDraftsCount] = useState(OfflineQueueService.getQueueCount());
   const [syncStatusMsg, setSyncStatusMsg] = useState('');
@@ -94,7 +114,7 @@ export default function SourceShell() {
   const handleDistrictChange = (newDistrictId) => {
     setDistrictId(newDistrictId);
     localStorage.setItem('abhisaran_field_district', newDistrictId);
-    const newDist = getDistrictById(newDistrictId);
+    const newDist = allDistricts.find((d) => d.id === newDistrictId) || getDistrictById(newDistrictId);
     if (newDist.deliveryPoints && newDist.deliveryPoints.length > 0) {
       setDeliveryPointCode(newDist.deliveryPoints[0].code);
     }
@@ -186,6 +206,111 @@ export default function SourceShell() {
       setPendingDraftsCount(OfflineQueueService.getQueueCount());
     }
   };
+
+  const handleOpenQuizModal = (question) => {
+    const targetQ = question || currentQuestions[0] || questions[0];
+    setActiveTargetQuestion(targetQ);
+    setQuizTargetQuestion(targetQ);
+    setQuizModalOpen(true);
+  };
+
+  const handleDirectAttachPdf = (evidencePayload, questionNumber) => {
+    const targetQNum = questionNumber || evidencePayload?.questionNumber || 1;
+    const key = `${deliveryPointCode}_${targetQNum}`;
+
+    setEvidenceAttachments((prev) => ({
+      ...prev,
+      [key]: evidencePayload
+    }));
+
+    if (recordedAnswers[key]) {
+      const updatedAnswer = {
+        ...recordedAnswers[key],
+        attachment: evidencePayload
+      };
+      setRecordedAnswers((prev) => ({
+        ...prev,
+        [key]: updatedAnswer
+      }));
+      OfflineQueueService.enqueueDraft({
+        districtId: activeDistrict.id,
+        districtName: activeDistrict.name,
+        deliveryPointCode,
+        sector: currentSector,
+        layer: activeLayer,
+        ...updatedAnswer
+      });
+      setPendingDraftsCount(OfflineQueueService.getQueueCount());
+    } else {
+      const defaultAnswer = {
+        questionNumber: targetQNum,
+        resultingRuleId: evidencePayload.resultingRuleId,
+        selectedOption: 'COMPLIANT_AND_VERIFIED',
+        attachment: evidencePayload,
+        notes: `Auto-attached verified baseline survey report: ${evidencePayload.fileName}`
+      };
+      setRecordedAnswers((prev) => ({
+        ...prev,
+        [key]: defaultAnswer
+      }));
+      OfflineQueueService.enqueueDraft({
+        districtId: activeDistrict.id,
+        districtName: activeDistrict.name,
+        deliveryPointCode,
+        sector: currentSector,
+        layer: activeLayer,
+        ...defaultAnswer
+      });
+      setPendingDraftsCount(OfflineQueueService.getQueueCount());
+    }
+
+    setSyncStatusMsg(`✅ Baseline PDF attached to Verified Artifacts for Question Q${targetQNum}!`);
+    setTimeout(() => setSyncStatusMsg(''), 4500);
+  };
+
+  // Global listener for postMessage if user submits via popup/tab
+  useEffect(() => {
+    const handleGlobalPdfMessage = (event) => {
+      if (!event.data || event.data.type !== 'ABHISARAN_PDF_EXPORTED') return;
+      const { fileName, dataUrl, byteLength } = event.data;
+      const targetQ = quizTargetQuestion || currentQuestions[0] || questions[0];
+      const qNum = targetQ?.questionNumber || 1;
+
+      const formatSize = (bytes) => {
+        if (!bytes) return '15 KB';
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+      };
+
+      const finalName = fileName || `Baseline_Survey_${deliveryPointCode}_Q${qNum}.pdf`;
+      const payload = {
+        files: [
+          {
+            fileName: finalName,
+            fileSize: formatSize(byteLength),
+            fileType: 'application/pdf',
+            documentKind: 'BASELINE_SURVEY_REPORT',
+            dataUrl
+          }
+        ],
+        fileCount: 1,
+        documentKind: 'BASELINE_SURVEY_REPORT',
+        fileName: finalName,
+        fileSize: formatSize(byteLength),
+        description: `Verified Baseline Assessment PDF report generated via Reference Field Quiz tool for ${deliveryPointCode}.`,
+        piiConfirmedAt: new Date().toISOString(),
+        questionNumber: qNum,
+        resultingRuleId: targetQ?.resultingRuleId || `RULE-Q${qNum}`,
+        dataUrl
+      };
+
+      handleDirectAttachPdf(payload, qNum);
+    };
+
+    window.addEventListener('message', handleGlobalPdfMessage);
+    return () => window.removeEventListener('message', handleGlobalPdfMessage);
+  }, [quizTargetQuestion, currentQuestions, questions, deliveryPointCode]);
 
   const handleSyncQueue = async () => {
     setSyncStatusMsg('Syncing queued field scans with district server...');
@@ -287,7 +412,7 @@ export default function SourceShell() {
               fontWeight: 600
             }}
           >
-            {JHARKHAND_DISTRICTS.map((d) => (
+            {allDistricts.map((d) => (
               <option key={d.id} value={d.id}>
                 {d.name} {d.status === 'PILOT_ACTIVE' ? '★' : ''}
               </option>
@@ -315,7 +440,7 @@ export default function SourceShell() {
           >
             {availableDeliveryPoints.map((dp) => (
               <option key={dp.code} value={dp.code}>
-                {dp.code} ({dp.name.split('(')[1]?.replace(')', '') || dp.sector})
+                {dp.code}
               </option>
             ))}
           </select>
@@ -331,30 +456,58 @@ export default function SourceShell() {
         />
       </div>
 
-      {/* 5-Layer Stepper */}
-      <div style={{ display: 'flex', overflowX: 'auto', padding: '0.75rem 1rem', gap: '0.5rem', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-secondary)' }}>
-        {layers.map((l) => (
-          <button
-            key={l.num}
-            onClick={() => setActiveLayer(l.num)}
-            style={{
-              padding: '0.5rem 0.85rem',
-              borderRadius: 'var(--radius-md)',
-              border: activeLayer === l.num ? '1px solid var(--brand-primary)' : '1px solid var(--border-color)',
-              background: activeLayer === l.num ? 'rgba(59, 130, 246, 0.2)' : 'var(--bg-card)',
-              color: activeLayer === l.num ? '#ffffff' : 'var(--text-muted)',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              fontSize: '0.8125rem',
-              fontWeight: 600,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.35rem'
-            }}
-          >
-            <span>L{l.num}</span> {l.name.split(' ')[0]}
-          </button>
-        ))}
+      {/* 5-Layer Stepper & Baseline Quiz Setup */}
+      <div style={{ display: 'flex', overflowX: 'auto', padding: '0.75rem 1rem', gap: '0.5rem', borderBottom: '1px solid var(--border-subtle)', background: 'var(--bg-secondary)', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+          {layers.map((l) => (
+            <button
+              key={l.num}
+              onClick={() => setActiveLayer(l.num)}
+              style={{
+                padding: '0.5rem 0.85rem',
+                borderRadius: 'var(--radius-md)',
+                border: activeLayer === l.num ? '1px solid var(--brand-primary)' : '1px solid var(--border-color)',
+                background: activeLayer === l.num ? 'rgba(59, 130, 246, 0.2)' : 'var(--bg-card)',
+                color: activeLayer === l.num ? '#ffffff' : 'var(--text-muted)',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                fontSize: '0.8125rem',
+                fontWeight: 600,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem'
+              }}
+            >
+              <span>L{l.num}</span> {l.name.split(' ')[0]}
+            </button>
+          ))}
+        </div>
+
+        {/* Quiz Setup Action Button */}
+        <button
+          type="button"
+          onClick={() => handleOpenQuizModal(currentQuestions[0] || questions[0])}
+          style={{
+            padding: '0.5rem 0.85rem',
+            borderRadius: 'var(--radius-md)',
+            border: '1px solid rgba(245, 158, 11, 0.5)',
+            background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2))',
+            color: '#fbbf24',
+            cursor: 'pointer',
+            whiteSpace: 'nowrap',
+            fontSize: '0.8125rem',
+            fontWeight: 700,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.4rem',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.25)',
+            marginLeft: 'auto'
+          }}
+          title="Open reference baseline survey setup and attach signed PDF artifact"
+        >
+          <Sparkles size={14} style={{ color: '#fbbf24' }} />
+          <span>⚡ Quiz Setup</span>
+        </button>
       </div>
 
       {/* Main Content Area: Questions for Selected Layer */}
@@ -392,6 +545,7 @@ export default function SourceShell() {
                 evidenceAttachment={evidenceAttachments[answerKey]}
                 onSaveAnswer={handleSaveAnswer}
                 onOpenUploadModal={handleOpenUploadModal}
+                onOpenQuizModal={handleOpenQuizModal}
               />
             );
           })
@@ -409,6 +563,16 @@ export default function SourceShell() {
         onClose={() => setUploadModalOpen(false)}
         targetQuestion={activeTargetQuestion}
         onAttachEvidence={handleAttachEvidence}
+      />
+
+      {/* Baseline Quiz Reference Form Modal */}
+      <BaselineQuizModal
+        isOpen={quizModalOpen}
+        onClose={() => setQuizModalOpen(false)}
+        targetQuestion={quizTargetQuestion || currentQuestions[0] || questions[0]}
+        allQuestions={questions.filter((q) => q.sectorId === currentSector || !q.sectorId)}
+        deliveryPointCode={deliveryPointCode}
+        onAttachPdf={handleDirectAttachPdf}
       />
     </div>
   );

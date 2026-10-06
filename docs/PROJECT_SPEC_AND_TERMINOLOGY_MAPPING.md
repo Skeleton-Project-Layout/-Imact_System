@@ -243,4 +243,17 @@ This document provides a comprehensive, rigorous traceability matrix associating
 | **Separate Funding Boundary** | PDF §10 (p. 12), §12 (p. 14), §17 Annexure D (p. 20) | Invariant confirming that pilot completion creates no right or expectation of future DMF, PMKKKY, CSR, or departmental funding for AEHT. | Documented in MoU templates and project state decisions. |
 
 ---
-*Generated: 2026-10-07 | Grounded against AEHT District Programme Continuity Scan DPR (September 2026)*
+
+## 15. Ingested Reference Architecture (`ref.zip` – Prototype Taxonomy)
+
+*Source: `ref.zip` (`ahfjhabsd/`), East Khasi Hills Prototype / AEHT Baseline Instrument*
+
+| Term / Part | Document / Artifact Citation | Explanation & Operational Purpose ("A Line About This Part") | Codebase Implementation |
+| :--- | :--- | :--- | :--- |
+| **Baseline Survey Instrument (Q1–Q67)** | `ref.zip/src/questions.js` | A comprehensive 67-question baseline survey across 7 sections (Village Profile, School, Anganwadi, Health Facility, Community, Physical Verification, Quick Summary). | Ingested and documented in [REFERENCE_INGESTION_REPORT.md](file:///c:/Users/abhin/Desktop/Arijit%20Backend/Imact_System/docs/REFERENCE_INGESTION_REPORT.md). |
+| **Dependency-Free PDF Engine (`pdfwriter.js`)** | `ref.zip/src/pdfwriter.js` | Pure-JavaScript, zero-dependency PDF 1.4 compiler utilizing embedded Helvetica advance metrics and WinAnsi byte encoding for client-side multi-page A4 document export. | Reference source in `ref/ahfjhabsd/src/pdfwriter.js`. |
+| **Zero-Infrastructure Offline Store (`KEY`)** | `ref.zip/src/app.js` | Local storage schema (`abhisaran_field_form_v1`) supporting 500ms debounced autosave, multi-village record indexing, and JSON file backup/restore without database dependency. | Standalone live app in [frontend/public/ref/abhisaran-field-form.html](file:///c:/Users/abhin/Desktop/Arijit%20Backend/Imact_System/frontend/public/ref/abhisaran-field-form.html). |
+| **Single-File Bundler (`build.js`)** | `ref.zip/build.js` | Lightweight Node.js packager inlining HTML, CSS, and JS into an ultra-portable 76 KB offline field bundle for remote offline deployments. | Build script in `ref/ahfjhabsd/build.js`. |
+
+---
+*Generated: 2026-10-07 | Grounded against AEHT District Programme Continuity Scan DPR (September 2026) and Reference Implementation (`ref.zip`)*

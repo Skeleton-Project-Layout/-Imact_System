@@ -2,7 +2,8 @@
 extracted_pdf_cleaned.txt
 extracted_pdf_raw.txt
 prototype-ref/
-
+ref/
+ref.zip
 # Java
 target/
 *.class

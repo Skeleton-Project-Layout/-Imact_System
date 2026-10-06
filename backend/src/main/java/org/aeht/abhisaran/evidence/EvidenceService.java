@@ -116,6 +116,16 @@ public class EvidenceService {
                 || EMAIL_PATTERN.matcher(content).find();
     }
 
+    public List<Evidence> getAllEvidence(String status, String dpCode, String sectorId) {
+        if (status != null && !status.isBlank()) {
+            return evidenceRepository.findByVerificationStatus(status);
+        }
+        if (dpCode != null && !dpCode.isBlank()) {
+            return evidenceRepository.findByDeliveryPointCode(dpCode);
+        }
+        return evidenceRepository.findAll();
+    }
+
     public List<Evidence> getEvidenceByDeliveryPoint(String dpCode) {
         return evidenceRepository.findByDeliveryPointCode(dpCode);
     }

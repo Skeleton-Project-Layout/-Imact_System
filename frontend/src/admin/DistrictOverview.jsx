@@ -1,5 +1,5 @@
 import React from 'react';
-import { Building2, ShieldCheck, AlertCircle, HelpCircle, ArrowRight, MapPin, CheckCircle2 } from 'lucide-react';
+import { Building2, ShieldCheck, AlertCircle, HelpCircle, ArrowRight, MapPin, CheckCircle2, CheckSquare, Plus } from 'lucide-react';
 
 export default function DistrictOverview({
   overviewData,
@@ -7,7 +7,8 @@ export default function DistrictOverview({
   onNavigateTab,
   selectedDistrict,
   availableDistricts = [],
-  onSelectDistrict
+  onSelectDistrict,
+  onAddDistrict
 }) {
   const currentDist = selectedDistrict || {
     id: 'ranchi',
@@ -136,6 +137,25 @@ export default function DistrictOverview({
                 </option>
               ))}
             </select>
+            {onAddDistrict && (
+              <button
+                type="button"
+                onClick={onAddDistrict}
+                className="btn btn-secondary"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  padding: '0.55rem 0.85rem',
+                  fontSize: '0.8125rem',
+                  borderColor: 'rgba(56, 189, 248, 0.4)',
+                  color: '#38bdf8'
+                }}
+              >
+                <Plus size={14} />
+                <span>+ Add District</span>
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -186,7 +206,20 @@ export default function DistrictOverview({
         </div>
 
         {/* Card 3: Zero-PII Compliance & Coverage */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
+        <div
+          onClick={() => onNavigateTab && onNavigateTab('verification')}
+          style={{
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-color)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '1.25rem',
+            boxShadow: 'var(--shadow-sm)',
+            cursor: onNavigateTab ? 'pointer' : 'default',
+            transition: 'border-color 0.2s'
+          }}
+          onMouseEnter={(e) => onNavigateTab && (e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.4)')}
+          onMouseLeave={(e) => onNavigateTab && (e.currentTarget.style.borderColor = 'var(--border-color)')}
+        >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>
               Privacy & Audit Assurance
@@ -196,8 +229,9 @@ export default function DistrictOverview({
           <div style={{ fontSize: '1.85rem', fontWeight: 700, color: '#34d399' }}>
             100% Zero-PII
           </div>
-          <div style={{ fontSize: '0.8125rem', color: 'var(--text-dim)', marginTop: '0.35rem' }}>
-            {data.zeroPiiIncidentsCount} Privacy Incidents • {data.verifiedArtifactsCount} Verified Artifacts
+          <div style={{ fontSize: '0.8125rem', color: 'var(--text-dim)', marginTop: '0.35rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>{data.zeroPiiIncidentsCount} Incidents • {data.verifiedArtifactsCount} Verified Docs</span>
+            <span style={{ color: 'var(--brand-primary)', fontWeight: 600, fontSize: '0.75rem' }}>Verify Desk →</span>
           </div>
         </div>
 
@@ -219,7 +253,7 @@ export default function DistrictOverview({
       </div>
 
       {/* Decision-Support Routing Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
         <div
           onClick={() => onNavigateTab('heatmap')}
           style={{
@@ -268,6 +302,34 @@ export default function DistrictOverview({
             </p>
           </div>
           <ArrowRight size={20} style={{ color: 'var(--brand-primary)', flexShrink: 0, marginLeft: '1rem' }} />
+        </div>
+
+        <div
+          onClick={() => onNavigateTab('verification')}
+          style={{
+            background: 'rgba(30, 41, 59, 0.4)',
+            border: '1px solid rgba(56, 189, 248, 0.3)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '1.25rem',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}
+        >
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.25rem' }}>
+              <CheckSquare size={16} style={{ color: '#38bdf8' }} />
+              <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#f8fafc', margin: 0 }}>
+                Verify Evidence & Scans (§17 B)
+              </h3>
+            </div>
+            <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0 }}>
+              Audit multi-file field scans, registers, and certificates submitted from /source before score calculation.
+            </p>
+          </div>
+          <ArrowRight size={20} style={{ color: '#38bdf8', flexShrink: 0, marginLeft: '1rem' }} />
         </div>
       </div>
     </div>

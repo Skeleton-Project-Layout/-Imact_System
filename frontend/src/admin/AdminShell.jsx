@@ -15,7 +15,9 @@ import {
   FileCheck2,
   UserCheck2,
   ShieldAlert,
-  Clock as ClockIcon
+  Clock as ClockIcon,
+  CheckSquare,
+  Plus
 } from 'lucide-react';
 import DistrictOverview from './DistrictOverview';
 import ConvergenceHeatmap from './ConvergenceHeatmap';
@@ -27,20 +29,41 @@ import FactualCorrectionsView from './FactualCorrectionsView';
 import ReviewerPackView from './ReviewerPackView';
 import PrivacyIncidentsView from './PrivacyIncidentsView';
 import RetentionAndAuditView from './RetentionAndAuditView';
+import EvidenceVerificationView from './EvidenceVerificationView';
+import AddDistrictModal from './AddDistrictModal';
 import { JHARKHAND_DISTRICTS, getDistrictById } from '../data/districts';
 
 export default function AdminShell() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [govDropdownOpen, setGovDropdownOpen] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
-  const [availableDistricts, setAvailableDistricts] = useState(JHARKHAND_DISTRICTS);
+  const [addDistrictModalOpen, setAddDistrictModalOpen] = useState(false);
+
+  // Load merged list of standard districts and any user-onboarded custom districts
+  const [availableDistricts, setAvailableDistricts] = useState(() => {
+    try {
+      const saved = localStorage.getItem('abhisaran_custom_districts');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const customIds = new Set(parsed.map((d) => d.id));
+          return [...JHARKHAND_DISTRICTS.filter((d) => !customIds.has(d.id)), ...parsed];
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to parse custom districts cache', e);
+    }
+    return JHARKHAND_DISTRICTS;
+  });
   
   // Monitored District selection state with localStorage persistence
   const [selectedDistrictId, setSelectedDistrictId] = useState(() => {
     return localStorage.getItem('abhisaran_monitored_district') || 'ranchi';
   });
 
-  const selectedDistrict = getDistrictById(selectedDistrictId);
+  const selectedDistrict =
+    availableDistricts.find((d) => d.id === selectedDistrictId || d.code === selectedDistrictId) ||
+    getDistrictById(selectedDistrictId);
 
   const [overviewData, setOverviewData] = useState(null);
   const [explainModalOpen, setExplainModalOpen] = useState(false);
@@ -94,6 +117,20 @@ export default function AdminShell() {
   const handleDistrictChange = (newDistrictId) => {
     setSelectedDistrictId(newDistrictId);
     localStorage.setItem('abhisaran_monitored_district', newDistrictId);
+  };
+
+  const handleDistrictCreated = (newDistrict) => {
+    const updated = [...availableDistricts.filter((d) => d.id !== newDistrict.id), newDistrict];
+    setAvailableDistricts(updated);
+    try {
+      const saved = localStorage.getItem('abhisaran_custom_districts');
+      const existingCustom = saved ? JSON.parse(saved) : [];
+      const updatedCustom = [...existingCustom.filter((d) => d.id !== newDistrict.id), newDistrict];
+      localStorage.setItem('abhisaran_custom_districts', JSON.stringify(updatedCustom));
+    } catch (e) {
+      console.warn('Failed to store custom district', e);
+    }
+    handleDistrictChange(newDistrict.id);
   };
 
   const handleRunAnalysis = () => {
@@ -154,27 +191,51 @@ export default function AdminShell() {
               <div style={{ fontSize: '0.68rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>
                 Monitoring District
               </div>
-              <select
-                aria-label="Select District to Monitor"
-                value={selectedDistrictId}
-                onChange={(e) => handleDistrictChange(e.target.value)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  color: '#ffffff',
-                  fontSize: '0.875rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  outline: 'none',
-                  padding: 0
-                }}
-              >
-                {availableDistricts.map((d) => (
-                  <option key={d.id} value={d.id} style={{ background: '#0f172a', color: '#ffffff' }}>
-                    {d.name} ({d.state}) {d.status === 'PILOT_ACTIVE' ? '★ Pilot' : ''}
-                  </option>
-                ))}
-              </select>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <select
+                  aria-label="Select District to Monitor"
+                  value={selectedDistrictId}
+                  onChange={(e) => handleDistrictChange(e.target.value)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: '#ffffff',
+                    fontSize: '0.875rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    outline: 'none',
+                    padding: 0
+                  }}
+                >
+                  {availableDistricts.map((d) => (
+                    <option key={d.id} value={d.id} style={{ background: '#0f172a', color: '#ffffff' }}>
+                      {d.name} ({d.state}) {d.status === 'PILOT_ACTIVE' ? '★ Pilot' : ''}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  onClick={() => setAddDistrictModalOpen(true)}
+                  title="Onboard / Add New District"
+                  style={{
+                    background: 'rgba(56, 189, 248, 0.15)',
+                    border: '1px solid rgba(56, 189, 248, 0.35)',
+                    borderRadius: '4px',
+                    color: '#38bdf8',
+                    padding: '0.15rem 0.45rem',
+                    fontSize: '0.72rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.2rem',
+                    marginLeft: '0.5rem'
+                  }}
+                >
+                  <Plus size={11} />
+                  <span>Add</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -240,10 +301,10 @@ export default function AdminShell() {
               alignItems: 'center',
               gap: '0.4rem',
               padding: '0.45rem 0.85rem',
-              background: govDropdownOpen || ['briefings', 'corrections', 'reviewer', 'privacy', 'retention'].includes(activeTab) ? 'rgba(59, 130, 246, 0.15)' : 'rgba(30, 41, 59, 0.5)',
+              background: govDropdownOpen || ['verification', 'briefings', 'corrections', 'reviewer', 'privacy', 'retention'].includes(activeTab) ? 'rgba(59, 130, 246, 0.15)' : 'rgba(30, 41, 59, 0.5)',
               border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-sm)',
-              color: ['briefings', 'corrections', 'reviewer', 'privacy', 'retention'].includes(activeTab) ? 'var(--brand-primary)' : 'var(--text-muted)',
+              color: ['verification', 'briefings', 'corrections', 'reviewer', 'privacy', 'retention'].includes(activeTab) ? 'var(--brand-primary)' : 'var(--text-muted)',
               fontSize: '0.8125rem',
               fontWeight: 500,
               cursor: 'pointer'
@@ -261,7 +322,7 @@ export default function AdminShell() {
                 top: '100%',
                 right: 0,
                 marginTop: '0.35rem',
-                width: '230px',
+                width: '240px',
                 background: '#0f172a',
                 border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-md)',
@@ -271,6 +332,7 @@ export default function AdminShell() {
               }}
             >
               {[
+                { id: 'verification', label: 'Verify Evidence & Docs (§17 B)', icon: CheckSquare },
                 { id: 'briefings', label: 'Exit Briefings (§14.1)', icon: ClipboardCheck },
                 { id: 'corrections', label: 'Factual Corrections', icon: FileCheck2 },
                 { id: 'reviewer', label: 'Reviewer Pack (COI)', icon: UserCheck2 },
@@ -327,6 +389,7 @@ export default function AdminShell() {
             selectedDistrict={selectedDistrict}
             availableDistricts={availableDistricts}
             onSelectDistrict={handleDistrictChange}
+            onAddDistrict={() => setAddDistrictModalOpen(true)}
           />
         )}
 
@@ -345,6 +408,11 @@ export default function AdminShell() {
             onOpenTrace={handleOpenTraceDrawer}
             selectedDistrict={selectedDistrict}
           />
+        )}
+
+        {/* Tab: Evidence & Document Verification Desk (AEHT §6 & §17 Annexure B) */}
+        {activeTab === 'verification' && (
+          <EvidenceVerificationView selectedDistrict={selectedDistrict} />
         )}
 
         {/* Tab 4: Exit Briefings */}
@@ -390,6 +458,13 @@ export default function AdminShell() {
         isOpen={traceDrawerOpen}
         onClose={() => setTraceDrawerOpen(false)}
         traceTarget={traceTarget}
+      />
+
+      {/* Onboard / Add District Modal */}
+      <AddDistrictModal
+        isOpen={addDistrictModalOpen}
+        onClose={() => setAddDistrictModalOpen(false)}
+        onDistrictCreated={handleDistrictCreated}
       />
     </div>
   );

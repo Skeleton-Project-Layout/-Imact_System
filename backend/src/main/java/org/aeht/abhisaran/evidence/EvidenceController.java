@@ -119,6 +119,15 @@ public class EvidenceController {
         }
     }
 
+    @GetMapping("/evidence")
+    public ResponseEntity<List<Evidence>> getAllEvidence(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String deliveryPointCode,
+            @RequestParam(required = false) String sectorId
+    ) {
+        return ResponseEntity.ok(evidenceService.getAllEvidence(status, deliveryPointCode, sectorId));
+    }
+
     @GetMapping("/evidence/delivery-point/{dpCode}")
     public ResponseEntity<List<Evidence>> getByDeliveryPoint(@PathVariable String dpCode) {
         return ResponseEntity.ok(evidenceService.getEvidenceByDeliveryPoint(dpCode));

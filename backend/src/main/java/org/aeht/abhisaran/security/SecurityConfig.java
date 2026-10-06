@@ -64,6 +64,12 @@ public class SecurityConfig {
                                 "ARYABHATA_FIELD_TEAM",
                                 "DISTRICT_NODAL_OFFICER"
                         )
+                        .requestMatchers("/api/v1/evidence/**").hasAnyRole(
+                                "DISTRICT_MAGISTRATE",
+                                "DISTRICT_NODAL_OFFICER",
+                                "INDEPENDENT_REVIEWER",
+                                "ARYABHATA_FIELD_TEAM"
+                        )
 
                         // All other APIs require authentication
                         .requestMatchers("/api/v1/**").authenticated()

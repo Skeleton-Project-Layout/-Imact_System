@@ -47,7 +47,7 @@ Deterministic, verifiable, and zero-PII continuity tracking that connects field 
 - The project implements the AEHT District Programme Continuity Scan as specified in the administrative approval submission (DPR).
 - Pilot targets up to 10 delivery points (indicative 4 schools, 3 health centers, 3 Anganwadi centers) in a configurable pilot district.
 - Frontend delivers two distinct interfaces: Front A (Abhisaran Source for field workers) and Front B (Admin Decision-Support Panel for district officials).
-- Reference field form prototype previously developed in vanilla JS (`abhisaran-source.zip`) informs the field interaction model, modernized into React.
+- Reference field form prototype (`ref.zip`) unpacked and synthesized into the project; standalone version hosted at `frontend/public/ref/abhisaran-field-form.html` (accessible at `/ref/abhisaran-field-form.html`).
 
 ## Constraints
 
@@ -60,9 +60,10 @@ Deterministic, verifiable, and zero-PII continuity tracking that connects field 
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Monorepo structure (`frontend/`, `backend/`, `ai-service/`) | Clean separation of concerns while sharing root configuration and Docker orchestration | ⏳ Pending |
-| Supabase for PostgreSQL + Storage | Managed relational database with Flyway migrations in Spring Boot and signed URL storage for sanitized attachments | ⏳ Pending |
-| Canonical engine reconstruction with golden fixtures | Ensures mathematical parity between JavaScript reference implementation and Java backend | ⏳ Pending |
+| Monorepo structure (`frontend/`, `backend/`, `ai-service/`) | Clean separation of concerns while sharing root configuration and Docker orchestration | ✅ Applied |
+| Supabase for PostgreSQL + Storage | Managed relational database with Flyway migrations in Spring Boot and signed URL storage for sanitized attachments | ✅ Applied |
+| Canonical engine reconstruction with golden fixtures | Ensures mathematical parity between JavaScript reference implementation and Java backend | ✅ Applied |
+| Reference Prototype Ingestion (`ref.zip`) | Analyzed 67-question baseline survey (Sections A–G), dependency-free pure-JS PDF writer (`pdfwriter.js`), and offline JSON storage model; documented in `docs/REFERENCE_INGESTION_REPORT.md` | ✅ Applied |
 | Non-punitive system language | Prevents adversarial resistance from frontline staff; aligns with AEHT governance principles | ⏳ Pending |
 
 ## Evolution

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { HelpCircle, Paperclip, CheckCircle2, ChevronRight, FileText } from 'lucide-react';
+import { HelpCircle, Paperclip, CheckCircle2, ChevronRight, FileText, Sparkles, Download, ExternalLink } from 'lucide-react';
 
 export default function QuestionCard({
   question,
   recordedAnswer,
   onSaveAnswer,
   onOpenUploadModal,
+  onOpenQuizModal,
   evidenceAttachment
 }) {
   const [selectedOption, setSelectedOption] = useState(recordedAnswer?.selectedOption || '');
@@ -245,31 +246,55 @@ export default function QuestionCard({
 
       {/* Evidence Safeguard & Attachment */}
       <div style={{ paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: evidenceAttachment?.files?.length ? '0.5rem' : 0 }}>
-          <button
-            type="button"
-            onClick={() => onOpenUploadModal(question)}
-            className="btn btn-secondary"
-            style={{
-              fontSize: '0.8125rem',
-              padding: '0.5rem 0.85rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              color: evidenceAttachment ? 'var(--band-green-text)' : 'var(--text-main)',
-              border: evidenceAttachment ? '1px solid var(--band-green-border)' : '1px solid var(--border-color)',
-              background: evidenceAttachment ? 'rgba(16, 185, 129, 0.1)' : undefined
-            }}
-          >
-            <Paperclip size={15} />
-            {evidenceAttachment ? (
-              evidenceAttachment.fileCount > 1
-                ? `Attached: ${evidenceAttachment.fileCount} Documents`
-                : `Attached: ${evidenceAttachment.documentKind || '1 Document'}`
-            ) : (
-              'Attach Verified Artifact(s)'
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: evidenceAttachment?.files?.length ? '0.5rem' : 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => onOpenUploadModal(question)}
+              className="btn btn-secondary"
+              style={{
+                fontSize: '0.8125rem',
+                padding: '0.5rem 0.85rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                color: evidenceAttachment ? 'var(--band-green-text)' : 'var(--text-main)',
+                border: evidenceAttachment ? '1px solid var(--band-green-border)' : '1px solid var(--border-color)',
+                background: evidenceAttachment ? 'rgba(16, 185, 129, 0.1)' : undefined
+              }}
+            >
+              <Paperclip size={15} />
+              {evidenceAttachment ? (
+                evidenceAttachment.fileCount > 1
+                  ? `Attached: ${evidenceAttachment.fileCount} Documents`
+                  : `Attached: ${evidenceAttachment.documentKind || '1 Document'}`
+              ) : (
+                'Attach Verified Artifact(s)'
+              )}
+            </button>
+
+            {onOpenQuizModal && (
+              <button
+                type="button"
+                onClick={() => onOpenQuizModal(question)}
+                className="btn btn-secondary"
+                style={{
+                  fontSize: '0.78rem',
+                  padding: '0.45rem 0.75rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  color: '#fbbf24',
+                  borderColor: 'rgba(245, 158, 11, 0.4)',
+                  background: 'rgba(245, 158, 11, 0.1)'
+                }}
+                title="Open reference baseline survey form and generate PDF"
+              >
+                <Sparkles size={13} />
+                <span>Quiz Setup</span>
+              </button>
             )}
-          </button>
+          </div>
 
           {selectedOption && (
             <span style={{ fontSize: '0.75rem', color: 'var(--band-green-text)', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
@@ -280,29 +305,48 @@ export default function QuestionCard({
 
         {/* Multi-File Artifact Chips List */}
         {evidenceAttachment?.files && evidenceAttachment.files.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginTop: '0.5rem' }}>
-            {evidenceAttachment.files.map((file, fIdx) => (
-              <span
-                key={fIdx}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.3rem',
-                  fontSize: '0.72rem',
-                  padding: '0.2rem 0.5rem',
-                  borderRadius: '4px',
-                  background: 'rgba(30, 41, 59, 0.7)',
-                  border: '1px solid rgba(56, 189, 248, 0.3)',
-                  color: '#93c5fd'
-                }}
-              >
-                <FileText size={12} style={{ color: '#38bdf8' }} />
-                <span style={{ maxWidth: '160px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={file.fileName}>
-                  {file.fileName}
-                </span>
-                <span style={{ color: 'var(--text-dim)', fontSize: '0.68rem' }}>({file.fileSize})</span>
-              </span>
-            ))}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '0.5rem' }}>
+            {evidenceAttachment.files.map((file, fIdx) => {
+              const hasDataUrl = Boolean(file.dataUrl);
+              return (
+                <div
+                  key={fIdx}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    fontSize: '0.72rem',
+                    padding: '0.25rem 0.55rem',
+                    borderRadius: '4px',
+                    background: hasDataUrl ? 'rgba(16, 185, 129, 0.15)' : 'rgba(30, 41, 59, 0.7)',
+                    border: hasDataUrl ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(56, 189, 248, 0.3)',
+                    color: hasDataUrl ? '#6ee7b7' : '#93c5fd'
+                  }}
+                >
+                  <FileText size={12} style={{ color: hasDataUrl ? '#34d399' : '#38bdf8' }} />
+                  <span style={{ maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={file.fileName}>
+                    {file.fileName}
+                  </span>
+                  <span style={{ color: 'var(--text-dim)', fontSize: '0.68rem' }}>({file.fileSize})</span>
+                  {hasDataUrl && (
+                    <a
+                      href={file.dataUrl}
+                      download={file.fileName}
+                      title="Download / View Generated PDF"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        color: '#34d399',
+                        marginLeft: '0.25rem',
+                        textDecoration: 'none'
+                      }}
+                    >
+                      <Download size={11} />
+                    </a>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
