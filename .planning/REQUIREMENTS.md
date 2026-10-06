@@ -42,9 +42,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Priority Action Framework (`PRIO`)
 
-- [ ] **PRIO-01**: Human decision-owner entry of Urgency (1–5) and Reach (1–5) with `PriorityScore = Urgency × Reach`
-- [ ] **PRIO-02**: Feasibility (1–5) displayed strictly as an independent decision flag without modifying priority score
-- [ ] **PRIO-03**: Mandatory legal planning disclaimer displayed on every action brief and register
+- [x] **PRIO-01**: Human decision-owner entry of Urgency (1–5) and Reach (1–5) with `PriorityScore = Urgency × Reach`
+- [x] **PRIO-02**: Feasibility (1–5) displayed strictly as an independent decision flag without modifying priority score
+- [x] **PRIO-03**: Mandatory legal planning disclaimer displayed on every action brief and register
 
 ### Decision-Support Panel / Front B (`DASH`)
 
@@ -100,9 +100,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | SCOR-02 | Phase 4 | Complete |
 | SCOR-03 | Phase 4 | Complete |
 | SCOR-04 | Phase 4 | Complete |
-| PRIO-01 | Phase 5 | Pending |
-| PRIO-02 | Phase 5 | Pending |
-| PRIO-03 | Phase 5 | Pending |
+| PRIO-01 | Phase 5 | Complete |
+| PRIO-02 | Phase 5 | Complete |
+| PRIO-03 | Phase 5 | Complete |
 | DASH-01 | Phase 6 | Pending |
 | DASH-02 | Phase 6 | Pending |
 | DASH-03 | Phase 6 | Pending |

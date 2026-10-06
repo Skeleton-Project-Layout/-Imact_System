@@ -10,7 +10,7 @@ A phased journey to construct the ABHISARAN District Programme Continuity Scan d
 - [x] **Phase 2: Domain Modeling, Auth & RBAC** - Core entities (District, Delivery Points, Sectors, Pathways) and Spring Security 5-role RBAC with denial tests
 - [x] **Phase 3: Field Source Workflow & Evidence Safeguards** - Mobile-first Front A (`/source/*`), 5-layer question catalogue, offline queue, scheduling guards, and Zero-PII pre-check
 - [x] **Phase 4: Deterministic Scoring & ACS Engine** - Canonical JavaScript scoring engine (`engine.js`) with shared JSON golden fixtures, ported to Java Spring Boot with provable parity
-- [ ] **Phase 5: Flag Engine, Action Catalogue & Priority Action Framework** - Deterministic gap-to-flag evaluation, predefined ActionDefinition catalogue, and human-owned Priority Action Framework (Urgency × Reach, Feasibility flag)
+- [x] **Phase 5: Flag Engine, Action Catalogue & Priority Action Framework** - Deterministic gap-to-flag evaluation, predefined ActionDefinition catalogue, and human-owned Priority Action Framework (Urgency × Reach, Feasibility flag)
 - [ ] **Phase 6: Admin Decision-Support Panel & Impact Passports** - Front B (`/admin/*`) featuring district overview, convergence heat-map, delivery point Impact Passports, and drill-down trace drawer
 - [ ] **Phase 7: Governance, Reviewer & Exit Briefings** - Institutional exit briefing logging, factual correction windows, and independent reviewer declarations
 - [ ] **Phase 8: Privacy Incident Management, Retention & Audit Hardening** - 2-hour PII notification countdown, 30-day retention countdown, deletion certificate generation, and append-only audit logging
@@ -92,8 +92,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: RuleDefinition evaluation engine and ActionDefinition catalogue linking gaps to responsible systems
-- [ ] 05-02: Priority Action Framework register, audit trail, and mandatory planning disclaimer banner
+- [x] 05-01: RuleDefinition evaluation engine and ActionDefinition catalogue linking gaps to responsible systems
+- [x] 05-02: Priority Action Framework register, audit trail, and mandatory planning disclaimer banner
 
 ### Phase 6: Admin Decision-Support Panel & Impact Passports
 **Goal**: Build Front B (`/admin/*`) featuring district overview, aggregate convergence heat-map, delivery point Impact Passports, and drill-down trace drawer.  
@@ -176,7 +176,7 @@ Plans:
 | 2. Domain Modeling, Auth & RBAC | 2/2 | Complete | 2026-10-06 |
 | 3. Field Source Workflow & Evidence Safeguards | 3/3 | Complete | 2026-10-06 |
 | 4. Deterministic Scoring & ACS Engine | 3/3 | Complete | 2026-10-06 |
-| 5. Flag Engine, Action Catalogue & Priority Action Framework | 0/2 | Not started | - |
+| 5. Flag Engine, Action Catalogue & Priority Action Framework | 2/2 | Complete | 2026-10-06 |
 | 6. Admin Decision-Support Panel & Impact Passports | 0/3 | Not started | - |
 | 7. Governance, Reviewer & Exit Briefings | 0/2 | Not started | - |
 | 8. Privacy Incident Management, Retention & Audit Hardening | 0/2 | Not started | - |
