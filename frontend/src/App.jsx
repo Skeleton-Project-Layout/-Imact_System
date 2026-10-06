@@ -85,6 +85,7 @@ export default function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/source/*" element={<SourceShell />} />
       <Route path="/admin/*" element={<AdminShell />} />
+      <Route path="/dc/*" element={<AdminShell />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
