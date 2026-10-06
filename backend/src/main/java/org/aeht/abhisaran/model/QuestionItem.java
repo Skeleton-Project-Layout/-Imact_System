@@ -42,6 +42,7 @@ public class QuestionItem {
     @Column(name = "resulting_rule_id", nullable = false, length = 50)
     private String resultingRuleId;
 
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
     @Column(name = "options_json", columnDefinition = "jsonb", nullable = false)
     private String optionsJson;
 

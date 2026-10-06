@@ -34,10 +34,12 @@ public class AuditLog {
     @Column(name = "entity_id", nullable = false, length = 100)
     private String entityId;
 
-    @Column(name = "previous_state", columnDefinition = "TEXT")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    @Column(name = "previous_state", columnDefinition = "jsonb")
     private String previousState;
 
-    @Column(name = "new_state", columnDefinition = "TEXT")
+    @org.hibernate.annotations.JdbcTypeCode(org.hibernate.type.SqlTypes.JSON)
+    @Column(name = "new_state", columnDefinition = "jsonb")
     private String newState;
 
     @Column(columnDefinition = "TEXT", nullable = false)

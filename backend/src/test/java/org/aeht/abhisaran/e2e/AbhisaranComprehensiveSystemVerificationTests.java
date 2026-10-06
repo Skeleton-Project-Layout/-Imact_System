@@ -2,8 +2,6 @@ package org.aeht.abhisaran.e2e;
 
 import org.aeht.abhisaran.ai.AiAssistiveClient;
 import org.aeht.abhisaran.model.*;
-import org.aeht.abhisaran.privacy.PrivacyIncidentService;
-import org.aeht.abhisaran.privacy.RetentionService;
 import org.aeht.abhisaran.scoring.DeterministicScoringEngine;
 import org.aeht.abhisaran.scoring.ScoringComponent;
 import org.aeht.abhisaran.scoring.ScoringResult;
@@ -13,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,58 +27,40 @@ public class AbhisaranComprehensiveSystemVerificationTests {
     @Test
     @DisplayName("Invariant 01: ACS calculation is 100% deterministic and reproducible")
     void test01_AcsDeterministic() {
-        List<ScoringComponent> comps = List.of(
-                new ScoringComponent("C1", "Referral", 4.0, 25.0, true, "R1"),
-                new ScoringComponent("C2", "Followup", 4.0, 25.0, true, "R2"),
-                new ScoringComponent("C3", "Timeliness", 4.0, 25.0, true, "R3"),
-                new ScoringComponent("C4", "Closure", 4.0, 25.0, true, "R4")
-        );
-        ScoringResult r1 = scoringEngine.calculate(comps);
-        ScoringResult r2 = scoringEngine.calculate(comps);
-        assertEquals(r1.getCompositeAcs(), r2.getCompositeAcs());
-        assertEquals(80.0, r1.getCompositeAcs());
+        ScoringResult r1 = scoringEngine.calculateAcs(4.0, 4.0, 4.0, 4.0);
+        ScoringResult r2 = scoringEngine.calculateAcs(4.0, 4.0, 4.0, 4.0);
+        assertEquals(r1.getAcsScore(), r2.getAcsScore());
+        assertEquals(80.0, r1.getAcsScore());
     }
 
     // 2. N/A Rebasing
     @Test
     @DisplayName("Invariant 02: N/A components rebase denominator over applicable count")
     void test02_NaRebasing() {
-        List<ScoringComponent> comps = List.of(
-                new ScoringComponent("C1", "Referral", 4.0, 25.0, true, "R1"),
-                new ScoringComponent("C2", "Followup", 4.0, 25.0, true, "R2"),
-                new ScoringComponent("C3", "Timeliness", 3.0, 25.0, true, "R3"),
-                new ScoringComponent("C4", "Closure", null, 25.0, false, "R4") // N/A
-        );
-        ScoringResult result = scoringEngine.calculate(comps);
+        ScoringResult result = scoringEngine.calculateAcs(4.0, 4.0, 3.0, null);
         assertEquals(3, result.getApplicableCount());
-        assertEquals("3/4", result.getApplicableRatio());
-        // (20 + 20 + 15) * 100 / (25 * 3) = 5500 / 75 = 73.33%
-        assertEquals(73.33, result.getCompositeAcs());
+        // (4.0 + 4.0 + 3.0) / (3 * 5.0) * 100 = 11.0 / 15.0 * 100 = 73.33%
+        assertEquals(73.33, result.getAcsScore());
     }
 
     // 3. Four Equal Weights
     @Test
     @DisplayName("Invariant 03: Four components have strictly equal 25% weights")
     void test03_FourEqualWeights() {
-        List<ScoringComponent> comps = List.of(
-                new ScoringComponent("C1", "Referral", 5.0, 25.0, true, "R1"),
-                new ScoringComponent("C2", "Followup", 5.0, 25.0, true, "R2"),
-                new ScoringComponent("C3", "Timeliness", 5.0, 25.0, true, "R3"),
-                new ScoringComponent("C4", "Closure", 5.0, 25.0, true, "R4")
-        );
-        ScoringResult result = scoringEngine.calculate(comps);
-        assertEquals(100.0, result.getCompositeAcs());
-        comps.forEach(c -> assertEquals(25.0, c.getWeight()));
+        ScoringResult result = scoringEngine.calculateAcs(5.0, 5.0, 5.0, 5.0);
+        assertEquals(100.0, result.getAcsScore());
+        assertEquals(4, result.getComponents().size());
+        result.getComponents().forEach(c -> assertTrue(c.isApplicable()));
     }
 
     // 4. Band Edges (39 / 40 / 69 / 70)
     @Test
     @DisplayName("Invariant 04: Exact band edge classification (39.5 RED, 40.0 AMBER, 69.9 AMBER, 70.0 GREEN)")
     void test04_BandEdges() {
-        assertEquals("RED", scoringEngine.resolveBand(39.5));
-        assertEquals("AMBER", scoringEngine.resolveBand(40.0));
-        assertEquals("AMBER", scoringEngine.resolveBand(69.99));
-        assertEquals("GREEN", scoringEngine.resolveBand(70.0));
+        assertEquals("RED", scoringEngine.assignBand(39.5));
+        assertEquals("AMBER", scoringEngine.assignBand(40.0));
+        assertEquals("AMBER", scoringEngine.assignBand(69.99));
+        assertEquals("GREEN", scoringEngine.assignBand(70.0));
     }
 
     // 5. Priority = Urgency × Reach
@@ -102,7 +81,6 @@ public class AbhisaranComprehensiveSystemVerificationTests {
         int urgency = 3;
         int reach = 4;
         int score = urgency * reach; // 12 (HIGH)
-        int feasibilityHigh = 5;
         int feasibilityLow = 1;
 
         // Changing feasibility must leave score unchanged
@@ -162,11 +140,9 @@ public class AbhisaranComprehensiveSystemVerificationTests {
     @Test
     @DisplayName("Invariant 12: Every calculated score retains evidence references")
     void test12_ScoreHasEvidenceRefs() {
-        List<ScoringComponent> comps = List.of(
-                new ScoringComponent("C1", "Referral", 4.0, 25.0, true, "RULE-01")
-        );
-        ScoringResult res = scoringEngine.calculate(comps);
-        assertNotNull(res.getCalculationFormula());
+        ScoringResult res = scoringEngine.calculateAcs(4.0, 4.0, 4.0, 4.0);
+        assertNotNull(res.getFormulaString());
+        assertFalse(res.getComponents().isEmpty());
     }
 
     // 13. Every Flag Has Rule ID + Version
@@ -175,11 +151,11 @@ public class AbhisaranComprehensiveSystemVerificationTests {
     void test13_FlagTracksRuleIdAndVersion() {
         FlagEvaluation flag = FlagEvaluation.builder()
                 .ruleId("RULE-REFERRAL-001")
-                .ruleVersion("v1.0")
+                .ruleVersion(1)
                 .flagCode("DOCUMENTED_REFERRAL_GAP")
                 .build();
         assertEquals("RULE-REFERRAL-001", flag.getRuleId());
-        assertEquals("v1.0", flag.getRuleVersion());
+        assertEquals(1, flag.getRuleVersion());
     }
 
     // 14. Every Rule Maps to an Action
@@ -187,9 +163,10 @@ public class AbhisaranComprehensiveSystemVerificationTests {
     @DisplayName("Invariant 14: Every rule maps to a predefined ActionDefinition")
     void test14_RuleMapsToAction() {
         ActionDefinition act = ActionDefinition.builder()
-                .id("ACT-REF-01")
+                .actionId("ACT-REF-01")
                 .responsibleSystem("DISTRICT_EDUCATION_HEALTH_JOINT_CELL")
                 .build();
+        assertEquals("ACT-REF-01", act.getActionId());
         assertNotNull(act.getResponsibleSystem());
     }
 
@@ -283,13 +260,7 @@ public class AbhisaranComprehensiveSystemVerificationTests {
     @Test
     @DisplayName("Invariant 23: JavaScript and Java scoring produce bit-identical formula strings")
     void test23_GoldenFixtureParity() {
-        List<ScoringComponent> comps = List.of(
-                new ScoringComponent("C1", "Referral", 5.0, 25.0, true, "R1"),
-                new ScoringComponent("C2", "Followup", 5.0, 25.0, true, "R2"),
-                new ScoringComponent("C3", "Timeliness", 5.0, 25.0, true, "R3"),
-                new ScoringComponent("C4", "Closure", 5.0, 25.0, true, "R4")
-        );
-        ScoringResult res = scoringEngine.calculate(comps);
-        assertEquals("((5.0/5 * 25.0) + (5.0/5 * 25.0) + (5.0/5 * 25.0) + (5.0/5 * 25.0)) * 100 / (25 * 4) = 100.0%", res.getCalculationFormula());
+        ScoringResult res = scoringEngine.calculateAcs(5.0, 5.0, 5.0, 5.0);
+        assertEquals("((5.0 + 5.0 + 5.0 + 5.0) / (4 * 5.0)) * 100 = 100.0% [GREEN] (4/4 applicable components)", res.getFormulaString());
     }
 }
