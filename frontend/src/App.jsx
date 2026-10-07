@@ -196,6 +196,15 @@ function LandingPage() {
   );
 }
 
+function RefFormRedirect() {
+  React.useEffect(() => {
+    if (window.location.pathname !== '/ref/abhisaran-field-form.html') {
+      window.location.replace('/ref/abhisaran-field-form.html');
+    }
+  }, []);
+  return null;
+}
+
 export default function App() {
   return (
     <Routes>
@@ -203,6 +212,8 @@ export default function App() {
       <Route path="/source/*" element={<SourceShell />} />
       <Route path="/admin/*" element={<AdminShell />} />
       <Route path="/dc/*" element={<AdminShell />} />
+      <Route path="/ref/abhisaran-field-form" element={<RefFormRedirect />} />
+      <Route path="/ref/abhisaran-field-form/" element={<RefFormRedirect />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
