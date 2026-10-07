@@ -98,5 +98,40 @@ class TestAiService(unittest.TestCase):
         self.assertNotIn("feasibility", data)
         self.assertNotIn("verification_status", data)
 
+    def test_analyze_assessment_with_pdf_citation(self):
+        resp = self.client.post("/api/v1/analyze-assessment", json={
+            "delivery_point_code": "EKH-EDU-01",
+            "district_id": "east-khasi-hills",
+            "district_name": "East Khasi Hills",
+            "sector": "EDUCATION",
+            "answers": [
+                {"question_id": "S01", "question_number": 1, "answer": "Mawphlang Upper Primary School (23040100101)", "layer": 1},
+                {"question_id": "S04", "question_number": 4, "answer": "<75%", "layer": 2},
+                {"question_id": "S11", "question_number": 11, "answer": "CRITICAL FACILITY ABSENT", "layer": 4}
+            ],
+            "quiz_pdf": {
+                "file_name": "Baseline_Survey_EKH-EDU-01_Q1.pdf",
+                "file_size": "78 KB",
+                "data_url": "data:application/pdf;base64,JVBERi0xLjQK..."
+            }
+        })
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(data["status"], "DRAFT")
+        self.assertTrue(data["human_review_required"])
+        self.assertEqual(data["delivery_point_code"], "EKH-EDU-01")
+        # Verify PDF is cited in judgement
+        self.assertTrue(data["quiz_pdf_citation"]["included_in_judgement"])
+        self.assertEqual(data["quiz_pdf_citation"]["file_name"], "Baseline_Survey_EKH-EDU-01_Q1.pdf")
+        self.assertIn("Baseline_Survey_EKH-EDU-01_Q1.pdf", data["quiz_pdf_citation"]["citation_notice"])
+        # Verify red flags are diagnosed
+        red_flag_ids = [rf["question_id"] for rf in data["detected_red_flags"]]
+        self.assertIn("S04", red_flag_ids)
+        self.assertIn("S11", red_flag_ids)
+        # Verify 5 layer scores exist
+        self.assertIn("L1", data["layer_scores"])
+        self.assertIn("L5", data["layer_scores"])
+        self.assertIn("draft_title", data["action_brief"])
+
 if __name__ == "__main__":
     unittest.main()

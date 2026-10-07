@@ -422,6 +422,26 @@ export default function QuestionManagementView({ isModal = false, onClose }) {
                     </p>
                   )}
 
+                  {/* Red-Flag Logic & Intervention Tag */}
+                  {q.redFlagLogic && (
+                    <div style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: 'var(--radius-sm)', padding: '0.45rem 0.65rem', marginBottom: '0.65rem', fontSize: '0.74rem' }}>
+                      <div style={{ color: '#d97706', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
+                        <span>⚠️ Red Flag:</span>
+                        <span>{q.redFlagLogic}</span>
+                        {q.severity && (
+                          <span style={{ fontSize: '0.62rem', fontWeight: 800, padding: '0.08rem 0.35rem', borderRadius: '3px', background: q.severity === 'Critical' ? '#fee2e2' : '#fef3c7', color: q.severity === 'Critical' ? '#b91c1c' : '#b45309', border: `1px solid ${q.severity === 'Critical' ? '#fca5a5' : '#fde68a'}` }}>
+                            {q.severity}
+                          </span>
+                        )}
+                      </div>
+                      {q.suggestedIntervention && (
+                        <div style={{ color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                          <strong style={{ color: 'var(--text-main)' }}>Intervention:</strong> {q.suggestedIntervention}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Options preview */}
                   <div style={{ marginBottom: '0.75rem' }}>
                     <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-dim)', marginBottom: '0.25rem', textTransform: 'uppercase' }}>
@@ -448,9 +468,10 @@ export default function QuestionManagementView({ isModal = false, onClose }) {
                   </div>
 
                   {/* Meta tag info */}
-                  <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.72rem', color: 'var(--text-dim)', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
+                  <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.72rem', color: 'var(--text-dim)', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem', flexWrap: 'wrap' }}>
                     <span>Rule: <code style={{ fontSize: '0.7rem' }}>{q.resultingRuleId}</code></span>
                     <span>Evidence: <strong>{q.evidenceRequirement}</strong></span>
+                    {q.dashboardView && <span>View: <em>{q.dashboardView}</em></span>}
                   </div>
                 </div>
 

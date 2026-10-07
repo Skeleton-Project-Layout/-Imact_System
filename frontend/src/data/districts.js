@@ -151,7 +151,76 @@ export const MEGHALAYA_DISTRICTS = [
 // Backwards-compatible alias for any legacy imports
 export const JHARKHAND_DISTRICTS = MEGHALAYA_DISTRICTS;
 
-export function getDistrictById(districtId) {
-  if (!districtId) return MEGHALAYA_DISTRICTS[0];
-  return MEGHALAYA_DISTRICTS.find((d) => d.id === districtId || d.code === districtId) || MEGHALAYA_DISTRICTS[0];
+export const STORAGE_KEY_CUSTOM_DPS = 'abhisaran_custom_delivery_points';
+
+export function getCustomDeliveryPoints() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_CUSTOM_DPS);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (e) {
+    console.warn('Failed to parse custom delivery points from localStorage', e);
+  }
+  return [];
 }
+
+export function saveCustomDeliveryPoint(newPoint) {
+  try {
+    const current = getCustomDeliveryPoints();
+    const filtered = current.filter((p) => p.code !== newPoint.code);
+    filtered.push(newPoint);
+    localStorage.setItem(STORAGE_KEY_CUSTOM_DPS, JSON.stringify(filtered));
+    window.dispatchEvent(new CustomEvent('abhisaran_delivery_points_updated', { detail: newPoint }));
+    return filtered;
+  } catch (e) {
+    console.error('Error saving custom delivery point', e);
+    return [];
+  }
+}
+
+export function deleteCustomDeliveryPoint(pointCode) {
+  try {
+    const current = getCustomDeliveryPoints();
+    const filtered = current.filter((p) => p.code !== pointCode);
+    localStorage.setItem(STORAGE_KEY_CUSTOM_DPS, JSON.stringify(filtered));
+    window.dispatchEvent(new CustomEvent('abhisaran_delivery_points_updated', { detail: { deletedCode: pointCode } }));
+    return filtered;
+  } catch (e) {
+    console.error('Error deleting custom delivery point', e);
+    return [];
+  }
+}
+
+export function getDistrictById(districtId) {
+  const targetId = districtId || 'east-khasi-hills';
+  const base = MEGHALAYA_DISTRICTS.find((d) => d.id === targetId || d.code === targetId) || MEGHALAYA_DISTRICTS[0];
+  
+  // Merge custom delivery points matching this district
+  const customPoints = getCustomDeliveryPoints().filter((p) => !p.districtId || p.districtId === base.id);
+  
+  if (customPoints.length === 0) {
+    return base;
+  }
+
+  const existingCodes = new Set(base.deliveryPoints.map((dp) => dp.code));
+  const mergedPoints = [
+    ...base.deliveryPoints,
+    ...customPoints.filter((cp) => !existingCodes.has(cp.code))
+  ];
+
+  const schoolsCount = mergedPoints.filter((p) => p.sector === 'EDUCATION').length;
+  const healthCount = mergedPoints.filter((p) => p.sector === 'HEALTH_RBSK').length;
+  const anganwadiCount = mergedPoints.filter((p) => p.sector === 'WCD_ANGANWADI').length;
+
+  return {
+    ...base,
+    deliveryPoints: mergedPoints,
+    sampleSize: mergedPoints.length,
+    schoolsCount,
+    healthCount,
+    anganwadiCount
+  };
+}
+
