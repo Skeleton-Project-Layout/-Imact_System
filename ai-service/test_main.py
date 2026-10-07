@@ -124,6 +124,19 @@ class TestAiService(unittest.TestCase):
         self.assertTrue(data["quiz_pdf_citation"]["included_in_judgement"])
         self.assertEqual(data["quiz_pdf_citation"]["file_name"], "Baseline_Survey_EKH-EDU-01_Q1.pdf")
         self.assertIn("Baseline_Survey_EKH-EDU-01_Q1.pdf", data["quiz_pdf_citation"]["citation_notice"])
+        # Verify evidence presence verification
+        self.assertTrue(data["evidence_presence"]["has_evidence"])
+        self.assertEqual(data["evidence_presence"]["status"], "VERIFIED_EVIDENCE_ATTACHED")
+        self.assertEqual(data["evidence_presence"]["file_name"], "Baseline_Survey_EKH-EDU-01_Q1.pdf")
+        # Verify layer completeness check
+        self.assertIn("layer_completeness", data)
+        self.assertIn("levels_status", data["layer_completeness"])
+        # Verify sincerity audit
+        self.assertIn("sincerity_audit", data)
+        self.assertGreaterEqual(data["sincerity_audit"]["sincerity_score"], 25.0)
+        self.assertIn(data["sincerity_audit"]["sincerity_verdict"], [
+            "HIGH_SINCERITY_CORROBORATED", "MODERATE_SCRUTINY_NEEDED", "LOW_SINCERITY_CONTRADICTIONS_DETECTED"
+        ])
         # Verify red flags are diagnosed
         red_flag_ids = [rf["question_id"] for rf in data["detected_red_flags"]]
         self.assertIn("S04", red_flag_ids)
@@ -132,6 +145,50 @@ class TestAiService(unittest.TestCase):
         self.assertIn("L1", data["layer_scores"])
         self.assertIn("L5", data["layer_scores"])
         self.assertIn("draft_title", data["action_brief"])
+
+    def test_sincerity_audit_detects_contradictions(self):
+        resp = self.client.post("/api/v1/analyze-assessment", json={
+            "delivery_point_code": "EKH-EDU-02",
+            "district_name": "East Khasi Hills",
+            "sector": "EDUCATION",
+            "answers": [
+                {
+                    "question_id": "S11",
+                    "question_number": 11,
+                    "answer": "COMPLIANT_AND_VERIFIED",
+                    "notes": "Toilets are broken, water pipe damaged, no handwashing facility",
+                    "layer": 4
+                }
+            ]
+        })
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        sincerity = data["sincerity_audit"]
+        self.assertGreater(len(sincerity["contradictions_detected"]), 0)
+        self.assertIn("S11", sincerity["contradictions_detected"][0])
+        self.assertFalse(data["evidence_presence"]["has_evidence"])
+        self.assertEqual(data["evidence_presence"]["status"], "AWAITING_ATTACHMENT")
+
+    def test_level_completeness_5_of_5(self):
+        resp = self.client.post("/api/v1/analyze-assessment", json={
+            "delivery_point_code": "EKH-EDU-03",
+            "district_name": "East Khasi Hills",
+            "sector": "EDUCATION",
+            "answers": [
+                {"question_id": "L1-Q1", "layer": 1, "answer": "COMPLIANT"},
+                {"question_id": "L2-Q1", "layer": 2, "answer": "COMPLIANT"},
+                {"question_id": "L3-Q1", "layer": 3, "answer": "COMPLIANT"},
+                {"question_id": "L4-Q1", "layer": 4, "answer": "COMPLIANT"},
+                {"question_id": "L5-Q1", "layer": 5, "answer": "COMPLIANT"}
+            ]
+        })
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        completeness = data["layer_completeness"]
+        self.assertTrue(completeness["all_levels_complete"])
+        self.assertEqual(completeness["completion_ratio"], "5/5")
+        self.assertEqual(completeness["completed_levels_count"], 5)
+        self.assertEqual(len(completeness["missing_levels"]), 0)
 
 if __name__ == "__main__":
     unittest.main()

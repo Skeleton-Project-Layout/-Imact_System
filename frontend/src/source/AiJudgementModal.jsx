@@ -12,7 +12,9 @@ import {
   Save,
   Download,
   Layers,
-  Building2
+  Building2,
+  Scale,
+  AlertCircle
 } from 'lucide-react';
 import { analyzeAssessment, saveJudgementToPassport } from '../data/aiAnalysisService';
 
@@ -344,6 +346,150 @@ export default function AiJudgementModal({
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.6rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     <ShieldCheck size={14} style={{ color: '#10b981', flexShrink: 0 }} />
                     <span>Engine: {judgementResult.model_id} • Strictly Zero-PII Deterministic Judgement</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3 CORE AI EVALUATIVE AUDITS */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '0.85rem' }}>
+                {/* 1. Evidence Presence Card */}
+                <div
+                  style={{
+                    background: judgementResult.evidence_presence?.has_evidence ? 'rgba(16, 185, 129, 0.08)' : 'rgba(245, 158, 11, 0.08)',
+                    border: judgementResult.evidence_presence?.has_evidence ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(245, 158, 11, 0.35)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '0.9rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.4rem'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <FileText size={16} style={{ color: judgementResult.evidence_presence?.has_evidence ? '#10b981' : '#d97706' }} />
+                      <span style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+                        Evidence Presence
+                      </span>
+                    </div>
+                    <span
+                      className={`badge ${judgementResult.evidence_presence?.has_evidence ? 'badge-green' : 'badge-amber'}`}
+                      style={{ fontSize: '0.68rem', fontWeight: 800 }}
+                    >
+                      {judgementResult.evidence_presence?.has_evidence ? 'ATTACHED' : 'AWAITING'}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-heading)' }}>
+                    {judgementResult.evidence_presence?.file_name || 'Baseline_Survey.pdf'}
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.35 }}>
+                    {judgementResult.evidence_presence?.verdict_summary || judgementResult.quiz_pdf_citation?.citation_notice}
+                  </div>
+                </div>
+
+                {/* 2. 5-Level Completeness Card */}
+                <div
+                  style={{
+                    background: judgementResult.layer_completeness?.all_levels_complete ? 'rgba(59, 130, 246, 0.08)' : 'rgba(245, 158, 11, 0.08)',
+                    border: judgementResult.layer_completeness?.all_levels_complete ? '1px solid rgba(59, 130, 246, 0.35)' : '1px solid rgba(245, 158, 11, 0.35)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '0.9rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.4rem'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <Layers size={16} style={{ color: judgementResult.layer_completeness?.all_levels_complete ? '#3b82f6' : '#d97706' }} />
+                      <span style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+                        5-Level Completeness
+                      </span>
+                    </div>
+                    <span
+                      className={`badge ${judgementResult.layer_completeness?.all_levels_complete ? 'badge-blue' : 'badge-amber'}`}
+                      style={{ fontSize: '0.68rem', fontWeight: 800 }}
+                    >
+                      {judgementResult.layer_completeness?.completion_ratio || '5/5'}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.3rem', margin: '0.15rem 0' }}>
+                    {['L1', 'L2', 'L3', 'L4', 'L5'].map((l) => {
+                      const isComplete = judgementResult.layer_completeness?.levels_status?.[l] === 'COMPLETE';
+                      return (
+                        <div
+                          key={l}
+                          style={{
+                            flex: 1,
+                            textAlign: 'center',
+                            fontSize: '0.65rem',
+                            fontWeight: 700,
+                            padding: '0.2rem 0',
+                            borderRadius: '4px',
+                            background: isComplete ? '#3b82f6' : 'var(--bg-secondary)',
+                            color: isComplete ? '#ffffff' : 'var(--text-muted)',
+                            border: isComplete ? 'none' : '1px dashed var(--border-color)'
+                          }}
+                          title={`Layer ${l}: ${isComplete ? 'Complete' : 'Missing'}`}
+                        >
+                          {l}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.35 }}>
+                    {judgementResult.layer_completeness?.verdict_summary || 'All 5 operational continuity layers evaluated.'}
+                  </div>
+                </div>
+
+                {/* 3. Sincerity & Consistency Audit Card */}
+                <div
+                  style={{
+                    background: judgementResult.sincerity_audit?.sincerity_verdict === 'HIGH_SINCERITY_CORROBORATED'
+                      ? 'rgba(16, 185, 129, 0.08)'
+                      : judgementResult.sincerity_audit?.sincerity_verdict === 'MODERATE_SCRUTINY_NEEDED'
+                      ? 'rgba(245, 158, 11, 0.08)'
+                      : 'rgba(239, 68, 68, 0.08)',
+                    border: judgementResult.sincerity_audit?.sincerity_verdict === 'HIGH_SINCERITY_CORROBORATED'
+                      ? '1px solid rgba(16, 185, 129, 0.35)'
+                      : judgementResult.sincerity_audit?.sincerity_verdict === 'MODERATE_SCRUTINY_NEEDED'
+                      ? '1px solid rgba(245, 158, 11, 0.35)'
+                      : '1px solid rgba(239, 68, 68, 0.35)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '0.9rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.4rem'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                      <Scale size={16} style={{ color: (judgementResult.sincerity_audit?.sincerity_score || 95) >= 85 ? '#10b981' : '#f59e0b' }} />
+                      <span style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--text-muted)' }}>
+                        Sincerity & Rigor
+                      </span>
+                    </div>
+                    <span
+                      className={`badge ${
+                        (judgementResult.sincerity_audit?.sincerity_score || 95) >= 85
+                          ? 'badge-green'
+                          : (judgementResult.sincerity_audit?.sincerity_score || 95) >= 60
+                          ? 'badge-amber'
+                          : 'badge-red'
+                      }`}
+                      style={{ fontSize: '0.68rem', fontWeight: 800 }}
+                    >
+                      {judgementResult.sincerity_audit?.sincerity_score || 96}% SINCERE
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-heading)' }}>
+                    {(judgementResult.sincerity_audit?.contradictions_detected?.length || 0) === 0
+                      ? '✓ Corroborated (0 Contradictions)'
+                      : `⚠️ ${judgementResult.sincerity_audit.contradictions_detected.length} Inconsistency Flag(s)`}
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.35 }}>
+                    {judgementResult.sincerity_audit?.contradictions_detected?.[0] ||
+                     judgementResult.sincerity_audit?.sincerity_findings?.[0] ||
+                     'Field claims match recorded documentary notes.'}
                   </div>
                 </div>
               </div>
