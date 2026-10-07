@@ -16,6 +16,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { QuestionService } from '../data/questionService';
+import { QuizService } from '../data/quizService';
 
 const SECTOR_LABELS = {
   EDUCATION: { label: 'Education (School)', color: '#3b82f6', bg: '#eff6ff', border: '#bfdbfe' },
@@ -32,6 +33,7 @@ const LAYER_NAMES = {
 };
 
 export default function QuestionManagementView({ isModal = false, onClose }) {
+  const [catalogMode, setCatalogMode] = useState('QUIZ_45'); // 'QUIZ_45' (Field Survey Quiz Setup) or 'CORE_LAYERS' (15 Core Layer Verification Questions)
   const [questions, setQuestions] = useState([]);
   const [selectedSector, setSelectedSector] = useState('ALL');
   const [selectedLayer, setSelectedLayer] = useState('ALL');
@@ -41,15 +43,26 @@ export default function QuestionManagementView({ isModal = false, onClose }) {
   const [feedbackMsg, setFeedbackMsg] = useState('');
 
   const loadQuestions = () => {
-    setQuestions(QuestionService.getAllQuestions());
+    if (catalogMode === 'QUIZ_45') {
+      setQuestions(QuizService.getAllQuizQuestions());
+    } else {
+      setQuestions(QuestionService.getAllQuestions());
+    }
   };
 
   useEffect(() => {
     loadQuestions();
+  }, [catalogMode]);
+
+  useEffect(() => {
     const handleUpdate = () => loadQuestions();
     window.addEventListener('abhisaran_questions_updated', handleUpdate);
-    return () => window.removeEventListener('abhisaran_questions_updated', handleUpdate);
-  }, []);
+    window.addEventListener('abhisaran_quiz_questions_updated', handleUpdate);
+    return () => {
+      window.removeEventListener('abhisaran_questions_updated', handleUpdate);
+      window.removeEventListener('abhisaran_quiz_questions_updated', handleUpdate);
+    };
+  }, [catalogMode]);
 
   const showNotification = (msg) => {
     setFeedbackMsg(msg);
@@ -64,23 +77,36 @@ export default function QuestionManagementView({ isModal = false, onClose }) {
       const qText = (q.questionText || '').toLowerCase();
       const qRule = (q.resultingRuleId || '').toLowerCase();
       const qWhy = (q.explanationWhy || '').toLowerCase();
+      const qCode = (q.questionCode || '').toLowerCase();
       const qTerm = searchQuery.toLowerCase();
-      return qText.includes(qTerm) || qRule.includes(qTerm) || qWhy.includes(qTerm);
+      return qText.includes(qTerm) || qRule.includes(qTerm) || qWhy.includes(qTerm) || qCode.includes(qTerm);
     }
     return true;
   });
 
   const handleDelete = (qNum) => {
-    if (window.confirm(`Are you sure you want to delete Question Q${qNum}? This will remove it from the field assessment tool.`)) {
-      QuestionService.deleteQuestion(qNum);
-      showNotification(`Deleted question Q${qNum}.`);
+    const targetLabel = catalogMode === 'QUIZ_45' ? 'Survey Parameter' : 'Layer Question';
+    if (window.confirm(`Are you sure you want to delete ${targetLabel} Q${qNum}?`)) {
+      if (catalogMode === 'QUIZ_45') {
+        QuizService.deleteQuizQuestion(qNum);
+      } else {
+        QuestionService.deleteQuestion(qNum);
+      }
+      showNotification(`Deleted ${targetLabel} Q${qNum}.`);
     }
   };
 
   const handleReset = () => {
-    if (window.confirm('Reset all questions to default AEHT baseline catalogue? Custom additions and edits will be reverted.')) {
-      QuestionService.resetToDefaults();
-      showNotification('Questions restored to standard AEHT baseline catalogue.');
+    if (catalogMode === 'QUIZ_45') {
+      if (window.confirm('Reset all 45 Quiz Setup questions to default Master CSV catalogue? Custom additions and edits will be reverted.')) {
+        QuizService.resetQuizQuestions();
+        showNotification('Quiz Setup questions restored to Master 45 baseline.');
+      }
+    } else {
+      if (window.confirm('Reset all layer verification questions to default 15 AEHT core questions?')) {
+        QuestionService.resetToDefaults();
+        showNotification('Core Layer questions restored to 15 standard AEHT baseline.');
+      }
     }
   };
 
@@ -109,11 +135,12 @@ export default function QuestionManagementView({ isModal = false, onClose }) {
       sectorId: selectedSector !== 'ALL' ? selectedSector : 'EDUCATION',
       layer: selectedLayer !== 'ALL' ? Number(selectedLayer) : 1,
       convergenceQuestion: 'Q1',
+      questionCode: catalogMode === 'QUIZ_45' ? `Q${nextNum}` : `CORE-L1-${nextNum}`,
       questionText: '',
       explanationWhy: '',
       evidenceRequirement: 'REGISTER_EXTRACT',
       resultingRuleId: `RULE-CUSTOM-${nextNum}`,
-      optionsText: 'COMPLETE_REGISTER, PARTIAL_NOTES, ANECDOTAL_ONLY, ABSENT'
+      optionsText: 'COMPLIANT_AND_VERIFIED, PARTIAL_GAPS, NON_COMPLIANT_ABSENT'
     });
   };
 
@@ -134,6 +161,7 @@ export default function QuestionManagementView({ isModal = false, onClose }) {
       sectorId: editingQuestion.sectorId,
       layer: Number(editingQuestion.layer),
       convergenceQuestion: editingQuestion.convergenceQuestion || 'Q1',
+      questionCode: editingQuestion.questionCode || `Q${editingQuestion.questionNumber}`,
       questionText: editingQuestion.questionText.trim(),
       explanationWhy: editingQuestion.explanationWhy?.trim() || '',
       evidenceRequirement: editingQuestion.evidenceRequirement?.trim() || 'PROCESS_DOCUMENT',
@@ -141,12 +169,22 @@ export default function QuestionManagementView({ isModal = false, onClose }) {
       optionsJson: JSON.stringify({ options: options.length > 0 ? options : ['YES', 'PARTIAL', 'NO'] })
     };
 
-    if (isCreatingNew) {
-      QuestionService.addQuestion(payload);
-      showNotification(`Added new Question Q${payload.questionNumber}!`);
+    if (catalogMode === 'QUIZ_45') {
+      if (isCreatingNew) {
+        QuizService.addQuizQuestion(payload);
+        showNotification(`Added new Quiz Question Q${payload.questionNumber}!`);
+      } else {
+        QuizService.updateQuizQuestion(payload.questionNumber, payload);
+        showNotification(`Updated Quiz Question Q${payload.questionNumber}!`);
+      }
     } else {
-      QuestionService.updateQuestion(payload.questionNumber, payload);
-      showNotification(`Updated Question Q${payload.questionNumber}!`);
+      if (isCreatingNew) {
+        QuestionService.addQuestion(payload);
+        showNotification(`Added new Layer Question Q${payload.questionNumber}!`);
+      } else {
+        QuestionService.updateQuestion(payload.questionNumber, payload);
+        showNotification(`Updated Layer Question Q${payload.questionNumber}!`);
+      }
     }
     setEditingQuestion(null);
   };
@@ -247,6 +285,103 @@ export default function QuestionManagementView({ isModal = false, onClose }) {
           <span>{feedbackMsg}</span>
         </div>
       )}
+
+      {/* Catalogue Switcher Tabs */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '0.85rem', marginBottom: '1.25rem' }}>
+        <button
+          type="button"
+          onClick={() => {
+            setCatalogMode('QUIZ_45');
+            setSelectedSector('ALL');
+            setSelectedLayer('ALL');
+          }}
+          style={{
+            padding: '1rem 1.25rem',
+            borderRadius: 'var(--radius-md)',
+            border: catalogMode === 'QUIZ_45' ? '2px solid var(--brand-primary)' : '1px solid var(--border-color)',
+            background: catalogMode === 'QUIZ_45' ? 'var(--bg-secondary)' : 'var(--bg-card)',
+            color: catalogMode === 'QUIZ_45' ? 'var(--brand-primary)' : 'var(--text-main)',
+            cursor: 'pointer',
+            textAlign: 'left',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '0.75rem',
+            boxShadow: catalogMode === 'QUIZ_45' ? 'var(--shadow-sm)' : 'none',
+            transition: 'all 0.15s ease'
+          }}
+        >
+          <div
+            style={{
+              padding: '0.5rem',
+              borderRadius: '8px',
+              background: catalogMode === 'QUIZ_45' ? 'var(--brand-primary)' : 'var(--bg-secondary)',
+              color: catalogMode === 'QUIZ_45' ? '#ffffff' : 'var(--text-muted)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: '0.1rem'
+            }}
+          >
+            <FileText size={18} />
+          </div>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>Master 45 Field Survey Quiz Setup</span>
+              <span className="badge badge-blue" style={{ fontSize: '0.7rem' }}>Q1–Q45</span>
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.25rem', lineHeight: 1.35 }}>
+              Comprehensive facility parameters (S01–S15, A01–A15, P01–P15). This quiz generates the signed evidence report uploaded to AI for sincerity and red-flag judgement.
+            </div>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setCatalogMode('CORE_LAYERS');
+            setSelectedSector('ALL');
+            setSelectedLayer('ALL');
+          }}
+          style={{
+            padding: '1rem 1.25rem',
+            borderRadius: 'var(--radius-md)',
+            border: catalogMode === 'CORE_LAYERS' ? '2px solid var(--brand-primary)' : '1px solid var(--border-color)',
+            background: catalogMode === 'CORE_LAYERS' ? 'var(--bg-secondary)' : 'var(--bg-card)',
+            color: catalogMode === 'CORE_LAYERS' ? 'var(--brand-primary)' : 'var(--text-main)',
+            cursor: 'pointer',
+            textAlign: 'left',
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '0.75rem',
+            boxShadow: catalogMode === 'CORE_LAYERS' ? 'var(--shadow-sm)' : 'none',
+            transition: 'all 0.15s ease'
+          }}
+        >
+          <div
+            style={{
+              padding: '0.5rem',
+              borderRadius: '8px',
+              background: catalogMode === 'CORE_LAYERS' ? 'var(--brand-primary)' : 'var(--bg-secondary)',
+              color: catalogMode === 'CORE_LAYERS' ? '#ffffff' : 'var(--text-muted)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: '0.1rem'
+            }}
+          >
+            <Layers size={18} />
+          </div>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>Core Layer Verification Questions</span>
+              <span className="badge badge-purple" style={{ fontSize: '0.7rem' }}>L1–L5 Stepper</span>
+            </div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '0.25rem', lineHeight: 1.35 }}>
+              Standard 15 AEHT convergence questions (exactly 1 question per layer in /source) for Screening, Readiness, Feedback, Closure, and Sustainability.
+            </div>
+          </div>
+        </button>
+      </div>
 
       {/* Filter & Search Bar */}
       <div
@@ -422,6 +557,26 @@ export default function QuestionManagementView({ isModal = false, onClose }) {
                     </p>
                   )}
 
+                  {/* Red-Flag Logic & Intervention Tag */}
+                  {q.redFlagLogic && (
+                    <div style={{ background: 'rgba(245, 158, 11, 0.08)', border: '1px solid rgba(245, 158, 11, 0.3)', borderRadius: 'var(--radius-sm)', padding: '0.45rem 0.65rem', marginBottom: '0.65rem', fontSize: '0.74rem' }}>
+                      <div style={{ color: '#d97706', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
+                        <span>⚠️ Red Flag:</span>
+                        <span>{q.redFlagLogic}</span>
+                        {q.severity && (
+                          <span style={{ fontSize: '0.62rem', fontWeight: 800, padding: '0.08rem 0.35rem', borderRadius: '3px', background: q.severity === 'Critical' ? '#fee2e2' : '#fef3c7', color: q.severity === 'Critical' ? '#b91c1c' : '#b45309', border: `1px solid ${q.severity === 'Critical' ? '#fca5a5' : '#fde68a'}` }}>
+                            {q.severity}
+                          </span>
+                        )}
+                      </div>
+                      {q.suggestedIntervention && (
+                        <div style={{ color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                          <strong style={{ color: 'var(--text-main)' }}>Intervention:</strong> {q.suggestedIntervention}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Options preview */}
                   <div style={{ marginBottom: '0.75rem' }}>
                     <div style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--text-dim)', marginBottom: '0.25rem', textTransform: 'uppercase' }}>
@@ -448,9 +603,10 @@ export default function QuestionManagementView({ isModal = false, onClose }) {
                   </div>
 
                   {/* Meta tag info */}
-                  <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.72rem', color: 'var(--text-dim)', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem' }}>
+                  <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.72rem', color: 'var(--text-dim)', borderTop: '1px solid var(--border-color)', paddingTop: '0.5rem', flexWrap: 'wrap' }}>
                     <span>Rule: <code style={{ fontSize: '0.7rem' }}>{q.resultingRuleId}</code></span>
                     <span>Evidence: <strong>{q.evidenceRequirement}</strong></span>
+                    {q.dashboardView && <span>View: <em>{q.dashboardView}</em></span>}
                   </div>
                 </div>
 

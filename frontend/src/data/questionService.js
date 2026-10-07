@@ -1,5 +1,6 @@
-// ABHISARAN – Question Catalogue & Quiz Setup Service
-// Manages custom, editable, and extensible question sets for field continuity scans
+// ABHISARAN – Core Layer Verification Questions Service
+// Implements AEHT §5–§6 Core Convergence Framework (15 Core Layer Questions: 5 Education, 5 Health, 5 Anganwadi)
+// Used in /source for Layer-by-Layer field observation collection (L1 to L5)
 
 export const BASELINE_CORE_QUESTIONS = [
   // EDUCATION (5 Layers)
@@ -8,8 +9,8 @@ export const BASELINE_CORE_QUESTIONS = [
     sectorId: 'EDUCATION',
     layer: 1,
     convergenceQuestion: 'Q1',
-    questionText: 'Is the documented student health screening / referral register maintained on site?',
-    explanationWhy: 'Verifies if outgoing health needs and referrals are formally logged rather than handled ad-hoc.',
+    questionText: 'Are formal school health screening cards and outward referral slips documented in the school register?',
+    explanationWhy: 'Verifies whether initial beneficiary touchpoints and outward medical referrals are formally documented.',
     evidenceRequirement: 'REGISTER_EXTRACT',
     resultingRuleId: 'RULE-REFERRAL-001',
     optionsJson: '{"options": ["COMPLETE_REGISTER", "PARTIAL_NOTES", "ANECDOTAL_ONLY", "ABSENT"]}'
@@ -19,30 +20,30 @@ export const BASELINE_CORE_QUESTIONS = [
     sectorId: 'EDUCATION',
     layer: 2,
     convergenceQuestion: 'Q2',
-    questionText: 'Are institutional duties and designated nodal teacher contacts clearly displayed?',
-    explanationWhy: 'Checks whether designated staff are formally tasked with health follow-ups.',
-    evidenceRequirement: 'WALL_DISPLAY',
+    questionText: 'Is barrier-free toilet infrastructure and emergency first-aid kit functional at the school?',
+    explanationWhy: 'Assesses institutional readiness and emergency protocol display for children.',
+    evidenceRequirement: 'INFRASTRUCTURE',
     resultingRuleId: 'RULE-READINESS-002',
-    optionsJson: '{"options": ["FORMAL_ORDER_DISPLAYED", "INFORMAL_ROLE", "UNASSIGNED"]}'
+    optionsJson: '{"options": ["FUNCTIONAL_AND_MAINTAINED", "PARTIALLY_FUNCTIONAL", "NON_FUNCTIONAL_ABSENT"]}'
   },
   {
     questionNumber: 3,
     sectorId: 'EDUCATION',
     layer: 3,
     convergenceQuestion: 'Q3',
-    questionText: 'Does the school receive formal acknowledgement of completed referrals from PHC/RBSK within 14 days?',
-    explanationWhy: 'Evaluates cross-departmental hand-off loop and timeliness of counter-referral.',
+    questionText: 'Does the school head receive verified counter-referral counter-foils from the CHC/PHC?',
+    explanationWhy: 'Checks departmental alignment and whether inter-agency communication loops are closed.',
     evidenceRequirement: 'PROCESS_DOCUMENT',
-    resultingRuleId: 'RULE-TIME-003',
-    optionsJson: '{"options": ["ROUTINE_RECEIPT_LOGGED", "OCCASIONAL_RECEIPT", "NEVER_RECEIVED"]}'
+    resultingRuleId: 'RULE-FOLLOWUP-002',
+    optionsJson: '{"options": ["COUNTER_SIGNED_SYSTEMATIC", "OCCASIONAL_SLIP", "NEVER_RETURNED"]}'
   },
   {
     questionNumber: 4,
     sectorId: 'EDUCATION',
     layer: 4,
     convergenceQuestion: 'Q4',
-    questionText: 'Are remedial support or medical closure outcomes recorded in student continuity files?',
-    explanationWhy: 'Verifies whether the child received required closure care or remedial intervention.',
+    questionText: 'Is completion of secondary clinical examination or glasses/aids distribution documented?',
+    explanationWhy: 'Assesses outcome-readiness and case closure without claiming causal impact.',
     evidenceRequirement: 'ANONYMISED_REFERRAL_RECORD',
     resultingRuleId: 'RULE-CLOSURE-004',
     optionsJson: '{"options": ["CLOSURE_DOCUMENTED", "PENDING_FOLLOWUP", "UNTRACKED"]}'
@@ -52,8 +53,8 @@ export const BASELINE_CORE_QUESTIONS = [
     sectorId: 'EDUCATION',
     layer: 5,
     convergenceQuestion: 'Q5',
-    questionText: 'Does the school administration conduct monthly reviews of unresolved referrals?',
-    explanationWhy: 'Checks ongoing institutional ownership and routine bottleneck diagnosis.',
+    questionText: 'Is there a documented monthly SMC/Convergence meeting review with the local AWW and ANM?',
+    explanationWhy: 'Evaluates sustainability and routine district bottleneck review mechanisms.',
     evidenceRequirement: 'PROCESS_DOCUMENT',
     resultingRuleId: 'RULE-SUSTAIN-005',
     optionsJson: '{"options": ["MONTHLY_MINUTES_PRESENT", "INFORMAL_REVIEW", "NO_REVIEW"]}'
@@ -174,7 +175,7 @@ export const BASELINE_CORE_QUESTIONS = [
   }
 ];
 
-const STORAGE_KEY = 'abhisaran_custom_questions';
+const STORAGE_KEY = 'abhisaran_core_layer_questions';
 
 export const QuestionService = {
   getAllQuestions() {
@@ -187,21 +188,22 @@ export const QuestionService = {
         }
       }
     } catch (e) {
-      console.warn('Failed to parse stored questions from localStorage:', e);
+      console.warn('Failed to parse stored layer questions from localStorage:', e);
     }
+    this.saveAllQuestions([...BASELINE_CORE_QUESTIONS]);
     return [...BASELINE_CORE_QUESTIONS];
   },
 
   getQuestionsBySector(sectorId) {
     const all = this.getAllQuestions();
-    if (!sectorId) return all;
+    if (!sectorId || sectorId === 'ALL') return all;
     return all.filter((q) => q.sectorId === sectorId);
   },
 
   getQuestionsByLayer(sectorId, layer) {
     const sectorQs = this.getQuestionsBySector(sectorId);
-    if (!layer) return sectorQs;
-    return sectorQs.filter((q) => q.layer === Number(layer));
+    if (!layer || layer === 'ALL') return sectorQs;
+    return sectorQs.filter((q) => Number(q.layer) === Number(layer));
   },
 
   saveAllQuestions(questions) {
@@ -219,6 +221,7 @@ export const QuestionService = {
     const formatted = {
       ...newQuestion,
       questionNumber: newQuestion.questionNumber ? Number(newQuestion.questionNumber) : nextNum,
+      convergenceQuestion: newQuestion.convergenceQuestion || `Q${nextNum}`,
       layer: Number(newQuestion.layer) || 1,
       optionsJson: typeof newQuestion.optionsJson === 'string'
         ? newQuestion.optionsJson

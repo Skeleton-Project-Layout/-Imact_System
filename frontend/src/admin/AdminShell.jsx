@@ -18,7 +18,8 @@ import {
   Clock as ClockIcon,
   CheckSquare,
   Plus,
-  HelpCircle
+  HelpCircle,
+  Cpu
 } from 'lucide-react';
 import DistrictOverview from './DistrictOverview';
 import ConvergenceHeatmap from './ConvergenceHeatmap';
@@ -32,8 +33,11 @@ import PrivacyIncidentsView from './PrivacyIncidentsView';
 import RetentionAndAuditView from './RetentionAndAuditView';
 import EvidenceVerificationView from './EvidenceVerificationView';
 import AddDistrictModal from './AddDistrictModal';
+import AddDeliveryPointModal from './AddDeliveryPointModal';
+import AiDiagnosticsModal from './AiDiagnosticsModal';
 import QuestionManagementView from './QuestionManagementView';
 import { MEGHALAYA_DISTRICTS, getDistrictById } from '../data/districts';
+import { checkAiHealth } from '../data/aiAnalysisService';
 import ThemeToggle from '../ThemeToggle';
 
 export default function AdminShell() {
@@ -41,6 +45,10 @@ export default function AdminShell() {
   const [govDropdownOpen, setGovDropdownOpen] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [addDistrictModalOpen, setAddDistrictModalOpen] = useState(false);
+  const [addDpModalOpen, setAddDpModalOpen] = useState(false);
+  const [aiDiagModalOpen, setAiDiagModalOpen] = useState(false);
+  const [aiHealth, setAiHealth] = useState(null);
+  const [dpVersion, setDpVersion] = useState(0);
 
   // Load merged list of standard districts and any user-onboarded custom districts
   const [availableDistricts, setAvailableDistricts] = useState(() => {
@@ -64,9 +72,21 @@ export default function AdminShell() {
     return localStorage.getItem('abhisaran_monitored_district') || 'east-khasi-hills';
   });
 
-  const selectedDistrict =
-    availableDistricts.find((d) => d.id === selectedDistrictId || d.code === selectedDistrictId) ||
-    getDistrictById(selectedDistrictId);
+  // Listen for custom delivery points added
+  useEffect(() => {
+    const handleDpUpdate = () => setDpVersion((v) => v + 1);
+    window.addEventListener('abhisaran_delivery_points_updated', handleDpUpdate);
+    return () => window.removeEventListener('abhisaran_delivery_points_updated', handleDpUpdate);
+  }, []);
+
+  // Check AI microservice health on mount
+  useEffect(() => {
+    checkAiHealth().then((h) => setAiHealth(h)).catch(() => {});
+  }, []);
+
+  const selectedDistrict = React.useMemo(() => {
+    return getDistrictById(selectedDistrictId);
+  }, [selectedDistrictId, dpVersion, availableDistricts]);
 
   const [overviewData, setOverviewData] = useState(null);
   const [explainModalOpen, setExplainModalOpen] = useState(false);
@@ -244,6 +264,30 @@ export default function AdminShell() {
             </div>
           </div>
 
+          {/* AI Microservice Status Badge */}
+          <button
+            type="button"
+            onClick={() => setAiDiagModalOpen(true)}
+            className={`badge ${aiHealth?.online ? 'badge-green' : 'badge-blue'}`}
+            style={{ border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.75rem', padding: '0.35rem 0.65rem' }}
+            title="Click to inspect AI Microservice status and run live synthesis test"
+          >
+            <Cpu size={13} />
+            <span>AI: {aiHealth?.online ? 'ONLINE' : 'STANDBY'}</span>
+          </button>
+
+          {/* Add School / AWC Onboarding Action */}
+          <button
+            type="button"
+            onClick={() => setAddDpModalOpen(true)}
+            className="btn btn-secondary"
+            style={{ fontSize: '0.8125rem', padding: '0.45rem 0.8rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+            title="Onboard a new School, Anganwadi, or Health Centre to this district"
+          >
+            <Building2 size={14} style={{ color: 'var(--brand-primary)' }} />
+            <span>+ Add School/AWC</span>
+          </button>
+
           <ThemeToggle />
 
           <button
@@ -415,6 +459,7 @@ export default function AdminShell() {
             onExplainScore={handleOpenExplainScore}
             onOpenTrace={handleOpenTraceDrawer}
             selectedDistrict={selectedDistrict}
+            onOpenAddFacility={() => setAddDpModalOpen(true)}
           />
         )}
 
@@ -478,6 +523,23 @@ export default function AdminShell() {
         isOpen={addDistrictModalOpen}
         onClose={() => setAddDistrictModalOpen(false)}
         onDistrictCreated={handleDistrictCreated}
+      />
+
+      {/* Onboard / Add Delivery Point (School / Anganwadi / PHC) Modal */}
+      <AddDeliveryPointModal
+        isOpen={addDpModalOpen}
+        onClose={() => setAddDpModalOpen(false)}
+        currentDistrictId={selectedDistrictId}
+        availableDistricts={availableDistricts}
+        onDeliveryPointCreated={() => {
+          setDpVersion((v) => v + 1);
+        }}
+      />
+
+      {/* AI Diagnostics & Health Verification Modal */}
+      <AiDiagnosticsModal
+        isOpen={aiDiagModalOpen}
+        onClose={() => setAiDiagModalOpen(false)}
       />
     </div>
   );

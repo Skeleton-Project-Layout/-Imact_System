@@ -1,10 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import ImpactPassportCard from './ImpactPassportCard';
-import { Filter, FileSpreadsheet, ShieldCheck, AlertCircle } from 'lucide-react';
+import { Filter, FileSpreadsheet, ShieldCheck, AlertCircle, Plus, Building2, Sparkles } from 'lucide-react';
 
-export default function ImpactPassportList({ selectedDistrict, onExplainScore, onOpenTrace }) {
+export default function ImpactPassportList({ selectedDistrict, onExplainScore, onOpenTrace, onOpenAddFacility }) {
   const [sectorFilter, setSectorFilter] = useState('ALL');
   const [passports, setPassports] = useState([]);
+  const [cachedPassports, setCachedPassports] = useState(() => {
+    try {
+      const raw = localStorage.getItem('abhisaran_cached_passports');
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Listen for realtime passport updates from AI Continuity Scan
+  useEffect(() => {
+    const handleUpdate = () => {
+      try {
+        const raw = localStorage.getItem('abhisaran_cached_passports');
+        setCachedPassports(raw ? JSON.parse(raw) : []);
+      } catch {}
+    };
+    window.addEventListener('abhisaran_passports_updated', handleUpdate);
+    window.addEventListener('abhisaran_delivery_points_updated', handleUpdate);
+    return () => {
+      window.removeEventListener('abhisaran_passports_updated', handleUpdate);
+      window.removeEventListener('abhisaran_delivery_points_updated', handleUpdate);
+    };
+  }, []);
 
   useEffect(() => {
     async function loadPassports() {
@@ -29,11 +53,29 @@ export default function ImpactPassportList({ selectedDistrict, onExplainScore, o
   }, [selectedDistrict]);
 
   const displayPassports = React.useMemo(() => {
-    if (passports.length > 0) return passports;
+    const cachedMap = new Map((cachedPassports || []).map((cp) => [cp.deliveryPointCode, cp]));
 
-    // Build clean unassessed passports from active district's delivery points
+    if (passports.length > 0) {
+      return passports.map((p) => {
+        const cached = cachedMap.get(p.deliveryPointCode);
+        return cached ? { ...p, ...cached } : p;
+      });
+    }
+
+    // Build passports from active district's delivery points
     if (selectedDistrict?.deliveryPoints && selectedDistrict.deliveryPoints.length > 0) {
       return selectedDistrict.deliveryPoints.map((dp) => {
+        const cached = cachedMap.get(dp.code);
+        if (cached) {
+          return {
+            deliveryPointCode: dp.code,
+            name: dp.name,
+            sectorId: dp.sector,
+            category: dp.category || 'REGULAR',
+            ...cached
+          };
+        }
+
         return {
           deliveryPointCode: dp.code,
           name: dp.name,
@@ -51,7 +93,7 @@ export default function ImpactPassportList({ selectedDistrict, onExplainScore, o
     }
 
     return [];
-  }, [passports, selectedDistrict]);
+  }, [passports, cachedPassports, selectedDistrict]);
 
   const filtered = sectorFilter === 'ALL'
     ? displayPassports
@@ -71,33 +113,49 @@ export default function ImpactPassportList({ selectedDistrict, onExplainScore, o
           </p>
         </div>
 
-        {/* Sector Filter Buttons */}
-        <div style={{ display: 'flex', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.25rem', borderRadius: 'var(--radius-md)' }}>
-          {[
-            { id: 'ALL', label: `All Sample Points (${displayPassports.length})` },
-            { id: 'EDUCATION', label: 'Schools' },
-            { id: 'HEALTH_RBSK', label: 'Health' },
-            { id: 'WCD_ANGANWADI', label: 'Anganwadi' }
-          ].map((btn) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* Onboard Facility Button */}
+          {onOpenAddFacility && (
             <button
-              key={btn.id}
-              onClick={() => setSectorFilter(btn.id)}
-              style={{
-                fontSize: '0.75rem',
-                padding: '0.35rem 0.75rem',
-                borderRadius: 'var(--radius-sm)',
-                border: 'none',
-                background: sectorFilter === btn.id ? 'var(--bg-card)' : 'transparent',
-                color: sectorFilter === btn.id ? 'var(--brand-primary)' : 'var(--text-muted)',
-                fontWeight: sectorFilter === btn.id ? 700 : 500,
-                boxShadow: sectorFilter === btn.id ? 'var(--shadow-xs)' : 'none',
-                cursor: 'pointer',
-                transition: 'all 0.15s ease'
-              }}
+              type="button"
+              onClick={onOpenAddFacility}
+              className="btn btn-secondary"
+              style={{ fontSize: '0.78rem', padding: '0.4rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+              title="Add a new School, Anganwadi, or Health Centre"
             >
-              {btn.label}
+              <Plus size={14} style={{ color: 'var(--brand-primary)' }} />
+              <span>Add School / AWC</span>
             </button>
-          ))}
+          )}
+
+          {/* Sector Filter Buttons */}
+          <div style={{ display: 'flex', gap: '0.4rem', background: 'var(--bg-secondary)', padding: '0.25rem', borderRadius: 'var(--radius-md)' }}>
+            {[
+              { id: 'ALL', label: `All Points (${displayPassports.length})` },
+              { id: 'EDUCATION', label: 'Schools' },
+              { id: 'HEALTH_RBSK', label: 'Health' },
+              { id: 'WCD_ANGANWADI', label: 'Anganwadi' }
+            ].map((btn) => (
+              <button
+                key={btn.id}
+                onClick={() => setSectorFilter(btn.id)}
+                style={{
+                  fontSize: '0.75rem',
+                  padding: '0.35rem 0.75rem',
+                  borderRadius: 'var(--radius-sm)',
+                  border: 'none',
+                  background: sectorFilter === btn.id ? 'var(--bg-card)' : 'transparent',
+                  color: sectorFilter === btn.id ? 'var(--brand-primary)' : 'var(--text-muted)',
+                  fontWeight: sectorFilter === btn.id ? 700 : 500,
+                  boxShadow: sectorFilter === btn.id ? 'var(--shadow-xs)' : 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                {btn.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
