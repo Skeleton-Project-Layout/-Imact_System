@@ -7,7 +7,8 @@ export default function BaselineQuizModal({
   targetQuestion,
   allQuestions = [],
   deliveryPointCode,
-  onAttachPdf
+  onAttachPdf,
+  onOpenQuestionSetup
 }) {
   const [selectedQNum, setSelectedQNum] = useState(
     targetQuestion?.questionNumber || (allQuestions[0]?.questionNumber || 1)
@@ -177,6 +178,28 @@ export default function BaselineQuizModal({
                 ))}
               </select>
             </div>
+
+            {onOpenQuestionSetup && (
+              <button
+                type="button"
+                onClick={onOpenQuestionSetup}
+                className="btn btn-secondary"
+                style={{
+                  fontSize: '0.75rem',
+                  padding: '0.35rem 0.65rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.3rem',
+                  color: 'var(--brand-primary)',
+                  borderColor: 'var(--border-color)',
+                  background: 'var(--bg-card)'
+                }}
+                title="Configure question catalogue (Check, Change, Add, and Delete)"
+              >
+                <HelpCircle size={13} />
+                ⚙️ Manage Questions
+              </button>
+            )}
 
             <button
               type="button"

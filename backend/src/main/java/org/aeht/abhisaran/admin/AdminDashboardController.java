@@ -159,8 +159,8 @@ public class AdminDashboardController {
         double avgScore = 56.0;
         String band = scoringEngine.assignBand(avgScore);
 
-        String effectiveName = district != null ? district.getName() : (districtName != null ? districtName : "Ranchi Rural Pilot");
-        String effectiveState = district != null ? district.getState() : "Jharkhand";
+        String effectiveName = district != null ? district.getName() : (districtName != null ? districtName : "East Khasi Hills");
+        String effectiveState = district != null ? district.getState() : "Meghalaya";
         String effectiveStatus = district != null ? district.getPilotStatus() : "ACTIVE";
 
         DistrictOverviewDto dto = DistrictOverviewDto.builder()

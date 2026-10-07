@@ -10,42 +10,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 
-const mockIncidents = [
-  {
-    id: '95000000-0000-0000-0000-000000000001',
-    deliveryPointCode: 'EDU-01',
-    status: 'NODAL_NOTIFIED',
-    detectionSource: 'OCR_SCANNER',
-    detectedAt: '2026-10-06T10:15:00Z',
-    containedAt: '2026-10-06T10:20:00Z',
-    nodalNotifiedAt: '2026-10-06T10:55:00Z',
-    districtDirectedAt: null,
-    closedAt: null,
-    nonIdentifyingDescription: 'Field register photo upload flagged unredacted student guardian telephone column header during automated OCR pre-check.',
-    containmentAction: 'Attachment quarantined immediately; deleted from local device cache. Excluded from all analytic pipelines.',
-    districtDirectionNotes: null,
-    closingJustification: null,
-    isOverdue: false,
-    minutesRemaining: 0
-  },
-  {
-    id: '95000000-0000-0000-0000-000000000002',
-    deliveryPointCode: 'HLT-02',
-    status: 'CLOSED',
-    detectionSource: 'FIELD_VALIDATION',
-    detectedAt: '2026-10-04T09:00:00Z',
-    containedAt: '2026-10-04T09:10:00Z',
-    nodalNotifiedAt: '2026-10-04T09:40:00Z',
-    districtDirectedAt: '2026-10-04T11:00:00Z',
-    closedAt: '2026-10-04T12:30:00Z',
-    nonIdentifyingDescription: 'Field observation note contained draft initials resembling beneficiary name.',
-    containmentAction: 'Field worker draft destroyed; non-identifying continuity token assigned.',
-    districtDirectionNotes: 'Re-issue tokenized sheet and re-verify screening count with MOIC.',
-    closingJustification: 'Re-assessment verified zero-PII compliance and accepted by District Nodal Officer.',
-    isOverdue: false,
-    minutesRemaining: 0
-  }
-];
+const mockIncidents = [];
 
 const STAGES = ['DETECTED', 'CONTAINED', 'NODAL_NOTIFIED', 'DISTRICT_DIRECTED', 'CLOSED'];
 
@@ -78,13 +43,20 @@ export default function PrivacyIncidentsView() {
 
       {/* Incidents List */}
       <div className="space-y-4">
-        {incidents.map((inc) => {
-          const currentStageIndex = STAGES.indexOf(inc.status);
+        {incidents.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '3.5rem 1.5rem', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--border-color)', color: 'var(--text-muted)' }}>
+            <ShieldCheck size={36} style={{ margin: '0 auto 0.75rem', color: '#10b981' }} />
+            <h4 style={{ margin: '0 0 0.35rem', color: 'var(--text-heading)' }}>0 Active Privacy Incidents</h4>
+            <p style={{ margin: 0, fontSize: '0.85rem' }}>All submitted field records for East Khasi Hills strictly comply with the Zero-PII mandate. No quarantine actions or unredacted PII incidents logged.</p>
+          </div>
+        ) : (
+          incidents.map((inc) => {
+            const currentStageIndex = STAGES.indexOf(inc.status);
 
-          return (
-            <div
-              key={inc.id}
-              className="bg-slate-900/90 border border-slate-800 rounded-lg p-5 transition shadow-sm space-y-4"
+            return (
+              <div
+                key={inc.id}
+                className="bg-slate-900/90 border border-slate-800 rounded-lg p-5 transition shadow-sm space-y-4"
             >
               {/* Header Info */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
@@ -186,7 +158,7 @@ export default function PrivacyIncidentsView() {
               )}
             </div>
           );
-        })}
+        }))}
       </div>
     </div>
   );

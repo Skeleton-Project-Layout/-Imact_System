@@ -12,47 +12,27 @@ import {
   Layers,
   Inbox,
   MapPin,
-  Sparkles
+  Sparkles,
+  Settings,
+  HelpCircle
 } from 'lucide-react';
 import QuestionCard from './QuestionCard';
 import SchedulingGuard from './SchedulingGuard';
 import ZeroPiiUploadModal from './ZeroPiiUploadModal';
 import BaselineQuizModal from './BaselineQuizModal';
 import { OfflineQueueService } from './OfflineQueueService';
-import { JHARKHAND_DISTRICTS, getDistrictById } from '../data/districts';
+import { MEGHALAYA_DISTRICTS, getDistrictById } from '../data/districts';
+import { QuestionService } from '../data/questionService';
+import QuestionManagementView from '../admin/QuestionManagementView';
 import ThemeToggle from '../ThemeToggle';
-
-// Fallback question catalogue in case backend is offline or disconnected
-const FALLBACK_QUESTIONS = [
-  // EDUCATION
-  { questionNumber: 1, sectorId: 'EDUCATION', layer: 1, convergenceQuestion: 'Q1', questionText: 'Is the documented student health screening / referral register maintained on site?', explanationWhy: 'Verifies if outgoing health needs and referrals are formally logged rather than handled ad-hoc.', evidenceRequirement: 'REGISTER_EXTRACT', resultingRuleId: 'RULE-REFERRAL-001', optionsJson: '{"options": ["COMPLETE_REGISTER", "PARTIAL_NOTES", "ANECDOTAL_ONLY", "ABSENT"]}' },
-  { questionNumber: 2, sectorId: 'EDUCATION', layer: 2, convergenceQuestion: 'Q2', questionText: 'Are institutional duties and designated nodal teacher contacts clearly displayed?', explanationWhy: 'Checks whether designated staff are formally tasked with health follow-ups.', evidenceRequirement: 'WALL_DISPLAY', resultingRuleId: 'RULE-READINESS-002', optionsJson: '{"options": ["FORMAL_ORDER_DISPLAYED", "INFORMAL_ROLE", "UNASSIGNED"]}' },
-  { questionNumber: 3, sectorId: 'EDUCATION', layer: 3, convergenceQuestion: 'Q3', questionText: 'Does the school receive formal acknowledgement of completed referrals from PHC/RBSK within 14 days?', explanationWhy: 'Evaluates cross-departmental hand-off loop and timeliness of counter-referral.', evidenceRequirement: 'PROCESS_DOCUMENT', resultingRuleId: 'RULE-TIME-003', optionsJson: '{"options": ["ROUTINE_RECEIPT_LOGGED", "OCCASIONAL_RECEIPT", "NEVER_RECEIVED"]}' },
-  { questionNumber: 4, sectorId: 'EDUCATION', layer: 4, convergenceQuestion: 'Q4', questionText: 'Are remedial support or medical closure outcomes recorded in student continuity files?', explanationWhy: 'Verifies whether the child received required closure care or remedial intervention.', evidenceRequirement: 'ANONYMISED_REFERRAL_RECORD', resultingRuleId: 'RULE-CLOSURE-004', optionsJson: '{"options": ["CLOSURE_DOCUMENTED", "PENDING_FOLLOWUP", "UNTRACKED"]}' },
-  { questionNumber: 5, sectorId: 'EDUCATION', layer: 5, convergenceQuestion: 'Q5', questionText: 'Does the school administration conduct monthly reviews of unresolved referrals?', explanationWhy: 'Checks ongoing institutional ownership and routine bottleneck diagnosis.', evidenceRequirement: 'PROCESS_DOCUMENT', resultingRuleId: 'RULE-SUSTAIN-005', optionsJson: '{"options": ["MONTHLY_MINUTES_PRESENT", "INFORMAL_REVIEW", "NO_REVIEW"]}' },
-
-  // HEALTH_RBSK
-  { questionNumber: 6, sectorId: 'HEALTH_RBSK', layer: 1, convergenceQuestion: 'Q1', questionText: 'Are RBSK screening cards and 4D referral slips documented in the facility register?', explanationWhy: 'Verifies formal recording of identified health conditions.', evidenceRequirement: 'REGISTER_EXTRACT', resultingRuleId: 'RULE-REFERRAL-001', optionsJson: '{"options": ["COMPLETE_REGISTER", "PARTIAL_NOTES", "ANECDOTAL_ONLY", "ABSENT"]}' },
-  { questionNumber: 7, sectorId: 'HEALTH_RBSK', layer: 2, convergenceQuestion: 'Q2', questionText: 'Is the specialized referral diagnostic equipment functional at the touchpoint?', explanationWhy: 'Ensures institutional readiness to deliver secondary medical screening.', evidenceRequirement: 'INFRASTRUCTURE', resultingRuleId: 'RULE-READINESS-002', optionsJson: '{"options": ["FUNCTIONAL_AND_CALIBRATED", "PARTIALLY_FUNCTIONAL", "NON_FUNCTIONAL_ABSENT"]}' },
-  { questionNumber: 8, sectorId: 'HEALTH_RBSK', layer: 3, convergenceQuestion: 'Q3', questionText: 'Does the receiving medical officer counter-sign and return referral slips to the referring school/centre?', explanationWhy: 'Checks cross-departmental bidirectional communication.', evidenceRequirement: 'PROCESS_DOCUMENT', resultingRuleId: 'RULE-FOLLOWUP-002', optionsJson: '{"options": ["COUNTER_SIGNED_SYSTEMATIC", "OCCASIONAL_SLIP", "NEVER_RETURNED"]}' },
-  { questionNumber: 9, sectorId: 'HEALTH_RBSK', layer: 4, convergenceQuestion: 'Q4', questionText: 'Is treatment completion or secondary hospital referral closure logged?', explanationWhy: 'Assesses clinical closure documentation without claiming causal impact.', evidenceRequirement: 'ANONYMISED_REFERRAL_RECORD', resultingRuleId: 'RULE-CLOSURE-004', optionsJson: '{"options": ["CLOSURE_DOCUMENTED", "PENDING_FOLLOWUP", "UNTRACKED"]}' },
-  { questionNumber: 10, sectorId: 'HEALTH_RBSK', layer: 5, convergenceQuestion: 'Q5', questionText: 'Is there a shared block-level coordination meeting record between Health and Education?', explanationWhy: 'Evaluates systemic sustainability and bottleneck resolution mechanisms.', evidenceRequirement: 'PROCESS_DOCUMENT', resultingRuleId: 'RULE-SUSTAIN-005', optionsJson: '{"options": ["JOINT_MINUTES_AVAILABLE", "AD_HOC_MEETINGS", "NO_COORDINATION"]}' },
-
-  // WCD_ANGANWADI
-  { questionNumber: 11, sectorId: 'WCD_ANGANWADI', layer: 1, convergenceQuestion: 'Q1', questionText: 'Are preschool growth monitoring and malnutrition referral registers documented?', explanationWhy: 'Verifies tracking of children identified as underweight.', evidenceRequirement: 'REGISTER_EXTRACT', resultingRuleId: 'RULE-REFERRAL-001', optionsJson: '{"options": ["COMPLETE_REGISTER", "PARTIAL_NOTES", "ANECDOTAL_ONLY", "ABSENT"]}' },
-  { questionNumber: 12, sectorId: 'WCD_ANGANWADI', layer: 2, convergenceQuestion: 'Q2', questionText: 'Are functional stadiometers, infantometers, and growth charts present and calibrated?', explanationWhy: 'Assesses institutional readiness for accurate anthropometric screening.', evidenceRequirement: 'INFRASTRUCTURE', resultingRuleId: 'RULE-READINESS-002', optionsJson: '{"options": ["AVAILABLE_AND_FUNCTIONAL", "AVAILABLE_NOT_FUNCTIONAL", "ABSENT"]}' },
-  { questionNumber: 13, sectorId: 'WCD_ANGANWADI', layer: 3, convergenceQuestion: 'Q3', questionText: 'Does the Anganwadi receive counter-referral notes from MTC / NRC / PHC?', explanationWhy: 'Checks departmental alignment for nutritional rehabilitation follow-up.', evidenceRequirement: 'PROCESS_DOCUMENT', resultingRuleId: 'RULE-FOLLOWUP-002', optionsJson: '{"options": ["COUNTER_SIGNED_SYSTEMATIC", "OCCASIONAL_SLIP", "NEVER_RETURNED"]}' },
-  { questionNumber: 14, sectorId: 'WCD_ANGANWADI', layer: 4, convergenceQuestion: 'Q4', questionText: 'Is transition to primary school recorded with child development readiness profile?', explanationWhy: 'Assesses pathway continuity between early childhood and primary school.', evidenceRequirement: 'PROCESS_DOCUMENT', resultingRuleId: 'RULE-CLOSURE-004', optionsJson: '{"options": ["TRANSITION_PORTFOLIO_HANDED_OVER", "NAME_ONLY_SENT", "NO_TRANSITION_RECORD"]}' },
-  { questionNumber: 15, sectorId: 'WCD_ANGANWADI', layer: 5, convergenceQuestion: 'Q5', questionText: 'Does the Anganwadi worker participate in scheduled VHSND joint reviews with ASHA and ANM?', explanationWhy: 'Verifies village health sanitation and nutrition day coordination sustainability.', evidenceRequirement: 'PROCESS_DOCUMENT', resultingRuleId: 'RULE-SUSTAIN-005', optionsJson: '{"options": ["ROUTINE_VHSND_MINUTES", "OCCASIONAL_JOINT_REVIEW", "NO_JOINT_REVIEW"]}' }
-];
 
 export default function SourceShell() {
   const [online, setOnline] = useState(navigator.onLine);
   const [activeLayer, setActiveLayer] = useState(1);
   
-  // Operational District selection state
+  // Operational District selection state (Default: East Khasi Hills, Meghalaya)
   const [districtId, setDistrictId] = useState(() => {
-    return localStorage.getItem('abhisaran_field_district') || localStorage.getItem('abhisaran_monitored_district') || 'ranchi';
+    return localStorage.getItem('abhisaran_field_district') || localStorage.getItem('abhisaran_monitored_district') || 'east-khasi-hills';
   });
 
   const allDistricts = React.useMemo(() => {
@@ -62,23 +42,24 @@ export default function SourceShell() {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
           const customIds = new Set(parsed.map((d) => d.id));
-          return [...JHARKHAND_DISTRICTS.filter((d) => !customIds.has(d.id)), ...parsed];
+          return [...MEGHALAYA_DISTRICTS.filter((d) => !customIds.has(d.id)), ...parsed];
         }
       }
     } catch (e) {
       console.warn(e);
     }
-    return JHARKHAND_DISTRICTS;
+    return MEGHALAYA_DISTRICTS;
   }, []);
 
   const activeDistrict = allDistricts.find((d) => d.id === districtId || d.code === districtId) || getDistrictById(districtId);
   const availableDeliveryPoints = activeDistrict.deliveryPoints || [];
 
   const [deliveryPointCode, setDeliveryPointCode] = useState(() => {
-    return availableDeliveryPoints[0]?.code || 'EDU-01';
+    return availableDeliveryPoints[0]?.code || 'EKH-EDU-01';
   });
 
-  const [questions, setQuestions] = useState(FALLBACK_QUESTIONS);
+  const [questions, setQuestions] = useState(() => QuestionService.getAllQuestions());
+  const [questionSetupModalOpen, setQuestionSetupModalOpen] = useState(false);
   const [recordedAnswers, setRecordedAnswers] = useState({});
   const [evidenceAttachments, setEvidenceAttachments] = useState({});
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
@@ -121,11 +102,20 @@ export default function SourceShell() {
     }
   };
 
-  // Fetch questions from API if online, or fallback
+  // Subscribe to real-time question catalogue updates from Question Setup
+  useEffect(() => {
+    const handleQuestionsUpdate = () => {
+      setQuestions(QuestionService.getAllQuestions());
+    };
+    window.addEventListener('abhisaran_questions_updated', handleQuestionsUpdate);
+    return () => window.removeEventListener('abhisaran_questions_updated', handleQuestionsUpdate);
+  }, []);
+
+  // Fetch questions from API if online, or fallback to local QuestionService catalogue
   useEffect(() => {
     async function loadQuestions() {
       if (!online) {
-        setQuestions(FALLBACK_QUESTIONS);
+        setQuestions(QuestionService.getAllQuestions());
         return;
       }
       try {
@@ -140,9 +130,9 @@ export default function SourceShell() {
           }
         }
       } catch (err) {
-        console.warn('API question load failed, using local fallback:', err);
+        console.warn('API question load failed, using local QuestionService catalogue:', err);
       }
-      setQuestions(FALLBACK_QUESTIONS);
+      setQuestions(QuestionService.getAllQuestions());
     }
     loadQuestions();
   }, [currentSector, online]);
@@ -488,31 +478,55 @@ export default function SourceShell() {
           ))}
         </div>
 
-        {/* Quiz Setup Action Button */}
-        <button
-          type="button"
-          onClick={() => handleOpenQuizModal(currentQuestions[0] || questions[0])}
-          style={{
-            padding: '0.5rem 0.85rem',
-            borderRadius: 'var(--radius-md)',
-            border: '1px solid rgba(245, 158, 11, 0.5)',
-            background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2))',
-            color: '#fbbf24',
-            cursor: 'pointer',
-            whiteSpace: 'nowrap',
-            fontSize: '0.8125rem',
-            fontWeight: 700,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.25)',
-            marginLeft: 'auto'
-          }}
-          title="Open reference baseline survey setup and attach signed PDF artifact"
-        >
-          <Sparkles size={14} style={{ color: '#fbbf24' }} />
-          <span>⚡ Quiz Setup</span>
-        </button>
+        {/* Action Buttons: Question Setup & Reference Quiz */}
+        <div style={{ display: 'flex', gap: '0.4rem', marginLeft: 'auto', flexShrink: 0 }}>
+          <button
+            type="button"
+            onClick={() => setQuestionSetupModalOpen(true)}
+            style={{
+              padding: '0.5rem 0.75rem',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border-color)',
+              background: 'var(--bg-card)',
+              color: 'var(--text-main)',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              fontSize: '0.8125rem',
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem'
+            }}
+            title="Configure questions: Check, Change, Add, and Delete"
+          >
+            <Settings size={14} style={{ color: 'var(--brand-primary)' }} />
+            <span>⚙️ Question Setup</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleOpenQuizModal(currentQuestions[0] || questions[0])}
+            style={{
+              padding: '0.5rem 0.85rem',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid rgba(245, 158, 11, 0.5)',
+              background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2))',
+              color: '#d97706',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              fontSize: '0.8125rem',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.15)'
+            }}
+            title="Open reference baseline survey setup and attach signed PDF artifact"
+          >
+            <Sparkles size={14} style={{ color: '#f59e0b' }} />
+            <span>⚡ Reference Form (Q1-Q67)</span>
+          </button>
+        </div>
       </div>
 
       {/* Main Content Area: Questions for Selected Layer */}
@@ -578,7 +592,19 @@ export default function SourceShell() {
         allQuestions={questions.filter((q) => q.sectorId === currentSector || !q.sectorId)}
         deliveryPointCode={deliveryPointCode}
         onAttachPdf={handleDirectAttachPdf}
+        onOpenQuestionSetup={() => {
+          setQuizModalOpen(false);
+          setQuestionSetupModalOpen(true);
+        }}
       />
+
+      {/* Question Management Setup Modal (Check, Change, Add, Delete) */}
+      {questionSetupModalOpen && (
+        <QuestionManagementView
+          isModal={true}
+          onClose={() => setQuestionSetupModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

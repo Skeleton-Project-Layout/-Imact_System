@@ -68,37 +68,43 @@ export default function ImpactPassportCard({ passport, onExplainScore, onOpenTra
           <div style={{ textAlign: 'right' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'flex-end' }}>
               <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-heading)' }}>
-                {passport.acsScore?.toFixed(1) || '0.0'}%
+                {passport.acsScore !== null && passport.acsScore !== undefined ? `${passport.acsScore.toFixed(1)}%` : '—'}
               </span>
               <span className={getBandBadgeClass(passport.band)}>
-                {passport.band}
+                {passport.band === 'NOT_ASSESSED' ? 'NOT ASSESSED' : passport.band}
               </span>
             </div>
-            <button
-              type="button"
-              onClick={() => onExplainScore && onExplainScore(passport.deliveryPointCode)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--brand-primary)',
-                fontSize: '0.7rem',
-                cursor: 'pointer',
-                padding: 0,
-                marginTop: '0.2rem',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.2rem',
-                fontWeight: 600
-              }}
-            >
-              <HelpCircle size={12} /> Explain Score
-            </button>
+            {passport.acsScore !== null && passport.acsScore !== undefined ? (
+              <button
+                type="button"
+                onClick={() => onExplainScore && onExplainScore(passport.deliveryPointCode)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--brand-primary)',
+                  fontSize: '0.7rem',
+                  cursor: 'pointer',
+                  padding: 0,
+                  marginTop: '0.2rem',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.2rem',
+                  fontWeight: 600
+                }}
+              >
+                <HelpCircle size={12} /> Explain Score
+              </button>
+            ) : (
+              <span style={{ fontSize: '0.68rem', color: 'var(--text-dim)', display: 'block', marginTop: '0.2rem' }}>
+                Awaiting Scan
+              </span>
+            )}
           </div>
         </div>
 
         {/* Selection Rationale */}
         <div style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-color)', padding: '0.6rem 0.75rem', borderRadius: 'var(--radius-sm)', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '1rem', lineHeight: 1.4 }}>
-          <strong>Sample Rationale:</strong> {passport.selectionRationale}
+          <strong>Sample Rationale:</strong> {passport.selectionRationale || 'Purposive touchpoint selected for district service continuity assessment.'}
         </div>
 
         {/* Verified Strengths */}
@@ -106,11 +112,17 @@ export default function ImpactPassportCard({ passport, onExplainScore, onOpenTra
           <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--band-green-text)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.35rem' }}>
             <CheckCircle2 size={14} /> Verified Continuity Strengths
           </div>
-          <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.75rem', color: 'var(--text-main)', lineHeight: 1.45 }}>
-            {passport.verifiedStrengths?.map((s, i) => (
-              <li key={i}>{s}</li>
-            ))}
-          </ul>
+          {passport.verifiedStrengths && passport.verifiedStrengths.length > 0 ? (
+            <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.75rem', color: 'var(--text-main)', lineHeight: 1.45 }}>
+              {passport.verifiedStrengths.map((s, i) => (
+                <li key={i}>{s}</li>
+              ))}
+            </ul>
+          ) : (
+            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-dim)', fontStyle: 'italic', paddingLeft: '0.5rem' }}>
+              None recorded yet (Awaiting verified observations)
+            </p>
+          )}
         </div>
 
         {/* Verified Gaps */}
@@ -118,11 +130,17 @@ export default function ImpactPassportCard({ passport, onExplainScore, onOpenTra
           <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--band-red-text)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.35rem' }}>
             <AlertOctagon size={14} /> Verified Continuity Gaps
           </div>
-          <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.75rem', color: 'var(--band-red-text)', lineHeight: 1.45 }}>
-            {passport.verifiedGaps?.map((g, i) => (
-              <li key={i}>{g}</li>
-            ))}
-          </ul>
+          {passport.verifiedGaps && passport.verifiedGaps.length > 0 ? (
+            <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.75rem', color: 'var(--band-red-text)', lineHeight: 1.45 }}>
+              {passport.verifiedGaps.map((g, i) => (
+                <li key={i}>{g}</li>
+              ))}
+            </ul>
+          ) : (
+            <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--text-dim)', fontStyle: 'italic', paddingLeft: '0.5rem' }}>
+              No verified gaps flagged
+            </p>
+          )}
         </div>
       </div>
 

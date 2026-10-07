@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS privacy_incidents (
     containment_action TEXT NOT NULL
 );
 
--- Seed a default pilot district for immediate out-of-the-box readiness
+-- Seed default pilot district: East Khasi Hills, Meghalaya
 INSERT INTO districts (id, name, state)
-VALUES ('00000000-0000-0000-0000-000000000001', 'Ranchi Rural Pilot', 'Jharkhand')
-ON CONFLICT (id) DO NOTHING;
+VALUES ('00000000-0000-0000-0000-000000000001', 'East Khasi Hills', 'Meghalaya')
+ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, state = EXCLUDED.state;

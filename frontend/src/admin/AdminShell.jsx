@@ -17,7 +17,8 @@ import {
   ShieldAlert,
   Clock as ClockIcon,
   CheckSquare,
-  Plus
+  Plus,
+  HelpCircle
 } from 'lucide-react';
 import DistrictOverview from './DistrictOverview';
 import ConvergenceHeatmap from './ConvergenceHeatmap';
@@ -31,7 +32,8 @@ import PrivacyIncidentsView from './PrivacyIncidentsView';
 import RetentionAndAuditView from './RetentionAndAuditView';
 import EvidenceVerificationView from './EvidenceVerificationView';
 import AddDistrictModal from './AddDistrictModal';
-import { JHARKHAND_DISTRICTS, getDistrictById } from '../data/districts';
+import QuestionManagementView from './QuestionManagementView';
+import { MEGHALAYA_DISTRICTS, getDistrictById } from '../data/districts';
 import ThemeToggle from '../ThemeToggle';
 
 export default function AdminShell() {
@@ -48,18 +50,18 @@ export default function AdminShell() {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
           const customIds = new Set(parsed.map((d) => d.id));
-          return [...JHARKHAND_DISTRICTS.filter((d) => !customIds.has(d.id)), ...parsed];
+          return [...MEGHALAYA_DISTRICTS.filter((d) => !customIds.has(d.id)), ...parsed];
         }
       }
     } catch (e) {
       console.warn('Failed to parse custom districts cache', e);
     }
-    return JHARKHAND_DISTRICTS;
+    return MEGHALAYA_DISTRICTS;
   });
   
   // Monitored District selection state with localStorage persistence
   const [selectedDistrictId, setSelectedDistrictId] = useState(() => {
-    return localStorage.getItem('abhisaran_monitored_district') || 'ranchi';
+    return localStorage.getItem('abhisaran_monitored_district') || 'east-khasi-hills';
   });
 
   const selectedDistrict =
@@ -263,7 +265,8 @@ export default function AdminShell() {
           {[
             { id: 'dashboard', label: 'Dashboard Overview', icon: LayoutDashboard },
             { id: 'heatmap', label: 'Convergence Heat-map', icon: Grid3X3 },
-            { id: 'passports', label: 'Impact Passports (Annexure A)', icon: FileText }
+            { id: 'passports', label: 'Impact Passports (Annexure A)', icon: FileText },
+            { id: 'questions', label: 'Quiz Setup & Questions', icon: HelpCircle }
           ].map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -413,6 +416,11 @@ export default function AdminShell() {
             onOpenTrace={handleOpenTraceDrawer}
             selectedDistrict={selectedDistrict}
           />
+        )}
+
+        {/* Tab: Quiz Setup & Question Catalogue (Check, Change, Add, Delete) */}
+        {activeTab === 'questions' && (
+          <QuestionManagementView />
         )}
 
         {/* Tab: Evidence & Document Verification Desk (AEHT §6 & §17 Annexure B) */}

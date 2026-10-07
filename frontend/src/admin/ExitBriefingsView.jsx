@@ -100,8 +100,9 @@ const mockBriefings = [
 
 export default function ExitBriefingsView() {
   const [filter, setFilter] = useState('ALL');
+  const [briefings] = useState([]);
 
-  const filteredBriefings = mockBriefings.filter(b => {
+  const filteredBriefings = briefings.filter(b => {
     if (filter === 'ALL') return true;
     return b.status === filter;
   });
@@ -167,8 +168,15 @@ export default function ExitBriefingsView() {
 
       {/* Briefings List */}
       <div className="grid grid-cols-1 gap-4">
-        {filteredBriefings.map((briefing) => {
-          const isAck = briefing.status === 'ACKNOWLEDGED';
+        {filteredBriefings.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '3.5rem 1.5rem', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--border-color)', color: 'var(--text-muted)' }}>
+            <ClipboardCheck size={36} style={{ margin: '0 auto 0.75rem', opacity: 0.5 }} />
+            <h4 style={{ margin: '0 0 0.35rem', color: 'var(--text-heading)' }}>No exit briefings logged yet</h4>
+            <p style={{ margin: 0, fontSize: '0.85rem' }}>Exit briefings are scheduled and conducted with institution heads following field observations per AEHT §14.1.</p>
+          </div>
+        ) : (
+          filteredBriefings.map((briefing) => {
+            const isAck = briefing.status === 'ACKNOWLEDGED';
           const isUnsigned = briefing.status === 'SHARED_UNSIGNED';
           const isRefused = briefing.status === 'REFUSED_NON_ADVERSE';
 
@@ -266,7 +274,7 @@ export default function ExitBriefingsView() {
               </div>
             </div>
           );
-        })}
+        }))}
       </div>
     </div>
   );

@@ -11,26 +11,26 @@ export default function DistrictOverview({
   onAddDistrict
 }) {
   const currentDist = selectedDistrict || {
-    id: 'ranchi',
-    name: 'Ranchi Rural',
-    fullName: 'Ranchi Rural (South Chotanagpur)',
-    state: 'Jharkhand',
-    division: 'South Chotanagpur Division',
-    badgeText: 'Phase 1 Active Pilot',
+    id: 'east-khasi-hills',
+    name: 'East Khasi Hills',
+    fullName: 'East Khasi Hills District (Shillong)',
+    state: 'Meghalaya',
+    division: 'Khasi Hills Division',
+    badgeText: 'Active Pilot District',
     badgeClass: 'badge-blue',
-    nodalOfficer: 'Shri R. K. Soren, District Nodal Officer',
-    dmTitle: 'District Magistrate / Deputy Commissioner',
+    nodalOfficer: 'District Nodal Officer (Health & Social Welfare Convergence), East Khasi Hills',
+    dmTitle: 'Deputy Commissioner & District Magistrate, East Khasi Hills District, Shillong',
     sampleSize: 10,
     schoolsCount: 4,
     healthCount: 3,
     anganwadiCount: 3,
-    aggregateAcsScore: 56.0,
-    aggregateBand: 'AMBER',
-    applicableComponentsSummary: '3/4 Verified Touchpoints',
+    aggregateAcsScore: null,
+    aggregateBand: 'NOT_ASSESSED',
+    applicableComponentsSummary: '0/4 Touchpoints Assessed',
     zeroPiiIncidentsCount: 0,
-    verifiedArtifactsCount: 32,
-    activePriorityActionsCount: 4,
-    highPriorityActionsCount: 3
+    verifiedArtifactsCount: 0,
+    activePriorityActionsCount: 0,
+    highPriorityActionsCount: 0
   };
 
   const data = {
@@ -38,13 +38,13 @@ export default function DistrictOverview({
     schoolsCount: currentDist.schoolsCount || 4,
     healthCount: currentDist.healthCount || 3,
     anganwadiCount: currentDist.anganwadiCount || 3,
-    aggregateAcsScore: currentDist.aggregateAcsScore ?? (overviewData?.aggregateAcsScore || 56.0),
-    aggregateBand: currentDist.aggregateBand || (overviewData?.aggregateBand || 'AMBER'),
-    applicableComponentsSummary: currentDist.applicableComponentsSummary || '3/4 Verified Touchpoints',
+    aggregateAcsScore: currentDist.aggregateAcsScore ?? (overviewData?.aggregateAcsScore ?? null),
+    aggregateBand: currentDist.aggregateBand || (overviewData?.aggregateBand || 'NOT_ASSESSED'),
+    applicableComponentsSummary: currentDist.applicableComponentsSummary || '0/4 Touchpoints Assessed',
     zeroPiiIncidentsCount: currentDist.zeroPiiIncidentsCount ?? (overviewData?.zeroPiiIncidentsCount || 0),
-    verifiedArtifactsCount: currentDist.verifiedArtifactsCount ?? (overviewData?.verifiedArtifactsCount || 32),
-    activePriorityActionsCount: currentDist.activePriorityActionsCount ?? (overviewData?.activePriorityActionsCount || 4),
-    highPriorityActionsCount: currentDist.highPriorityActionsCount ?? (overviewData?.highPriorityActionsCount || 3)
+    verifiedArtifactsCount: currentDist.verifiedArtifactsCount ?? (overviewData?.verifiedArtifactsCount || 0),
+    activePriorityActionsCount: currentDist.activePriorityActionsCount ?? (overviewData?.activePriorityActionsCount || 0),
+    highPriorityActionsCount: currentDist.highPriorityActionsCount ?? (overviewData?.highPriorityActionsCount || 0)
   };
 
   const getBandBadgeClass = (band) => {
@@ -195,11 +195,11 @@ export default function DistrictOverview({
             </button>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
-            <span style={{ fontSize: '1.85rem', fontWeight: 700, color: data.aggregateBand === 'GREEN' ? 'var(--band-green-text)' : data.aggregateBand === 'AMBER' ? 'var(--band-amber-text)' : 'var(--band-red-text)' }}>
-              {data.aggregateAcsScore.toFixed(1)} / 100
+            <span style={{ fontSize: '1.85rem', fontWeight: 700, color: data.aggregateBand === 'GREEN' ? 'var(--band-green-text)' : data.aggregateBand === 'AMBER' ? 'var(--band-amber-text)' : data.aggregateBand === 'RED' ? 'var(--band-red-text)' : 'var(--text-heading)' }}>
+              {data.aggregateAcsScore !== null && data.aggregateAcsScore !== undefined ? `${data.aggregateAcsScore.toFixed(1)} / 100` : '—'}
             </span>
             <span className={getBandBadgeClass(data.aggregateBand)}>
-              {data.aggregateBand}
+              {data.aggregateBand === 'NOT_ASSESSED' ? 'NOT ASSESSED' : data.aggregateBand}
             </span>
           </div>
           <div style={{ fontSize: '0.8125rem', color: 'var(--text-dim)', marginTop: '0.35rem' }}>

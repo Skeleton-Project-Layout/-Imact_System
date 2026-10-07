@@ -2,7 +2,7 @@ import React from 'react';
 import { Info, ExternalLink } from 'lucide-react';
 
 export default function ConvergenceHeatmap({ onSelectCell, selectedDistrict }) {
-  const districtName = selectedDistrict?.name || 'Ranchi Rural';
+  const districtName = selectedDistrict?.name || 'East Khasi Hills';
   const pathways = [
     {
       id: 'ANGANWADI_TO_SCHOOL',

@@ -210,7 +210,7 @@ const INITIAL_MOCK_EVIDENCE = [
 ];
 
 export default function EvidenceVerificationView({ selectedDistrict }) {
-  const [evidenceList, setEvidenceList] = useState(INITIAL_MOCK_EVIDENCE);
+  const [evidenceList, setEvidenceList] = useState([]);
   const [statusFilter, setStatusFilter] = useState('ALL');
   const [sectorFilter, setSectorFilter] = useState('ALL');
   const [dpFilter, setDpFilter] = useState('ALL');
@@ -229,7 +229,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const [previewItem, setPreviewItem] = useState(null);
 
-  const districtName = selectedDistrict?.name || 'Ranchi Rural';
+  const districtName = selectedDistrict?.name || 'East Khasi Hills';
 
   // Load evidence from backend if available
   useEffect(() => {
@@ -483,9 +483,10 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
       {/* Evidence Cards List */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
         {filteredItems.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-            <FileText size={36} style={{ margin: '0 auto 0.75rem', opacity: 0.4 }} />
-            <p>No evidence records found matching selected filters.</p>
+          <div style={{ textAlign: 'center', padding: '3.5rem 1.5rem', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--border-color)', color: 'var(--text-muted)' }}>
+            <FileText size={36} style={{ margin: '0 auto 0.75rem', opacity: 0.5 }} />
+            <h4 style={{ margin: '0 0 0.35rem', color: 'var(--text-heading)' }}>No evidence records logged yet</h4>
+            <p style={{ margin: 0, fontSize: '0.85rem' }}>Awaiting field evidence capture for {districtName}. Record observations and upload artifacts using the Field Tool (<code>/source</code>).</p>
           </div>
         ) : (
           filteredItems.map((item) => (

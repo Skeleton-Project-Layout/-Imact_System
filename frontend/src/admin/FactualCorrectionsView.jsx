@@ -44,7 +44,7 @@ const mockCorrections = [
 ];
 
 export default function FactualCorrectionsView() {
-  const [corrections] = useState(mockCorrections);
+  const [corrections] = useState([]);
 
   return (
     <div className="space-y-6">
@@ -72,8 +72,15 @@ export default function FactualCorrectionsView() {
 
       {/* Corrections List */}
       <div className="space-y-4">
-        {corrections.map((corr) => {
-          const isValidated = corr.status === 'VALIDATED';
+        {corrections.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '3.5rem 1.5rem', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--border-color)', color: 'var(--text-muted)' }}>
+            <FileCheck2 size={36} style={{ margin: '0 auto 0.75rem', opacity: 0.5 }} />
+            <h4 style={{ margin: '0 0 0.35rem', color: 'var(--text-heading)' }}>No factual corrections logged</h4>
+            <p style={{ margin: 0, fontSize: '0.85rem' }}>During the exit briefing window, institutional heads can submit factual discrepancies for DNO review.</p>
+          </div>
+        ) : (
+          corrections.map((corr) => {
+            const isValidated = corr.status === 'VALIDATED';
           const isSubmitted = corr.status === 'SUBMITTED';
 
           return (
@@ -168,7 +175,7 @@ export default function FactualCorrectionsView() {
               </div>
             </div>
           );
-        })}
+        }))}
       </div>
     </div>
   );
