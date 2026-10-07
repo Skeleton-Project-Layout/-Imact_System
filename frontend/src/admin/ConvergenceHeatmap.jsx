@@ -52,36 +52,36 @@ export default function ConvergenceHeatmap({ onSelectCell, selectedDistrict }) {
 
   const getCellBg = (band) => {
     switch (band) {
-      case 'GREEN': return 'rgba(16, 185, 129, 0.15)';
-      case 'AMBER': return 'rgba(245, 158, 11, 0.15)';
-      case 'RED': return 'rgba(239, 68, 68, 0.18)';
+      case 'GREEN': return 'var(--band-green-bg)';
+      case 'AMBER': return 'var(--band-amber-bg)';
+      case 'RED': return 'var(--band-red-bg)';
       default: return 'var(--bg-secondary)';
     }
   };
 
   const getCellBorder = (band) => {
     switch (band) {
-      case 'GREEN': return '1px solid rgba(16, 185, 129, 0.4)';
-      case 'AMBER': return '1px solid rgba(245, 158, 11, 0.4)';
-      case 'RED': return '1px solid rgba(239, 68, 68, 0.5)';
+      case 'GREEN': return '1px solid var(--band-green-border)';
+      case 'AMBER': return '1px solid var(--band-amber-border)';
+      case 'RED': return '1px solid var(--band-red-border)';
       default: return '1px solid var(--border-color)';
     }
   };
 
   const getCellTextColor = (band) => {
     switch (band) {
-      case 'GREEN': return '#34d399';
-      case 'AMBER': return '#fbbf24';
-      case 'RED': return '#f87171';
-      default: return '#cbd5e1';
+      case 'GREEN': return 'var(--band-green-text)';
+      case 'AMBER': return 'var(--band-amber-text)';
+      case 'RED': return 'var(--band-red-text)';
+      default: return 'var(--text-main)';
     }
   };
 
   return (
-    <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', padding: '1.5rem', marginBottom: '1.5rem' }}>
+    <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: 'var(--shadow-sm)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
-          <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#f8fafc', marginBottom: '0.25rem' }}>
+          <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-heading)', marginBottom: '0.25rem' }}>
             Cross-Sector Convergence Heat-map — {districtName}
           </h2>
           <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0 }}>
@@ -91,14 +91,14 @@ export default function ConvergenceHeatmap({ onSelectCell, selectedDistrict }) {
 
         {/* Legend */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.75rem' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#34d399' }}>
-            <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#10b981' }}></span> High Continuity (≥70%)
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--band-green-text)', fontWeight: 600 }}>
+            <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'var(--band-green-text)' }}></span> High Continuity (≥70%)
           </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#fbbf24' }}>
-            <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#f59e0b' }}></span> Vulnerable / Partial (40–69%)
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--band-amber-text)', fontWeight: 600 }}>
+            <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'var(--band-amber-text)' }}></span> Vulnerable / Partial (40–69%)
           </span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: '#f87171' }}>
-            <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: '#ef4444' }}></span> Critical Discontinuity (&lt;40%)
+          <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', color: 'var(--band-red-text)', fontWeight: 600 }}>
+            <span style={{ width: '10px', height: '10px', borderRadius: '2px', background: 'var(--band-red-text)' }}></span> Critical Discontinuity (&lt;40%)
           </span>
         </div>
       </div>
@@ -121,8 +121,8 @@ export default function ConvergenceHeatmap({ onSelectCell, selectedDistrict }) {
           <tbody>
             {pathways.map((p) => (
               <tr key={p.id}>
-                <td style={{ padding: '0.75rem', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', verticalAlign: 'middle' }}>
-                  <div style={{ fontWeight: 700, color: '#f8fafc', marginBottom: '0.2rem' }}>{p.name}</div>
+                <td style={{ padding: '0.75rem', background: 'var(--bg-card-subtle)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', verticalAlign: 'middle' }}>
+                  <div style={{ fontWeight: 700, color: 'var(--text-heading)', marginBottom: '0.2rem' }}>{p.name}</div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', lineHeight: 1.35 }}>{p.description}</div>
                 </td>
                 {p.scores.map((s) => (
@@ -163,7 +163,7 @@ export default function ConvergenceHeatmap({ onSelectCell, selectedDistrict }) {
         </table>
       </div>
 
-      <div style={{ marginTop: '1rem', background: 'rgba(30, 41, 59, 0.4)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <div style={{ marginTop: '1rem', background: 'var(--brand-primary-light)', border: '1px solid var(--band-blue-border)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-sm)', fontSize: '0.75rem', color: 'var(--band-blue-text)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
         <Info size={15} style={{ color: 'var(--brand-primary)', flexShrink: 0 }} />
         <span><strong>AEHT Non-Punitive Assurance:</strong> The convergence heat-map measures system hand-offs between departments. It explicitly prohibits and avoids ranking individual schools, clinics, or field staff against one another.</span>
       </div>

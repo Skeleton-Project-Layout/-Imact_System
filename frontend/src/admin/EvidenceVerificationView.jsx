@@ -363,7 +363,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
             <CheckSquare size={18} />
           </div>
           <div>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#f8fafc', margin: 0 }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-heading)', margin: 0 }}>
               Evidence & Document Verification Desk — {districtName}
             </h2>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -375,21 +375,21 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
         {/* Protocol Directives Card */}
         <div
           style={{
-            background: 'rgba(30, 41, 59, 0.45)',
+            background: 'var(--bg-card)',
             border: '1px solid var(--border-color)',
             borderRadius: 'var(--radius-md)',
             padding: '0.85rem 1.15rem',
             marginTop: '0.75rem',
             fontSize: '0.8125rem',
-            color: '#cbd5e1',
+            color: 'var(--text-main)',
             lineHeight: 1.45
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontWeight: 700, color: '#38bdf8', marginBottom: '0.2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontWeight: 700, color: 'var(--brand-primary)', marginBottom: '0.2rem' }}>
             <ShieldCheck size={16} />
             MANDATORY ADMINISTRATIVE QUALITY GATE
           </div>
-          All multi-file attachments, photos, and register scans uploaded in <code>/source</code> must be inspected by the District Nodal Officer or designated reviewer. Only submissions transitioned to <strong style={{ color: '#34d399' }}>VERIFIED</strong> or <strong style={{ color: '#60a5fa' }}>CORRECTED</strong> enter the deterministic scoring engine. Missing or unverified records remain <code style={{ color: '#94a3b8' }}>NOT VERIFIED</code> and cannot be punitively scored as zero.
+          All multi-file attachments, photos, and register scans uploaded in <code>/source</code> must be inspected by the District Nodal Officer or designated reviewer. Only submissions transitioned to <strong style={{ color: '#16a34a' }}>VERIFIED</strong> or <strong style={{ color: 'var(--brand-primary)' }}>CORRECTED</strong> enter the deterministic scoring engine. Missing or unverified records remain <code style={{ color: 'var(--text-muted)' }}>NOT VERIFIED</code> and cannot be punitively scored as zero.
         </div>
       </div>
 
@@ -413,7 +413,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
                   padding: '0.45rem 0.85rem',
                   borderRadius: 'var(--radius-md)',
                   border: isActive ? '1px solid var(--brand-primary)' : '1px solid var(--border-color)',
-                  background: isActive ? 'rgba(59, 130, 246, 0.2)' : 'var(--bg-secondary)',
+                  background: isActive ? 'var(--brand-primary)' : 'var(--bg-secondary)',
                   color: isActive ? '#ffffff' : 'var(--text-muted)',
                   fontSize: '0.8125rem',
                   fontWeight: isActive ? 600 : 500,
@@ -440,7 +440,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
                 background: 'var(--bg-secondary)',
                 border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-sm)',
-                color: '#ffffff',
+                color: 'var(--text-main)',
                 fontSize: '0.8125rem'
               }}
             >
@@ -463,7 +463,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
                 background: 'var(--bg-secondary)',
                 border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-sm)',
-                color: '#ffffff',
+                color: 'var(--text-main)',
                 fontSize: '0.8125rem'
               }}
             >
@@ -523,15 +523,15 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
 
               {/* Observation & Description */}
               <div style={{ marginBottom: '0.85rem' }}>
-                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#f8fafc', marginBottom: '0.25rem' }}>
-                  Observation: <span style={{ color: '#93c5fd' }}>{item.selectedOption.replace(/_/g, ' ')}</span>
+                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-heading)', marginBottom: '0.25rem' }}>
+                  Observation: <span style={{ color: 'var(--brand-primary)' }}>{item.selectedOption.replace(/_/g, ' ')}</span>
                   {item.sampleTotal && (
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', fontWeight: 400, marginLeft: '0.5rem' }}>
                       (Compliant: {item.sampleCompliant} / {item.sampleTotal})
                     </span>
                   )}
                 </div>
-                <p style={{ fontSize: '0.8125rem', color: '#cbd5e1', margin: 0, lineHeight: 1.45 }}>
+                <p style={{ fontSize: '0.8125rem', color: 'var(--text-main)', margin: 0, lineHeight: 1.45 }}>
                   {item.description}
                 </p>
               </div>
@@ -539,8 +539,8 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
               {/* Multi-File Uploaded Documents Box */}
               <div
                 style={{
-                  background: 'rgba(15, 23, 42, 0.6)',
-                  border: '1px solid rgba(56, 189, 248, 0.2)',
+                  background: 'var(--bg-secondary)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-md)',
                   padding: '0.75rem 1rem',
                   marginBottom: '1rem',
@@ -552,7 +552,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--brand-primary)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                     Attached Artifacts ({item.files?.length || item.fileCount || 1}):
                   </span>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
@@ -568,9 +568,9 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
                             fontSize: '0.75rem',
                             padding: '0.25rem 0.55rem',
                             borderRadius: '4px',
-                            background: 'rgba(30, 41, 59, 0.8)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            color: '#e2e8f0'
+                            background: 'var(--bg-card)',
+                            border: '1px solid var(--border-subtle)',
+                            color: 'var(--text-main)'
                           }}
                         >
                           {isPdf ? (
@@ -689,7 +689,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(0, 0, 0, 0.82)',
+            background: 'rgba(0, 0, 0, 0.6)',
             backdropFilter: 'blur(5px)',
             zIndex: 9999,
             display: 'flex',
@@ -700,19 +700,19 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
         >
           <div
             style={{
-              background: '#0f172a',
+              background: 'var(--bg-card)',
               border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-lg)',
               width: '100%',
               maxWidth: '520px',
               padding: '1.5rem',
               boxShadow: 'var(--shadow-xl)',
-              color: '#f8fafc'
+              color: 'var(--text-main)'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <CheckSquare size={18} style={{ color: '#38bdf8' }} />
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-heading)' }}>
+                <CheckSquare size={18} style={{ color: 'var(--brand-primary)' }} />
                 Administrative Evidence Verification
               </h3>
               <button
@@ -724,7 +724,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
               </button>
             </div>
 
-            <div style={{ background: 'rgba(30, 41, 59, 0.6)', padding: '0.85rem', borderRadius: 'var(--radius-md)', marginBottom: '1rem', fontSize: '0.8125rem' }}>
+            <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', padding: '0.85rem', borderRadius: 'var(--radius-md)', marginBottom: '1rem', fontSize: '0.8125rem' }}>
               <div>Target Item: <strong>{activeItem.deliveryPointCode} ({activeItem.resultingRuleId})</strong></div>
               <div style={{ color: 'var(--text-dim)', marginTop: '0.2rem' }}>
                 Category: {activeItem.documentKind} • Current: <strong>{activeItem.verificationStatus}</strong>
@@ -744,7 +744,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
                   padding: '0.65rem',
                   background: 'var(--bg-secondary)',
                   border: '1px solid var(--border-color)',
-                  color: '#ffffff',
+                  color: 'var(--text-main)',
                   borderRadius: 'var(--radius-sm)',
                   fontSize: '0.85rem'
                 }}
@@ -771,7 +771,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
                   padding: '0.65rem',
                   background: 'var(--bg-secondary)',
                   border: '1px solid var(--border-color)',
-                  color: '#ffffff',
+                  color: 'var(--text-main)',
                   borderRadius: 'var(--radius-sm)',
                   fontSize: '0.8125rem',
                   resize: 'none'
@@ -818,7 +818,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(0, 0, 0, 0.85)',
+            background: 'rgba(0, 0, 0, 0.6)',
             backdropFilter: 'blur(5px)',
             zIndex: 9999,
             display: 'flex',
@@ -829,19 +829,19 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
         >
           <div
             style={{
-              background: '#0f172a',
+              background: 'var(--bg-card)',
               border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-lg)',
               width: '100%',
               maxWidth: '560px',
               padding: '1.5rem',
               boxShadow: 'var(--shadow-xl)',
-              color: '#f8fafc'
+              color: 'var(--text-main)'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Eye size={18} style={{ color: '#38bdf8' }} />
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-heading)' }}>
+                <Eye size={18} style={{ color: 'var(--brand-primary)' }} />
                 Inspecting Uploaded Evidence Artifacts
               </h3>
               <button
@@ -853,7 +853,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
               </button>
             </div>
 
-            <div style={{ background: 'rgba(30, 41, 59, 0.5)', padding: '0.85rem', borderRadius: 'var(--radius-md)', marginBottom: '1rem', fontSize: '0.8125rem' }}>
+            <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', padding: '0.85rem', borderRadius: 'var(--radius-md)', marginBottom: '1rem', fontSize: '0.8125rem' }}>
               <div>Delivery Point: <strong>{previewItem.deliveryPointCode} ({previewItem.sectorId})</strong></div>
               <div>Convergence Inquiry: <strong>{previewItem.convergenceQuestion} (Layer {previewItem.layer})</strong></div>
               <div style={{ color: 'var(--text-dim)', marginTop: '0.35rem' }}>{previewItem.description}</div>
@@ -861,7 +861,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
 
             {/* List of files in artifact */}
             <div style={{ marginBottom: '1.25rem' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#93c5fd', marginBottom: '0.5rem', textTransform: 'uppercase' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--brand-primary)', marginBottom: '0.5rem', textTransform: 'uppercase' }}>
                 Uploaded File Attachments ({previewItem.files?.length || 1})
               </div>
               <div style={{ display: 'grid', gap: '0.5rem' }}>
@@ -869,7 +869,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
                   <div
                     key={i}
                     style={{
-                      background: 'rgba(15, 23, 42, 0.8)',
+                      background: 'var(--bg-secondary)',
                       border: '1px solid var(--border-color)',
                       borderRadius: 'var(--radius-sm)',
                       padding: '0.75rem',
@@ -880,12 +880,12 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                       {f.fileType?.includes('pdf') || f.fileName?.toLowerCase().endsWith('.pdf') ? (
-                        <FileText size={20} style={{ color: '#f87171' }} />
+                        <FileText size={20} style={{ color: '#dc2626' }} />
                       ) : (
-                        <ImageIcon size={20} style={{ color: '#38bdf8' }} />
+                        <ImageIcon size={20} style={{ color: 'var(--brand-primary)' }} />
                       )}
                       <div>
-                        <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#f1f5f9' }}>{f.fileName}</div>
+                        <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-heading)' }}>{f.fileName}</div>
                         <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>Size: {f.fileSize} • Category: {previewItem.documentKind}</div>
                       </div>
                     </div>
@@ -918,7 +918,7 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'rgba(0, 0, 0, 0.82)',
+            background: 'rgba(0, 0, 0, 0.6)',
             backdropFilter: 'blur(5px)',
             zIndex: 9999,
             display: 'flex',
@@ -929,19 +929,19 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
         >
           <div
             style={{
-              background: '#0f172a',
+              background: 'var(--bg-card)',
               border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-lg)',
               width: '100%',
               maxWidth: '560px',
               padding: '1.5rem',
               boxShadow: 'var(--shadow-xl)',
-              color: '#f8fafc'
+              color: 'var(--text-main)'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <History size={18} style={{ color: '#38bdf8' }} />
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-heading)' }}>
+                <History size={18} style={{ color: 'var(--brand-primary)' }} />
                 Immutable Verification Audit Trail
               </h3>
               <button
@@ -960,21 +960,21 @@ export default function EvidenceVerificationView({ selectedDistrict }) {
                   style={{
                     padding: '0.75rem',
                     borderLeft: '3px solid var(--brand-primary)',
-                    background: 'rgba(30, 41, 59, 0.5)',
+                    background: 'var(--bg-secondary)',
                     borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
                     marginBottom: '0.75rem',
                     fontSize: '0.8125rem'
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
-                    <span style={{ fontWeight: 600, color: '#93c5fd' }}>
-                      {h.previousStatus} → <strong style={{ color: '#34d399' }}>{h.newStatus}</strong>
+                    <span style={{ fontWeight: 600, color: 'var(--brand-primary)' }}>
+                      {h.previousStatus} → <strong style={{ color: '#16a34a' }}>{h.newStatus}</strong>
                     </span>
                     <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>
                       {new Date(h.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
-                  <div style={{ color: '#cbd5e1', marginBottom: '0.25rem' }}>
+                  <div style={{ color: 'var(--text-main)', marginBottom: '0.25rem' }}>
                     {h.justification}
                   </div>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>

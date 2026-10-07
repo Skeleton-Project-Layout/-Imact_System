@@ -83,14 +83,14 @@ export default function QuestionCard({
       </div>
 
       {/* Question Text */}
-      <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#f8fafc', marginBottom: '0.5rem', lineHeight: 1.4 }}>
+      <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--text-heading)', marginBottom: '0.5rem', lineHeight: 1.4 }}>
         {question.questionText}
       </h3>
 
       {/* Evidence Requirement Indicator */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
         <FileText size={14} style={{ color: 'var(--brand-primary)' }} />
-        <span>Required Evidence: <strong style={{ color: '#e2e8f0' }}>{question.evidenceRequirement || 'REGISTER_EXTRACT'}</strong></span>
+        <span>Required Evidence: <strong style={{ color: 'var(--text-heading)' }}>{question.evidenceRequirement || 'REGISTER_EXTRACT'}</strong></span>
       </div>
 
       {/* "Why am I collecting this?" Collapsible Tooltip */}
@@ -119,12 +119,13 @@ export default function QuestionCard({
           <div
             style={{
               marginTop: '0.5rem',
-              background: 'rgba(30, 41, 59, 0.7)',
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--border-color)',
               borderLeft: '3px solid var(--brand-primary)',
               padding: '0.75rem',
               borderRadius: '0 var(--radius-sm) var(--radius-sm) 0',
               fontSize: '0.8rem',
-              color: '#cbd5e1',
+              color: 'var(--text-main)',
               lineHeight: 1.45
             }}
           >
@@ -154,8 +155,8 @@ export default function QuestionCard({
                   cursor: 'pointer',
                   fontWeight: isSelected ? 700 : 500,
                   border: isSelected ? '1px solid var(--brand-primary)' : '1px solid var(--border-color)',
-                  background: isSelected ? 'rgba(59, 130, 246, 0.15)' : 'var(--bg-secondary)',
-                  color: isSelected ? '#93c5fd' : '#e2e8f0',
+                  background: isSelected ? 'rgba(59, 130, 246, 0.12)' : 'var(--bg-secondary)',
+                  color: isSelected ? 'var(--brand-primary)' : 'var(--text-main)',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
@@ -171,7 +172,7 @@ export default function QuestionCard({
       </div>
 
       {/* Optional Objective Sampling Inputs (e.g. 5 records checked, 4 had counter-referrals) */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem', background: 'rgba(15, 23, 42, 0.4)', padding: '0.75rem', borderRadius: 'var(--radius-md)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', padding: '0.75rem', borderRadius: 'var(--radius-md)' }}>
         <div>
           <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-dim)', marginBottom: '0.25rem' }}>
             Sample Total Checked
@@ -201,7 +202,7 @@ export default function QuestionCard({
               padding: '0.5rem',
               background: 'var(--bg-card)',
               border: '1px solid var(--border-color)',
-              color: '#ffffff',
+              color: 'var(--text-main)',
               borderRadius: 'var(--radius-sm)',
               fontSize: '0.85rem'
             }}
@@ -236,7 +237,7 @@ export default function QuestionCard({
               padding: '0.5rem',
               background: 'var(--bg-card)',
               border: '1px solid var(--border-color)',
-              color: '#ffffff',
+              color: 'var(--text-main)',
               borderRadius: 'var(--radius-sm)',
               fontSize: '0.85rem'
             }}

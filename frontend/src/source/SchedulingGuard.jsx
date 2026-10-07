@@ -66,8 +66,8 @@ export default function SchedulingGuard({
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Calendar size={16} style={{ color: isBlocked ? '#f87171' : hasWarning ? '#fbbf24' : '#34d399' }} />
-          <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#f8fafc', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+          <Calendar size={16} style={{ color: isBlocked ? '#dc2626' : hasWarning ? '#d97706' : '#16a34a' }} />
+          <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-heading)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Field Visit Protocol (AEHT §14)
           </span>
         </div>
@@ -94,7 +94,7 @@ export default function SchedulingGuard({
               padding: '0.4rem 0.5rem',
               background: 'var(--bg-card)',
               border: '1px solid var(--border-color)',
-              color: '#ffffff',
+              color: 'var(--text-main)',
               borderRadius: 'var(--radius-sm)',
               fontSize: '0.8rem'
             }}
@@ -111,9 +111,9 @@ export default function SchedulingGuard({
             style={{
               width: '100%',
               padding: '0.4rem 0.5rem',
-              background: femaleMember ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+              background: femaleMember ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
               border: femaleMember ? '1px solid #10b981' : '1px solid #ef4444',
-              color: '#ffffff',
+              color: femaleMember ? '#059669' : '#dc2626',
               borderRadius: 'var(--radius-sm)',
               fontSize: '0.8rem',
               fontWeight: 600,
@@ -132,7 +132,7 @@ export default function SchedulingGuard({
 
       {sector === 'EDUCATION' && (
         <div style={{ marginTop: '0.5rem' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: '#cbd5e1', cursor: 'pointer' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--text-main)', cursor: 'pointer' }}>
             <input
               type="checkbox"
               checked={isExamPeriod}
@@ -146,7 +146,7 @@ export default function SchedulingGuard({
 
       {/* Warning / Error Notices */}
       {isBlocked && (
-        <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#fca5a5', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+        <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--band-red-text)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <ShieldAlert size={15} style={{ flexShrink: 0 }} />
           <span>
             {isSchoolExamBlocked
@@ -159,14 +159,14 @@ export default function SchedulingGuard({
       )}
 
       {!isBlocked && lacksFemaleMember && (
-        <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#fcd34d', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+        <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--band-amber-text)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <AlertTriangle size={15} style={{ flexShrink: 0 }} />
           <span>AEHT §14 requirement: Anganwadi visits require at least one female team member present.</span>
         </div>
       )}
 
       {!isBlocked && dayOfWeek === 3 && sector === 'WCD_ANGANWADI' && (
-        <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#fcd34d', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+        <div style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: 'var(--band-amber-text)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
           <AlertTriangle size={15} style={{ flexShrink: 0 }} />
           <span>Advisory: Wednesday is designated immunisation/nutrition day. Conduct observation without interrupting ANM/AWW.</span>
         </div>

@@ -20,6 +20,7 @@ import ZeroPiiUploadModal from './ZeroPiiUploadModal';
 import BaselineQuizModal from './BaselineQuizModal';
 import { OfflineQueueService } from './OfflineQueueService';
 import { JHARKHAND_DISTRICTS, getDistrictById } from '../data/districts';
+import ThemeToggle from '../ThemeToggle';
 
 // Fallback question catalogue in case backend is offline or disconnected
 const FALLBACK_QUESTIONS = [
@@ -337,7 +338,10 @@ export default function SourceShell() {
   };
 
   return (
-    <div className="app-container" style={{ maxWidth: '680px', margin: '0 auto', background: '#0b1120', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="app-container" style={{ maxWidth: '680px', margin: '0 auto', background: 'var(--bg-primary)', minHeight: '100vh', display: 'flex', flexDirection: 'column', borderLeft: '1px solid var(--border-color)', borderRight: '1px solid var(--border-color)' }}>
+      {/* National Civic Ribbon */}
+      <div className="civic-ribbon" />
+
       {/* Top Mobile Bar */}
       <header className="top-bar" style={{ padding: '0.75rem 1rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
@@ -345,8 +349,8 @@ export default function SourceShell() {
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', fontWeight: 500 }}>ABHISARAN SOURCE</div>
-            <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#ffffff' }}>Field Evidence Collection</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em' }}>ABHISARAN SOURCE</div>
+            <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-heading)' }}>Field Evidence Collection</div>
           </div>
         </div>
 
@@ -359,18 +363,19 @@ export default function SourceShell() {
             {online ? <Wifi size={12} /> : <WifiOff size={12} />}
             {online ? 'ONLINE' : 'OFFLINE'}
           </button>
+          <ThemeToggle />
         </div>
       </header>
 
       {/* Zero-PII Mandatory Safety Header */}
-      <div style={{ background: 'rgba(239, 68, 68, 0.1)', borderBottom: '1px solid rgba(239, 68, 68, 0.3)', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: '#fca5a5' }}>
+      <div style={{ background: 'var(--band-red-bg)', borderBottom: '1px solid var(--band-red-border)', padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', color: 'var(--band-red-text)' }}>
         <ShieldCheck size={16} style={{ flexShrink: 0 }} />
         <span><strong>ZERO-PII POLICY:</strong> Never record names, phone numbers, Aadhaar, or take photos showing faces of children or staff.</span>
       </div>
 
       {/* Offline Queue Bar */}
       {pendingDraftsCount > 0 && (
-        <div style={{ background: 'rgba(59, 130, 246, 0.15)', borderBottom: '1px solid rgba(59, 130, 246, 0.3)', padding: '0.5rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: '#93c5fd' }}>
+        <div style={{ background: 'rgba(59, 130, 246, 0.12)', borderBottom: '1px solid rgba(59, 130, 246, 0.25)', padding: '0.5rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', color: 'var(--brand-primary)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
             <Inbox size={15} />
             <span>{pendingDraftsCount} observation draft(s) stored locally</span>
@@ -387,13 +392,13 @@ export default function SourceShell() {
       )}
 
       {syncStatusMsg && (
-        <div style={{ background: 'rgba(16, 185, 129, 0.2)', padding: '0.4rem 1rem', fontSize: '0.75rem', color: '#34d399', textAlign: 'center' }}>
+        <div style={{ background: 'var(--band-green-bg)', borderBottom: '1px solid var(--band-green-border)', padding: '0.4rem 1rem', fontSize: '0.75rem', color: 'var(--band-green-text)', textAlign: 'center' }}>
           {syncStatusMsg}
         </div>
       )}
 
       {/* Operational District & Delivery Point Selection Bar */}
-      <div style={{ padding: '0.85rem 1rem', borderBottom: '1px solid var(--border-color)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+      <div style={{ padding: '0.85rem 1rem', borderBottom: '1px solid var(--border-color)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', background: 'var(--bg-card)' }}>
         <div>
           <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
             Operational District
@@ -404,9 +409,9 @@ export default function SourceShell() {
             style={{
               width: '100%',
               padding: '0.65rem 0.75rem',
-              background: 'var(--bg-card)',
-              color: '#ffffff',
-              border: '1px solid rgba(56, 189, 248, 0.4)',
+              background: 'var(--bg-secondary)',
+              color: 'var(--text-main)',
+              border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-md)',
               fontSize: '0.85rem',
               fontWeight: 600
@@ -430,8 +435,8 @@ export default function SourceShell() {
             style={{
               width: '100%',
               padding: '0.65rem 0.75rem',
-              background: 'var(--bg-card)',
-              color: '#ffffff',
+              background: 'var(--bg-secondary)',
+              color: 'var(--text-main)',
               border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-md)',
               fontSize: '0.85rem',
@@ -467,7 +472,7 @@ export default function SourceShell() {
                 padding: '0.5rem 0.85rem',
                 borderRadius: 'var(--radius-md)',
                 border: activeLayer === l.num ? '1px solid var(--brand-primary)' : '1px solid var(--border-color)',
-                background: activeLayer === l.num ? 'rgba(59, 130, 246, 0.2)' : 'var(--bg-card)',
+                background: activeLayer === l.num ? 'var(--brand-primary)' : 'var(--bg-card)',
                 color: activeLayer === l.num ? '#ffffff' : 'var(--text-muted)',
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',

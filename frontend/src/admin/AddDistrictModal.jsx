@@ -79,7 +79,7 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(15, 23, 42, 0.85)',
+        background: 'rgba(0, 0, 0, 0.5)',
         backdropFilter: 'blur(4px)',
         display: 'flex',
         alignItems: 'center',
@@ -106,7 +106,7 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            background: 'rgba(30, 41, 59, 0.4)'
+            background: 'var(--bg-secondary)'
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -116,7 +116,7 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
                 height: '32px',
                 borderRadius: '8px',
                 background: 'rgba(56, 189, 248, 0.15)',
-                color: '#38bdf8',
+                color: 'var(--brand-primary)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center'
@@ -125,7 +125,7 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
               <Plus size={18} />
             </div>
             <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0, color: '#f8fafc' }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0, color: 'var(--text-heading)' }}>
                 Onboard New District
               </h3>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
@@ -147,10 +147,10 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
             <div
               style={{
                 padding: '0.75rem',
-                background: 'rgba(239, 68, 68, 0.15)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
+                background: 'var(--band-red-bg)',
+                border: '1px solid var(--band-red-border)',
                 borderRadius: 'var(--radius-sm)',
-                color: '#fca5a5',
+                color: 'var(--band-red-text)',
                 fontSize: '0.8125rem',
                 marginBottom: '1rem',
                 display: 'flex',
@@ -165,7 +165,7 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
 
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.35rem' }}>
+              <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-heading)', marginBottom: '0.35rem' }}>
                 District Name *
               </label>
               <input
@@ -183,16 +183,16 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
                 style={{
                   width: '100%',
                   padding: '0.55rem 0.75rem',
-                  background: 'rgba(15, 23, 42, 0.6)',
+                  background: 'var(--bg-secondary)',
                   border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm)',
-                  color: '#ffffff',
+                  color: 'var(--text-main)',
                   fontSize: '0.875rem'
                 }}
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.35rem' }}>
+              <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-heading)', marginBottom: '0.35rem' }}>
                 District Code
               </label>
               <input
@@ -203,10 +203,10 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
                 style={{
                   width: '100%',
                   padding: '0.55rem 0.75rem',
-                  background: 'rgba(15, 23, 42, 0.6)',
+                  background: 'var(--bg-secondary)',
                   border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm)',
-                  color: '#ffffff',
+                  color: 'var(--text-main)',
                   fontSize: '0.875rem'
                 }}
               />
@@ -214,7 +214,7 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
           </div>
 
           <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.35rem' }}>
+            <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-heading)', marginBottom: '0.35rem' }}>
               Administrative Division
             </label>
             <select
@@ -223,10 +223,10 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
               style={{
                 width: '100%',
                 padding: '0.55rem 0.75rem',
-                background: '#0f172a',
+                background: 'var(--bg-secondary)',
                 border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-sm)',
-                color: '#ffffff',
+                color: 'var(--text-main)',
                 fontSize: '0.875rem'
               }}
             >
@@ -240,7 +240,7 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.35rem' }}>
+              <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-heading)', marginBottom: '0.35rem' }}>
                 District Nodal Officer (DNO)
               </label>
               <input
@@ -251,16 +251,16 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
                 style={{
                   width: '100%',
                   padding: '0.55rem 0.75rem',
-                  background: 'rgba(15, 23, 42, 0.6)',
+                  background: 'var(--bg-secondary)',
                   border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm)',
-                  color: '#ffffff',
+                  color: 'var(--text-main)',
                   fontSize: '0.875rem'
                 }}
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: '#cbd5e1', marginBottom: '0.35rem' }}>
+              <label style={{ display: 'block', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-heading)', marginBottom: '0.35rem' }}>
                 Pilot Rollout Category
               </label>
               <select
@@ -269,10 +269,10 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
                 style={{
                   width: '100%',
                   padding: '0.55rem 0.75rem',
-                  background: '#0f172a',
+                  background: 'var(--bg-secondary)',
                   border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm)',
-                  color: '#ffffff',
+                  color: 'var(--text-main)',
                   fontSize: '0.875rem'
                 }}
               >
@@ -287,8 +287,8 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
           <div
             style={{
               padding: '0.75rem',
-              background: 'rgba(30, 41, 59, 0.6)',
-              border: '1px solid rgba(56, 189, 248, 0.2)',
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-sm)',
               fontSize: '0.75rem',
               color: 'var(--text-dim)',
@@ -296,7 +296,7 @@ export default function AddDistrictModal({ isOpen, onClose, onDistrictCreated })
               lineHeight: 1.4
             }}
           >
-            <strong style={{ color: '#38bdf8' }}>AEHT §2.2 Purposive Sample Auto-Provisioning:</strong>{' '}
+            <strong style={{ color: 'var(--brand-primary)' }}>AEHT §2.2 Purposive Sample Auto-Provisioning:</strong>{' '}
             Upon saving, the platform will automatically configure a 10-point cross-sectional cluster (4 Schools, 3 Health/RBSK Centres, 3 Anganwadis) ensuring immediate readiness for `/source` field evidence collection and `/admin` convergence scan.
           </div>
 

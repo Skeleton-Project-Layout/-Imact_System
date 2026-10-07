@@ -117,21 +117,21 @@ export default function TraceDrawer({ isOpen, onClose, traceTarget }) {
         bottom: 0,
         width: '100%',
         maxWidth: '560px',
-        background: '#090d16',
+        background: 'var(--bg-secondary)',
         borderLeft: '1px solid var(--border-color)',
         zIndex: 9999,
         boxShadow: 'var(--shadow-xl)',
         display: 'flex',
         flexDirection: 'column',
-        color: '#f8fafc'
+        color: 'var(--text-main)'
       }}
     >
       {/* Drawer Header */}
-      <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#0f172a' }}>
+      <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-card)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
           <ShieldCheck size={20} style={{ color: 'var(--brand-primary)' }} />
           <div>
-            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: 'var(--text-heading)' }}>
               Evidence Trace: {dpCode}
             </h3>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -185,7 +185,7 @@ export default function TraceDrawer({ isOpen, onClose, traceTarget }) {
                     </span>
                   </div>
 
-                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#f1f5f9', marginBottom: '0.35rem' }}>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-heading)', marginBottom: '0.35rem' }}>
                     Observation: {ev.selectedOption?.replace(/_/g, ' ')}
                   </div>
 
@@ -221,7 +221,7 @@ export default function TraceDrawer({ isOpen, onClose, traceTarget }) {
 
             {/* Audit History Panel */}
             {selectedHistory && (
-              <div style={{ marginTop: '1.5rem', background: '#020617', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
+              <div style={{ marginTop: '1.5rem', background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                   <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--brand-primary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                     <History size={14} /> Verification Transition Audit
@@ -236,14 +236,14 @@ export default function TraceDrawer({ isOpen, onClose, traceTarget }) {
                 </div>
 
                 {selectedHistory.history?.map((h, i) => (
-                  <div key={i} style={{ borderBottom: '1px solid #1e293b', paddingBottom: '0.5rem', marginBottom: '0.5rem', fontSize: '0.75rem' }}>
+                  <div key={i} style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', marginBottom: '0.5rem', fontSize: '0.75rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.2rem' }}>
-                      <span style={{ color: '#93c5fd', fontWeight: 600 }}>{h.verifierRole}</span>
+                      <span style={{ color: 'var(--brand-primary)', fontWeight: 600 }}>{h.verifierRole}</span>
                       <span style={{ color: 'var(--text-dim)' }}>
                         {h.previousStatus} → <strong>{h.newStatus}</strong>
                       </span>
                     </div>
-                    <div style={{ color: '#cbd5e1', fontStyle: 'italic' }}>
+                    <div style={{ color: 'var(--text-muted)', fontStyle: 'italic' }}>
                       "{h.justificationReason}"
                     </div>
                   </div>
@@ -255,7 +255,7 @@ export default function TraceDrawer({ isOpen, onClose, traceTarget }) {
       </div>
 
       {/* Drawer Footer */}
-      <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid var(--border-color)', background: '#0f172a', textAlign: 'right' }}>
+      <div style={{ padding: '1rem 1.5rem', borderTop: '1px solid var(--border-color)', background: 'var(--bg-card)', textAlign: 'right' }}>
         <button
           type="button"
           onClick={onClose}

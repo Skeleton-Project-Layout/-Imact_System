@@ -32,6 +32,7 @@ import RetentionAndAuditView from './RetentionAndAuditView';
 import EvidenceVerificationView from './EvidenceVerificationView';
 import AddDistrictModal from './AddDistrictModal';
 import { JHARKHAND_DISTRICTS, getDistrictById } from '../data/districts';
+import ThemeToggle from '../ThemeToggle';
 
 export default function AdminShell() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -152,6 +153,7 @@ export default function AdminShell() {
 
   return (
     <div className="app-container" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div className="civic-ribbon" />
       {/* Top AEHT Trust Decision Support Bar */}
       <header className="top-bar">
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -159,34 +161,35 @@ export default function AdminShell() {
             <ArrowLeft size={18} />
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ width: '40px', height: '36px', borderRadius: '6px', background: 'linear-gradient(135deg, #1e3a8a, #2563eb)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, color: '#ffffff', fontSize: '0.8rem', border: '1px solid rgba(255, 255, 255, 0.15)', letterSpacing: '0.04em' }}>
+            <div style={{ width: '40px', height: '36px', borderRadius: '6px', background: 'linear-gradient(135deg, #1e3a8a, #2563eb)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, color: '#ffffff', fontSize: '0.8rem', border: '1px solid rgba(255, 255, 255, 0.15)', letterSpacing: '0.04em', boxShadow: '0 2px 4px rgba(37, 99, 235, 0.2)' }}>
               AEHT
             </div>
             <div>
               <div style={{ fontSize: '0.75rem', color: 'var(--brand-accent)', fontWeight: 600, letterSpacing: '0.05em' }}>
                 ARYABHATA EDUCATIONAL & HEALTH TRUST • Vidya · Arogya · Samriddhi
               </div>
-              <h1 style={{ fontSize: '1.125rem', fontWeight: 700 }}>
+              <h1 style={{ fontSize: '1.125rem', fontWeight: 700, margin: 0, color: 'var(--text-heading)' }}>
                 ABHISARAN — District Programme Continuity Scan (Admin Panel)
               </h1>
             </div>
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           {/* Interactive District Monitor Option */}
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '0.55rem',
-              background: 'rgba(30, 41, 59, 0.7)',
-              border: '1px solid rgba(56, 189, 248, 0.3)',
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-md)',
-              padding: '0.35rem 0.75rem'
+              padding: '0.35rem 0.75rem',
+              boxShadow: 'var(--shadow-sm)'
             }}
           >
-            <MapPin size={18} style={{ color: '#38bdf8', flexShrink: 0 }} />
+            <MapPin size={18} style={{ color: 'var(--brand-primary)', flexShrink: 0 }} />
             <div style={{ textAlign: 'left' }}>
               <div style={{ fontSize: '0.68rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>
                 Monitoring District
@@ -199,7 +202,7 @@ export default function AdminShell() {
                   style={{
                     background: 'transparent',
                     border: 'none',
-                    color: '#ffffff',
+                    color: 'var(--text-main)',
                     fontSize: '0.875rem',
                     fontWeight: 700,
                     cursor: 'pointer',
@@ -208,7 +211,7 @@ export default function AdminShell() {
                   }}
                 >
                   {availableDistricts.map((d) => (
-                    <option key={d.id} value={d.id} style={{ background: '#0f172a', color: '#ffffff' }}>
+                    <option key={d.id} value={d.id} style={{ background: 'var(--bg-card)', color: 'var(--text-main)' }}>
                       {d.name} ({d.state}) {d.status === 'PILOT_ACTIVE' ? '★ Pilot' : ''}
                     </option>
                   ))}
@@ -218,10 +221,10 @@ export default function AdminShell() {
                   onClick={() => setAddDistrictModalOpen(true)}
                   title="Onboard / Add New District"
                   style={{
-                    background: 'rgba(56, 189, 248, 0.15)',
-                    border: '1px solid rgba(56, 189, 248, 0.35)',
+                    background: 'var(--brand-primary-light)',
+                    border: '1px solid var(--band-blue-border)',
                     borderRadius: '4px',
-                    color: '#38bdf8',
+                    color: 'var(--brand-primary)',
                     padding: '0.15rem 0.45rem',
                     fontSize: '0.72rem',
                     fontWeight: 600,
@@ -238,6 +241,8 @@ export default function AdminShell() {
               </div>
             </div>
           </div>
+
+          <ThemeToggle />
 
           <button
             type="button"
@@ -301,10 +306,10 @@ export default function AdminShell() {
               alignItems: 'center',
               gap: '0.4rem',
               padding: '0.45rem 0.85rem',
-              background: govDropdownOpen || ['verification', 'briefings', 'corrections', 'reviewer', 'privacy', 'retention'].includes(activeTab) ? 'rgba(59, 130, 246, 0.15)' : 'rgba(30, 41, 59, 0.5)',
+              background: govDropdownOpen || ['verification', 'briefings', 'corrections', 'reviewer', 'privacy', 'retention'].includes(activeTab) ? 'var(--brand-primary-light)' : 'var(--bg-card)',
               border: '1px solid var(--border-color)',
               borderRadius: 'var(--radius-sm)',
-              color: ['verification', 'briefings', 'corrections', 'reviewer', 'privacy', 'retention'].includes(activeTab) ? 'var(--brand-primary)' : 'var(--text-muted)',
+              color: ['verification', 'briefings', 'corrections', 'reviewer', 'privacy', 'retention'].includes(activeTab) ? 'var(--brand-primary)' : 'var(--text-main)',
               fontSize: '0.8125rem',
               fontWeight: 500,
               cursor: 'pointer'
@@ -323,7 +328,7 @@ export default function AdminShell() {
                 right: 0,
                 marginTop: '0.35rem',
                 width: '240px',
-                background: '#0f172a',
+                background: 'var(--bg-card)',
                 border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-md)',
                 boxShadow: 'var(--shadow-xl)',
@@ -354,10 +359,10 @@ export default function AdminShell() {
                       gap: '0.6rem',
                       width: '100%',
                       padding: '0.65rem 0.9rem',
-                      background: isSubActive ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
+                      background: isSubActive ? 'var(--brand-primary-light)' : 'transparent',
                       border: 'none',
                       borderLeft: isSubActive ? '3px solid var(--brand-primary)' : '3px solid transparent',
-                      color: isSubActive ? '#ffffff' : '#cbd5e1',
+                      color: isSubActive ? 'var(--brand-primary)' : 'var(--text-main)',
                       fontSize: '0.8125rem',
                       textAlign: 'left',
                       cursor: 'pointer'

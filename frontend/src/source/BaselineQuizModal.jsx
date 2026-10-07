@@ -87,7 +87,7 @@ export default function BaselineQuizModal({
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.85)',
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
         backdropFilter: 'blur(5px)',
         zIndex: 1050,
         display: 'flex',
@@ -100,13 +100,13 @@ export default function BaselineQuizModal({
     >
       <div
         style={{
-          background: 'var(--bg-card, #0f172a)',
+          background: 'var(--bg-card)',
           width: '96vw',
           maxWidth: '1240px',
           height: '92vh',
           borderRadius: 'var(--radius-lg, 12px)',
-          border: '1px solid rgba(56, 189, 248, 0.35)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.75)',
+          border: '1px solid var(--border-color)',
+          boxShadow: 'var(--shadow-xl)',
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden'
@@ -116,8 +116,8 @@ export default function BaselineQuizModal({
         <div
           style={{
             padding: '0.75rem 1.25rem',
-            borderBottom: '1px solid var(--border-color, #1e293b)',
-            background: 'var(--bg-secondary, #0a0f1d)',
+            borderBottom: '1px solid var(--border-color)',
+            background: 'var(--bg-secondary)',
             display: 'flex',
             flexWrap: 'wrap',
             alignItems: 'center',
@@ -128,9 +128,9 @@ export default function BaselineQuizModal({
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <span
               style={{
-                background: 'rgba(16, 185, 129, 0.2)',
-                color: '#34d399',
-                border: '1px solid rgba(16, 185, 129, 0.4)',
+                background: 'rgba(16, 185, 129, 0.15)',
+                color: '#059669',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
                 padding: '0.2rem 0.5rem',
                 borderRadius: '4px',
                 fontSize: '0.72rem',
@@ -141,11 +141,11 @@ export default function BaselineQuizModal({
               BASELINE QUIZ SETUP
             </span>
             <div>
-              <h2 style={{ fontSize: '1rem', fontWeight: 700, color: '#f8fafc', margin: 0 }}>
+              <h2 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-heading)', margin: 0 }}>
                 ABHISARAN Field Reference Form (Q1–Q67)
               </h2>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted, #94a3b8)' }}>
-                Target Delivery Point: <strong style={{ color: '#38bdf8' }}>{deliveryPointCode}</strong>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                Target Delivery Point: <strong style={{ color: 'var(--brand-primary)' }}>{deliveryPointCode}</strong>
               </div>
             </div>
           </div>
@@ -153,16 +153,16 @@ export default function BaselineQuizModal({
           {/* Question Selector & Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <label style={{ fontSize: '0.75rem', color: 'var(--text-muted, #94a3b8)', whiteSpace: 'nowrap' }}>
+              <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
                 Attach PDF To:
               </label>
               <select
                 value={selectedQNum}
                 onChange={(e) => setSelectedQNum(parseInt(e.target.value, 10))}
                 style={{
-                  background: 'var(--bg-card, #1e293b)',
-                  color: '#ffffff',
-                  border: '1px solid rgba(56, 189, 248, 0.4)',
+                  background: 'var(--bg-card)',
+                  color: 'var(--text-main)',
+                  border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm, 6px)',
                   padding: '0.35rem 0.65rem',
                   fontSize: '0.8rem',
@@ -188,8 +188,8 @@ export default function BaselineQuizModal({
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.3rem',
-                color: '#93c5fd',
-                borderColor: 'rgba(59, 130, 246, 0.4)'
+                color: 'var(--brand-primary)',
+                borderColor: 'var(--border-color)'
               }}
               title="Open full standalone page in a new browser tab"
             >
@@ -203,7 +203,7 @@ export default function BaselineQuizModal({
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: 'var(--text-muted, #94a3b8)',
+                color: 'var(--text-muted)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -221,9 +221,9 @@ export default function BaselineQuizModal({
         {lastAttachedNotice && (
           <div
             style={{
-              background: 'rgba(16, 185, 129, 0.25)',
-              borderBottom: '1px solid rgba(16, 185, 129, 0.4)',
-              color: '#34d399',
+              background: 'var(--band-green-bg)',
+              borderBottom: '1px solid var(--band-green-border)',
+              color: 'var(--band-green-text)',
               padding: '0.5rem 1.25rem',
               fontSize: '0.82rem',
               fontWeight: 600,
@@ -240,18 +240,18 @@ export default function BaselineQuizModal({
         {/* Informational Guidance Ribbon */}
         <div
           style={{
-            background: 'rgba(30, 41, 59, 0.6)',
+            background: 'var(--bg-secondary)',
             padding: '0.45rem 1.25rem',
-            borderBottom: '1px solid var(--border-color, #1e293b)',
+            borderBottom: '1px solid var(--border-color)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             fontSize: '0.75rem',
-            color: 'var(--text-muted, #94a3b8)'
+            color: 'var(--text-muted)'
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <ShieldCheck size={14} style={{ color: '#10b981' }} />
+            <ShieldCheck size={14} style={{ color: '#059669' }} />
             <span>
               Fill out the 67-question baseline survey below. Clicking <strong>⚡ Send &amp; Attach PDF to /source</strong> will immediately attach the signed report to <strong>{currentQ?.convergenceQuestion || 'Q' + selectedQNum}</strong> in your scan!
             </span>

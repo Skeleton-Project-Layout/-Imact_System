@@ -26,12 +26,13 @@ export default function ImpactPassportCard({ passport, onExplainScore, onOpenTra
 
   return (
     <div
+      className="card-lift"
       style={{
         background: 'var(--bg-card)',
         border: '1px solid var(--border-color)',
         borderRadius: 'var(--radius-lg)',
         padding: '1.25rem',
-        boxShadow: 'var(--shadow-md)',
+        boxShadow: 'var(--shadow-sm)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between'
@@ -42,7 +43,7 @@ export default function ImpactPassportCard({ passport, onExplainScore, onOpenTra
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-              <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#ffffff' }}>
+              <span style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-heading)' }}>
                 {passport.deliveryPointCode}
               </span>
               <span
@@ -51,22 +52,22 @@ export default function ImpactPassportCard({ passport, onExplainScore, onOpenTra
                   fontWeight: 600,
                   padding: '0.15rem 0.45rem',
                   borderRadius: 'var(--radius-sm)',
-                  background: 'rgba(255,255,255,0.08)',
-                  color: sectorMeta.color,
-                  border: `1px solid ${sectorMeta.color}40`
+                  background: 'var(--brand-primary-light)',
+                  color: 'var(--brand-primary)',
+                  border: '1px solid var(--band-blue-border)'
                 }}
               >
                 {sectorMeta.label}
               </span>
             </div>
             <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>
-              Category: <strong style={{ color: '#cbd5e1' }}>{passport.category}</strong>
+              Category: <strong style={{ color: 'var(--text-main)' }}>{passport.category}</strong>
             </div>
           </div>
 
           <div style={{ textAlign: 'right' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'flex-end' }}>
-              <span style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>
+              <span style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-heading)' }}>
                 {passport.acsScore?.toFixed(1) || '0.0'}%
               </span>
               <span className={getBandBadgeClass(passport.band)}>
@@ -86,7 +87,8 @@ export default function ImpactPassportCard({ passport, onExplainScore, onOpenTra
                 marginTop: '0.2rem',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.2rem'
+                gap: '0.2rem',
+                fontWeight: 600
               }}
             >
               <HelpCircle size={12} /> Explain Score
@@ -95,16 +97,16 @@ export default function ImpactPassportCard({ passport, onExplainScore, onOpenTra
         </div>
 
         {/* Selection Rationale */}
-        <div style={{ background: 'rgba(30, 41, 59, 0.4)', padding: '0.6rem 0.75rem', borderRadius: 'var(--radius-sm)', fontSize: '0.75rem', color: '#94a3b8', marginBottom: '1rem', lineHeight: 1.4 }}>
+        <div style={{ background: 'var(--bg-card-subtle)', border: '1px solid var(--border-color)', padding: '0.6rem 0.75rem', borderRadius: 'var(--radius-sm)', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '1rem', lineHeight: 1.4 }}>
           <strong>Sample Rationale:</strong> {passport.selectionRationale}
         </div>
 
         {/* Verified Strengths */}
         <div style={{ marginBottom: '0.75rem' }}>
-          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#34d399', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.35rem' }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--band-green-text)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.35rem' }}>
             <CheckCircle2 size={14} /> Verified Continuity Strengths
           </div>
-          <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.75rem', color: '#cbd5e1', lineHeight: 1.45 }}>
+          <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.75rem', color: 'var(--text-main)', lineHeight: 1.45 }}>
             {passport.verifiedStrengths?.map((s, i) => (
               <li key={i}>{s}</li>
             ))}
@@ -113,10 +115,10 @@ export default function ImpactPassportCard({ passport, onExplainScore, onOpenTra
 
         {/* Verified Gaps */}
         <div style={{ marginBottom: '1rem' }}>
-          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#f87171', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.35rem' }}>
+          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--band-red-text)', display: 'flex', alignItems: 'center', gap: '0.35rem', marginBottom: '0.35rem' }}>
             <AlertOctagon size={14} /> Verified Continuity Gaps
           </div>
-          <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.75rem', color: '#fca5a5', lineHeight: 1.45 }}>
+          <ul style={{ margin: 0, paddingLeft: '1.25rem', fontSize: '0.75rem', color: 'var(--band-red-text)', lineHeight: 1.45 }}>
             {passport.verifiedGaps?.map((g, i) => (
               <li key={i}>{g}</li>
             ))}

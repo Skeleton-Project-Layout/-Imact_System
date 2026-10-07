@@ -60,13 +60,14 @@ export default function DistrictOverview({
     <div>
       {/* Active Monitored District Banner with In-line Switcher */}
       <div
+        className="card-lift"
         style={{
-          background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.85))',
-          border: '1px solid rgba(56, 189, 248, 0.25)',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-color)',
           borderRadius: 'var(--radius-lg)',
           padding: '1.25rem 1.5rem',
           marginBottom: '1.5rem',
-          boxShadow: 'var(--shadow-md)',
+          boxShadow: 'var(--shadow-sm)',
           display: 'flex',
           flexWrap: 'wrap',
           justifyContent: 'space-between',
@@ -80,12 +81,12 @@ export default function DistrictOverview({
               width: '46px',
               height: '46px',
               borderRadius: '10px',
-              background: 'rgba(56, 189, 248, 0.15)',
-              border: '1px solid rgba(56, 189, 248, 0.3)',
+              background: 'var(--brand-primary-light)',
+              border: '1px solid var(--band-blue-border)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#38bdf8',
+              color: 'var(--brand-primary)',
               flexShrink: 0
             }}
           >
@@ -100,11 +101,11 @@ export default function DistrictOverview({
                 {currentDist.badgeText || 'Phase 1 Active Pilot'}
               </span>
             </div>
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#f8fafc', margin: '0.2rem 0' }}>
+            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-heading)', margin: '0.2rem 0' }}>
               {currentDist.name} ({currentDist.state})
             </h2>
             <div style={{ fontSize: '0.8125rem', color: 'var(--text-dim)' }}>
-              {currentDist.division} • Coordinator: <strong style={{ color: '#cbd5e1' }}>{currentDist.nodalOfficer}</strong>
+              {currentDist.division} • Coordinator: <strong style={{ color: 'var(--text-main)' }}>{currentDist.nodalOfficer}</strong>
             </div>
           </div>
         </div>
@@ -121,10 +122,10 @@ export default function DistrictOverview({
               onChange={(e) => onSelectDistrict(e.target.value)}
               style={{
                 padding: '0.55rem 0.9rem',
-                background: '#0f172a',
-                border: '1px solid rgba(56, 189, 248, 0.4)',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-md)',
-                color: '#ffffff',
+                color: 'var(--text-main)',
                 fontSize: '0.85rem',
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -132,7 +133,7 @@ export default function DistrictOverview({
               }}
             >
               {availableDistricts.map((d) => (
-                <option key={d.id} value={d.id}>
+                <option key={d.id} value={d.id} style={{ background: 'var(--bg-card)', color: 'var(--text-main)' }}>
                   {d.name} {d.status === 'PILOT_ACTIVE' ? '★ (Pilot)' : ''}
                 </option>
               ))}
@@ -148,8 +149,9 @@ export default function DistrictOverview({
                   gap: '0.35rem',
                   padding: '0.55rem 0.85rem',
                   fontSize: '0.8125rem',
-                  borderColor: 'rgba(56, 189, 248, 0.4)',
-                  color: '#38bdf8'
+                  borderColor: 'var(--band-blue-border)',
+                  color: 'var(--brand-primary)',
+                  background: 'var(--brand-primary-light)'
                 }}
               >
                 <Plus size={14} />
@@ -163,14 +165,14 @@ export default function DistrictOverview({
       {/* 4 Executive Overview Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
         {/* Card 1: Sample Size */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
+        <div className="card-lift" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>
               Sample Touchpoints ({currentDist.name})
             </span>
             <Building2 size={18} style={{ color: 'var(--brand-primary)' }} />
           </div>
-          <div style={{ fontSize: '1.85rem', fontWeight: 700, color: '#ffffff' }}>
+          <div style={{ fontSize: '1.85rem', fontWeight: 700, color: 'var(--text-heading)' }}>
             {data.totalDeliveryPoints} / 10
           </div>
           <div style={{ fontSize: '0.8125rem', color: 'var(--text-dim)', marginTop: '0.35rem' }}>
@@ -179,7 +181,7 @@ export default function DistrictOverview({
         </div>
 
         {/* Card 2: Aggregate Continuity Score */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
+        <div className="card-lift" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>
               {currentDist.name} Aggregate ACS
@@ -193,7 +195,7 @@ export default function DistrictOverview({
             </button>
           </div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
-            <span style={{ fontSize: '1.85rem', fontWeight: 700, color: data.aggregateBand === 'GREEN' ? '#34d399' : data.aggregateBand === 'AMBER' ? '#fbbf24' : '#f87171' }}>
+            <span style={{ fontSize: '1.85rem', fontWeight: 700, color: data.aggregateBand === 'GREEN' ? 'var(--band-green-text)' : data.aggregateBand === 'AMBER' ? 'var(--band-amber-text)' : 'var(--band-red-text)' }}>
               {data.aggregateAcsScore.toFixed(1)} / 100
             </span>
             <span className={getBandBadgeClass(data.aggregateBand)}>
@@ -207,6 +209,7 @@ export default function DistrictOverview({
 
         {/* Card 3: Zero-PII Compliance & Coverage */}
         <div
+          className="card-lift"
           onClick={() => onNavigateTab && onNavigateTab('verification')}
           style={{
             background: 'var(--bg-card)',
@@ -214,19 +217,16 @@ export default function DistrictOverview({
             borderRadius: 'var(--radius-lg)',
             padding: '1.25rem',
             boxShadow: 'var(--shadow-sm)',
-            cursor: onNavigateTab ? 'pointer' : 'default',
-            transition: 'border-color 0.2s'
+            cursor: onNavigateTab ? 'pointer' : 'default'
           }}
-          onMouseEnter={(e) => onNavigateTab && (e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.4)')}
-          onMouseLeave={(e) => onNavigateTab && (e.currentTarget.style.borderColor = 'var(--border-color)')}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>
               Privacy & Audit Assurance
             </span>
-            <ShieldCheck size={18} style={{ color: '#10b981' }} />
+            <ShieldCheck size={18} style={{ color: 'var(--band-green-text)' }} />
           </div>
-          <div style={{ fontSize: '1.85rem', fontWeight: 700, color: '#34d399' }}>
+          <div style={{ fontSize: '1.85rem', fontWeight: 700, color: 'var(--band-green-text)' }}>
             100% Zero-PII
           </div>
           <div style={{ fontSize: '0.8125rem', color: 'var(--text-dim)', marginTop: '0.35rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -236,14 +236,14 @@ export default function DistrictOverview({
         </div>
 
         {/* Card 4: Priority Action Register */}
-        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
+        <div className="card-lift" style={{ background: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', boxShadow: 'var(--shadow-sm)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.04em', fontWeight: 600 }}>
               Priority Remediation Actions
             </span>
-            <AlertCircle size={18} style={{ color: '#f59e0b' }} />
+            <AlertCircle size={18} style={{ color: 'var(--brand-accent)' }} />
           </div>
-          <div style={{ fontSize: '1.85rem', fontWeight: 700, color: '#ffffff' }}>
+          <div style={{ fontSize: '1.85rem', fontWeight: 700, color: 'var(--text-heading)' }}>
             {data.highPriorityActionsCount} High Priority
           </div>
           <div style={{ fontSize: '0.8125rem', color: 'var(--text-dim)', marginTop: '0.35rem' }}>
@@ -255,21 +255,22 @@ export default function DistrictOverview({
       {/* Decision-Support Routing Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
         <div
+          className="card-lift"
           onClick={() => onNavigateTab('heatmap')}
           style={{
-            background: 'rgba(30, 41, 59, 0.4)',
+            background: 'var(--bg-card)',
             border: '1px solid var(--border-color)',
             borderRadius: 'var(--radius-lg)',
             padding: '1.25rem',
             cursor: 'pointer',
-            transition: 'border-color 0.2s',
+            boxShadow: 'var(--shadow-sm)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'
           }}
         >
           <div>
-            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#f8fafc', marginBottom: '0.25rem' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-heading)', marginBottom: '0.25rem' }}>
               Convergence Heat-map ({currentDist.name})
             </h3>
             <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0 }}>
@@ -280,21 +281,22 @@ export default function DistrictOverview({
         </div>
 
         <div
+          className="card-lift"
           onClick={() => onNavigateTab('passports')}
           style={{
-            background: 'rgba(30, 41, 59, 0.4)',
+            background: 'var(--bg-card)',
             border: '1px solid var(--border-color)',
             borderRadius: 'var(--radius-lg)',
             padding: '1.25rem',
             cursor: 'pointer',
-            transition: 'border-color 0.2s',
+            boxShadow: 'var(--shadow-sm)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'
           }}
         >
           <div>
-            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#f8fafc', marginBottom: '0.25rem' }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-heading)', marginBottom: '0.25rem' }}>
               Impact Passports (Annexure A Format)
             </h3>
             <p style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', margin: 0 }}>
@@ -305,14 +307,15 @@ export default function DistrictOverview({
         </div>
 
         <div
+          className="card-lift"
           onClick={() => onNavigateTab('verification')}
           style={{
-            background: 'rgba(30, 41, 59, 0.4)',
-            border: '1px solid rgba(56, 189, 248, 0.3)',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--band-blue-border)',
             borderRadius: 'var(--radius-lg)',
             padding: '1.25rem',
             cursor: 'pointer',
-            transition: 'all 0.2s',
+            boxShadow: 'var(--shadow-sm)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center'
@@ -320,8 +323,8 @@ export default function DistrictOverview({
         >
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginBottom: '0.25rem' }}>
-              <CheckSquare size={16} style={{ color: '#38bdf8' }} />
-              <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#f8fafc', margin: 0 }}>
+              <CheckSquare size={16} style={{ color: 'var(--brand-primary)' }} />
+              <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-heading)', margin: 0 }}>
                 Verify Evidence & Scans (§17 B)
               </h3>
             </div>
@@ -329,7 +332,7 @@ export default function DistrictOverview({
               Audit multi-file field scans, registers, and certificates submitted from /source before score calculation.
             </p>
           </div>
-          <ArrowRight size={20} style={{ color: '#38bdf8', flexShrink: 0, marginLeft: '1rem' }} />
+          <ArrowRight size={20} style={{ color: 'var(--brand-primary)', flexShrink: 0, marginLeft: '1rem' }} />
         </div>
       </div>
     </div>

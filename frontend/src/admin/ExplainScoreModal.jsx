@@ -72,7 +72,7 @@ export default function ExplainScoreModal({ isOpen, onClose, deliveryPointCode }
     >
       <div
         style={{
-          background: '#0f172a',
+          background: 'var(--bg-card)',
           border: '1px solid var(--border-color)',
           borderRadius: 'var(--radius-lg)',
           width: '100%',
@@ -81,7 +81,7 @@ export default function ExplainScoreModal({ isOpen, onClose, deliveryPointCode }
           overflowY: 'auto',
           padding: '1.5rem',
           boxShadow: 'var(--shadow-xl)',
-          color: '#f8fafc'
+          color: 'var(--text-main)'
         }}
       >
         {/* Modal Header */}
@@ -89,7 +89,7 @@ export default function ExplainScoreModal({ isOpen, onClose, deliveryPointCode }
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <HelpCircle size={22} style={{ color: 'var(--brand-primary)' }} />
             <div>
-              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0 }}>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0, color: 'var(--text-heading)' }}>
                 Explain Score: {deliveryPointCode}
               </h3>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -113,10 +113,10 @@ export default function ExplainScoreModal({ isOpen, onClose, deliveryPointCode }
         ) : explainData ? (
           <div>
             {/* Top Score Box */}
-            <div style={{ background: 'rgba(30, 41, 59, 0.6)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', marginBottom: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: '1rem', marginBottom: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Computed ACS Score</div>
-                <div style={{ fontSize: '2rem', fontWeight: 800, color: explainData.band === 'GREEN' ? '#34d399' : explainData.band === 'AMBER' ? '#fbbf24' : '#f87171' }}>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: explainData.band === 'GREEN' ? '#16a34a' : explainData.band === 'AMBER' ? '#d97706' : '#dc2626' }}>
                   {explainData.acsScore.toFixed(1)}%
                 </div>
               </div>
@@ -135,7 +135,7 @@ export default function ExplainScoreModal({ isOpen, onClose, deliveryPointCode }
               <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.35rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 Exact Calculation String
               </label>
-              <div style={{ background: '#020617', border: '1px solid #1e293b', borderRadius: 'var(--radius-sm)', padding: '0.75rem', fontFamily: 'monospace', fontSize: '0.85rem', color: '#93c5fd', wordBreak: 'break-all' }}>
+              <div style={{ background: 'var(--bg-primary)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', padding: '0.75rem', fontFamily: 'monospace', fontSize: '0.85rem', color: 'var(--brand-primary)', wordBreak: 'break-all' }}>
                 {explainData.formulaString}
               </div>
             </div>
@@ -150,14 +150,14 @@ export default function ExplainScoreModal({ isOpen, onClose, deliveryPointCode }
                   const score = comp.score != null ? comp.score : 0.0;
                   const pct = comp.applicable ? (score / 5.0) * 100 : 0;
                   return (
-                    <div key={idx} style={{ background: 'var(--bg-secondary)', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-sm)' }}>
+                    <div key={idx} style={{ background: 'var(--bg-secondary)', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: '0.35rem' }}>
-                        <span style={{ color: '#e2e8f0', fontWeight: 500 }}>{comp.name}</span>
-                        <span style={{ fontWeight: 700, color: comp.applicable ? '#93c5fd' : 'var(--text-dim)' }}>
+                        <span style={{ color: 'var(--text-heading)', fontWeight: 600 }}>{comp.name}</span>
+                        <span style={{ fontWeight: 700, color: comp.applicable ? 'var(--brand-primary)' : 'var(--text-dim)' }}>
                           {comp.applicable ? `${score.toFixed(1)} / 5.0` : 'N/A (Rebased)'}
                         </span>
                       </div>
-                      <div style={{ height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                      <div style={{ height: '6px', background: 'var(--border-color)', borderRadius: '3px', overflow: 'hidden' }}>
                         <div style={{ width: `${pct}%`, height: '100%', background: 'var(--brand-primary)', borderRadius: '3px' }} />
                       </div>
                     </div>
@@ -174,10 +174,10 @@ export default function ExplainScoreModal({ isOpen, onClose, deliveryPointCode }
               {explainData.evidenceTrail && explainData.evidenceTrail.length > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                   {explainData.evidenceTrail.map((ev, i) => (
-                    <div key={i} style={{ background: 'rgba(30, 41, 59, 0.4)', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-sm)', fontSize: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div key={i} style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-subtle)', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-sm)', fontSize: '0.75rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                         <FileText size={14} style={{ color: 'var(--brand-primary)' }} />
-                        <span style={{ color: '#cbd5e1' }}>Layer {ev.layer}: <strong>{ev.resultingRuleId}</strong></span>
+                        <span style={{ color: 'var(--text-main)' }}>Layer {ev.layer}: <strong>{ev.resultingRuleId}</strong></span>
                         <span style={{ color: 'var(--text-dim)' }}>({ev.documentKind || 'REGISTER'})</span>
                       </div>
                       <span className="badge badge-green" style={{ fontSize: '0.7rem' }}>
@@ -194,7 +194,7 @@ export default function ExplainScoreModal({ isOpen, onClose, deliveryPointCode }
             </div>
 
             {/* Mandatory Statutory Disclaimer Banner */}
-            <div style={{ background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.4)', borderRadius: 'var(--radius-sm)', padding: '0.75rem', fontSize: '0.75rem', color: '#fca5a5', lineHeight: 1.45 }}>
+            <div style={{ background: 'var(--band-red-bg)', border: '1px solid var(--band-red-border)', borderRadius: 'var(--radius-sm)', padding: '0.75rem', fontSize: '0.75rem', color: 'var(--band-red-text)', lineHeight: 1.45 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 700, marginBottom: '0.2rem' }}>
                 <ShieldAlert size={14} />
                 STATUTORY PLANNING NOTICE (AEHT §15)

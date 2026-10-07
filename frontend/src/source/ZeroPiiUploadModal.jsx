@@ -139,7 +139,7 @@ export default function ZeroPiiUploadModal({
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'rgba(0, 0, 0, 0.82)',
+        background: 'rgba(0, 0, 0, 0.6)',
         backdropFilter: 'blur(5px)',
         zIndex: 9999,
         display: 'flex',
@@ -150,7 +150,7 @@ export default function ZeroPiiUploadModal({
     >
       <div
         style={{
-          background: '#0f172a',
+          background: 'var(--bg-card)',
           border: '1px solid var(--border-color)',
           borderRadius: 'var(--radius-lg)',
           width: '100%',
@@ -159,7 +159,7 @@ export default function ZeroPiiUploadModal({
           display: 'flex',
           flexDirection: 'column',
           boxShadow: 'var(--shadow-xl)',
-          color: '#f8fafc',
+          color: 'var(--text-main)',
           overflow: 'hidden'
         }}
       >
@@ -183,13 +183,13 @@ export default function ZeroPiiUploadModal({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#38bdf8'
+                color: 'var(--brand-primary)'
               }}
             >
               <ShieldCheck size={20} />
             </div>
             <div>
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, margin: 0, color: 'var(--text-heading)' }}>
                 Attach Field Evidence (Multi-Upload)
               </h3>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -211,13 +211,13 @@ export default function ZeroPiiUploadModal({
           {/* Mandatory Zero-PII Directive */}
           <div
             style={{
-              background: 'rgba(239, 68, 68, 0.12)',
-              border: '1px solid rgba(239, 68, 68, 0.4)',
+              background: 'var(--band-red-bg)',
+              border: '1px solid var(--band-red-border)',
               borderRadius: 'var(--radius-md)',
               padding: '0.85rem 1rem',
               marginBottom: '1.25rem',
               fontSize: '0.8125rem',
-              color: '#fca5a5',
+              color: 'var(--band-red-text)',
               lineHeight: 1.45
             }}
           >
@@ -241,7 +241,7 @@ export default function ZeroPiiUploadModal({
                 padding: '0.65rem 0.85rem',
                 background: 'var(--bg-secondary)',
                 border: '1px solid var(--border-color)',
-                color: '#ffffff',
+                color: 'var(--text-main)',
                 borderRadius: 'var(--radius-sm)',
                 fontSize: '0.85rem'
               }}
@@ -266,7 +266,7 @@ export default function ZeroPiiUploadModal({
                 borderRadius: 'var(--radius-md)',
                 padding: '1.25rem 1rem',
                 textAlign: 'center',
-                background: 'rgba(30, 41, 59, 0.35)',
+                background: 'var(--bg-secondary)',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease'
               }}
@@ -285,7 +285,7 @@ export default function ZeroPiiUploadModal({
                   <Camera size={26} />
                   <Upload size={26} />
                 </div>
-                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#f1f5f9' }}>
+                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-heading)' }}>
                   Tap to take photos or select multiple images & PDFs
                 </div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -299,7 +299,7 @@ export default function ZeroPiiUploadModal({
           {selectedFiles.length > 0 && (
             <div style={{ marginBottom: '1.25rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--brand-accent)', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--brand-primary)', textTransform: 'uppercase' }}>
                   Selected Artifacts ({selectedFiles.length})
                 </span>
                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
@@ -312,7 +312,7 @@ export default function ZeroPiiUploadModal({
                   overflowY: 'auto',
                   border: '1px solid var(--border-color)',
                   borderRadius: 'var(--radius-sm)',
-                  background: 'rgba(15, 23, 42, 0.6)'
+                  background: 'var(--bg-secondary)'
                 }}
               >
                 {selectedFiles.map((f, idx) => {
@@ -325,19 +325,19 @@ export default function ZeroPiiUploadModal({
                         alignItems: 'center',
                         justifyContent: 'space-between',
                         padding: '0.5rem 0.75rem',
-                        borderBottom: idx < selectedFiles.length - 1 ? '1px solid rgba(255, 255, 255, 0.06)' : 'none',
+                        borderBottom: idx < selectedFiles.length - 1 ? '1px solid var(--border-subtle)' : 'none',
                         fontSize: '0.8125rem'
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden' }}>
                         {isPdf ? (
-                          <FileText size={16} style={{ color: '#f87171', flexShrink: 0 }} />
+                          <FileText size={16} style={{ color: '#dc2626', flexShrink: 0 }} />
                         ) : (
-                          <ImageIcon size={16} style={{ color: '#38bdf8', flexShrink: 0 }} />
+                          <ImageIcon size={16} style={{ color: 'var(--brand-primary)', flexShrink: 0 }} />
                         )}
                         <span
                           style={{
-                            color: '#e2e8f0',
+                            color: 'var(--text-main)',
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
@@ -365,7 +365,7 @@ export default function ZeroPiiUploadModal({
                         }}
                         title="Remove this file"
                       >
-                        <Trash2 size={14} style={{ color: '#94a3b8' }} />
+                        <Trash2 size={14} style={{ color: 'var(--text-muted)' }} />
                       </button>
                     </div>
                   );
@@ -389,7 +389,7 @@ export default function ZeroPiiUploadModal({
                 padding: '0.65rem 0.85rem',
                 background: 'var(--bg-secondary)',
                 border: '1px solid var(--border-color)',
-                color: '#ffffff',
+                color: 'var(--text-main)',
                 borderRadius: 'var(--radius-sm)',
                 fontSize: '0.85rem'
               }}
@@ -399,14 +399,14 @@ export default function ZeroPiiUploadModal({
           {/* Mandatory Attestation Checkbox */}
           <div
             style={{
-              background: 'rgba(30, 41, 59, 0.6)',
+              background: 'var(--bg-secondary)',
               padding: '0.85rem 1rem',
               borderRadius: 'var(--radius-sm)',
               border: piiConfirmed ? '1px solid #10b981' : '1px solid var(--border-color)',
               marginBottom: '1rem'
             }}
           >
-            <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem', cursor: 'pointer', fontSize: '0.8125rem', color: '#e2e8f0', lineHeight: 1.4 }}>
+            <label style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem', cursor: 'pointer', fontSize: '0.8125rem', color: 'var(--text-main)', lineHeight: 1.4 }}>
               <input
                 type="checkbox"
                 checked={piiConfirmed}
@@ -420,7 +420,7 @@ export default function ZeroPiiUploadModal({
           </div>
 
           {uploadError && (
-            <div style={{ fontSize: '0.75rem', color: '#f87171', marginBottom: '1rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '0.75rem', color: '#dc2626', marginBottom: '1rem', textAlign: 'center' }}>
               {uploadError}
             </div>
           )}
@@ -434,7 +434,7 @@ export default function ZeroPiiUploadModal({
             display: 'flex',
             gap: '0.75rem',
             justifyContent: 'flex-end',
-            background: 'rgba(15, 23, 42, 0.95)'
+            background: 'var(--bg-card)'
           }}
         >
           <button
